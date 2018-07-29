@@ -62,6 +62,7 @@ public class VideoConfiguration: NSObject, NSCopying {
         let configuration = type(of: self).init()
         configuration.baseContentMode = baseContentMode
         configuration.filterProcessor = filterProcessor
+        configuration.transform = transform
         return configuration
     }
 }

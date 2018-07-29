@@ -9,7 +9,7 @@
 import AVFoundation
 import CoreImage
 
-public class TrackItem: NSObject, NSCopying {
+open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, TransitionableAudioProvider {
     
     public var identifier: String
     public var resource: Resource
@@ -28,7 +28,7 @@ public class TrackItem: NSObject, NSCopying {
     
     // MARK: - NSCopying
     
-    public func copy(with zone: NSZone? = nil) -> Any {
+    open func copy(with zone: NSZone? = nil) -> Any {
         let item = type(of: self).init(resource: resource.copy() as! Resource)
         item.identifier = identifier
         item.configuration = configuration.copy() as! TrackConfiguration
@@ -36,19 +36,10 @@ public class TrackItem: NSObject, NSCopying {
         item.audioTransition = audioTransition
         return item
     }
-}
-
-public extension TrackItem {
     
-    public func reloadTimelineDuration() {
-        configuration.timelineTimeRange.duration = resourceSelectedTimeRange.duration
-    }
+    // MARK: - CompositionTimeRangeProvider
     
-}
-
-extension TrackItem: CompositionTimeRangeProvider {
-    
-    public var timeRange: CMTimeRange {
+    open var timeRange: CMTimeRange {
         get {
             return configuration.timelineTimeRange
         }
@@ -58,7 +49,7 @@ extension TrackItem: CompositionTimeRangeProvider {
     }
     
     /// Resource's selected time range that mix with speed
-    public var resourceSelectedTimeRange: CMTimeRange {
+    open var resourceSelectedTimeRange: CMTimeRange {
         get {
             var timeRange = resource.selectedTimeRange
             timeRange.start = CMTime.init(value: Int64(Float(timeRange.start.value) / configuration.speed),
@@ -71,22 +62,18 @@ extension TrackItem: CompositionTimeRangeProvider {
             let start = CMTime.init(value: Int64(Float(newValue.start.value) * configuration.speed),
                                     newValue.start.timescale)
             let duration = CMTime.init(value: Int64(Float(newValue.duration.value) * configuration.speed),
-                                    newValue.duration.timescale)
+                                       newValue.duration.timescale)
             resource.selectedTimeRange = CMTimeRange.init(start: start, duration: duration)
         }
     }
     
-}
-
-// MARK: - TransitionableVideoProvider
-
-extension TrackItem: TransitionableVideoProvider {
+    // MARK: - TransitionableVideoProvider
     
-    public func numberOfVideoTracks() -> Int {
+    open func numberOfVideoTracks() -> Int {
         return resource.tracks(for: .video).count
     }
     
-    public func videoCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
+    open func videoCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
         let track = resource.tracks(for: .video)[index]
         
         let compositionTrack = composition.addMutableTrack(withMediaType: track.mediaType, preferredTrackID: preferredTrackID)
@@ -116,7 +103,7 @@ extension TrackItem: TransitionableVideoProvider {
         return compositionTrack
     }
     
-    public func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
+    open func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
         var finalImage: CIImage = {
             if let resource = resource as? ImageResource {
                 let relativeTime = time - timeRange.start
@@ -150,16 +137,13 @@ extension TrackItem: TransitionableVideoProvider {
         return finalImage
     }
     
-}
-
-// MARK: - TransitionableAudioProvider
-extension TrackItem: TransitionableAudioProvider {
+    // MARK: - TransitionableAudioProvider
     
-    public func numberOfAudioTracks() -> Int {
+    open func numberOfAudioTracks() -> Int {
         return resource.tracks(for: .audio).count
     }
     
-    public func audioCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
+    open func audioCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
         let track = resource.tracks(for: .audio)[index]
         let compositionTrack = composition.addMutableTrack(withMediaType: track.mediaType, preferredTrackID: preferredTrackID)
         if let compositionTrack = compositionTrack {
@@ -174,10 +158,19 @@ extension TrackItem: TransitionableAudioProvider {
         return compositionTrack
     }
     
-    public func configure(audioMixParameters: AVMutableAudioMixInputParameters) {
+    open func configure(audioMixParameters: AVMutableAudioMixInputParameters) {
         let volume = configuration.audioConfiguration.volume
         audioMixParameters.setVolumeRamp(fromStartVolume: volume, toEndVolume: volume, timeRange: configuration.timelineTimeRange)
         audioMixParameters.audioProcessingTapHolder = configuration.audioConfiguration.audioTapHolder
+    }
+    
+    
+}
+
+public extension TrackItem {
+    
+    public func reloadTimelineDuration() {
+        configuration.timelineTimeRange.duration = resourceSelectedTimeRange.duration
     }
     
 }
