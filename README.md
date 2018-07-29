@@ -4,7 +4,12 @@ A high-level video composition framework build on top of AVFoundation. It's simp
 
 ## Features
 
-- Build result content objcet with only few step. 1. Create resource -> 2. Set configuration -> 3.Generate AVPlayerItem/AVAssetImageGenerator/AVExportSession
+- Build result content objcet with only few step. 
+- 
+1. Create resource  
+2. Set configuration 
+3. Generate AVPlayerItem/AVAssetImageGenerator/AVExportSession
+
 - Resouce: Support video, audio, and image. Resource is extendable, you can create your customized resource type. e.g gif image resource
 - Video configuration support: transform, speed, filter and so on. The configuration is extendable.
 - Audio configuration support: change volume or process with audio raw data in real time, you can be a rocker. The configuration is extendable.
@@ -58,12 +63,14 @@ CompositionGenerator use Timeline instance translate to AVFoundation API.
 **Resource**
 
 Currently support
+
  - Image type: `ImageResource`, `PHAssetImageResource`
  - Video&Audio type: `AVAssetTrackResource`, `PHAssetTrackResource`
 
 **TrackItem**
 
 Currently support
+
 - Change speed
 - Video Configuration
     - baseContentMode, video frame's scale mode base on canvas size
@@ -82,10 +89,12 @@ AVFoundation aready provide powerful composition API for video and audio, but th
 **1.AVComposition**
 
 We need to know how and when to connect different tracks. Say we save the time range info for a track, finnaly we will realize the time range info is very easy to broken, consider below scenarios
+
 - Change previous track's time range info
 - Change speed
 - Add new track
 - Add/remove transition
+
 These operations will affect the timeline and all tracks' time range info need to be updated.
 
 Bad thing is that AVComposition only supports video track and audio track. If we want to combine photo and video, it's very difficult to implement.
@@ -121,6 +130,7 @@ end
 
 It is not recommended to install the framework manually, but if you have to do it manually.
 You can 
+
 - simplely drag `Cabbage/Sources` folder to you project.
 - Or add Cabbage as a submodule.
 
