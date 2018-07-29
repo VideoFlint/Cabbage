@@ -5,7 +5,7 @@ A high-level video composition framework build on top of AVFoundation. It's simp
 ## Features
 
 - Build result content objcet with only few step. 
-- 
+
 1. Create resource  
 2. Set configuration 
 3. Generate AVPlayerItem/AVAssetImageGenerator/AVExportSession
