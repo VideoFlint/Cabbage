@@ -12,6 +12,30 @@
 		5F46457A210C713F0013ADC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F464578210C713F0013ADC3 /* Main.storyboard */; };
 		5F46457C210C71400013ADC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F46457B210C71400013ADC3 /* Assets.xcassets */; };
 		5F46457F210C71400013ADC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F46457D210C71400013ADC3 /* LaunchScreen.storyboard */; };
+		5F4645A5210C71790013ADC3 /* VideoCompositionInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464588210C71790013ADC3 /* VideoCompositionInstruction.swift */; };
+		5F4645A6210C71790013ADC3 /* AudioProcessingTapHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464589210C71790013ADC3 /* AudioProcessingTapHolder.swift */; };
+		5F4645A7210C71790013ADC3 /* CompositionGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46458A210C71790013ADC3 /* CompositionGenerator.swift */; };
+		5F4645A8210C71790013ADC3 /* TimingFunctionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46458C210C71790013ADC3 /* TimingFunctionFactory.swift */; };
+		5F4645A9210C71790013ADC3 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46458D210C71790013ADC3 /* Log.swift */; };
+		5F4645AA210C71790013ADC3 /* CGMathFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46458E210C71790013ADC3 /* CGMathFunctions.swift */; };
+		5F4645AB210C71790013ADC3 /* CMTimeExtensition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46458F210C71790013ADC3 /* CMTimeExtensition.swift */; };
+		5F4645AC210C71790013ADC3 /* TimeRangeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464590210C71790013ADC3 /* TimeRangeExtension.swift */; };
+		5F4645AD210C71790013ADC3 /* VideoTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464592210C71790013ADC3 /* VideoTransition.swift */; };
+		5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464593210C71790013ADC3 /* Timeline.swift */; };
+		5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464594210C71790013ADC3 /* CompositionProvider.swift */; };
+		5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464595210C71790013ADC3 /* AudioTransition.swift */; };
+		5F4645B1210C71790013ADC3 /* AudioMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464596210C71790013ADC3 /* AudioMixer.swift */; };
+		5F4645B2210C71790013ADC3 /* VideoCompositor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464597210C71790013ADC3 /* VideoCompositor.swift */; };
+		5F4645B3210C71790013ADC3 /* black_empty.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F464599210C71790013ADC3 /* black_empty.mp4 */; };
+		5F4645B4210C71790013ADC3 /* AudioProcessingChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46459A210C71790013ADC3 /* AudioProcessingChain.swift */; };
+		5F4645B5210C71790013ADC3 /* TrackConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46459D210C71790013ADC3 /* TrackConfiguration.swift */; };
+		5F4645B6210C71790013ADC3 /* PHAssetTrackResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */; };
+		5F4645B7210C71790013ADC3 /* ImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46459F210C71790013ADC3 /* ImageResource.swift */; };
+		5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A0210C71790013ADC3 /* TrackItem.swift */; };
+		5F4645B9210C71790013ADC3 /* PHAssetImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */; };
+		5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */; };
+		5F4645BB210C71790013ADC3 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A3210C71790013ADC3 /* Resource.swift */; };
+		5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +46,30 @@
 		5F46457B210C71400013ADC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5F46457E210C71400013ADC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5F464580210C71400013ADC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5F464588210C71790013ADC3 /* VideoCompositionInstruction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCompositionInstruction.swift; sourceTree = "<group>"; };
+		5F464589210C71790013ADC3 /* AudioProcessingTapHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioProcessingTapHolder.swift; sourceTree = "<group>"; };
+		5F46458A210C71790013ADC3 /* CompositionGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionGenerator.swift; sourceTree = "<group>"; };
+		5F46458C210C71790013ADC3 /* TimingFunctionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimingFunctionFactory.swift; sourceTree = "<group>"; };
+		5F46458D210C71790013ADC3 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		5F46458E210C71790013ADC3 /* CGMathFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGMathFunctions.swift; sourceTree = "<group>"; };
+		5F46458F210C71790013ADC3 /* CMTimeExtensition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMTimeExtensition.swift; sourceTree = "<group>"; };
+		5F464590210C71790013ADC3 /* TimeRangeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeRangeExtension.swift; sourceTree = "<group>"; };
+		5F464592210C71790013ADC3 /* VideoTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoTransition.swift; sourceTree = "<group>"; };
+		5F464593210C71790013ADC3 /* Timeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
+		5F464594210C71790013ADC3 /* CompositionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionProvider.swift; sourceTree = "<group>"; };
+		5F464595210C71790013ADC3 /* AudioTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTransition.swift; sourceTree = "<group>"; };
+		5F464596210C71790013ADC3 /* AudioMixer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMixer.swift; sourceTree = "<group>"; };
+		5F464597210C71790013ADC3 /* VideoCompositor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCompositor.swift; sourceTree = "<group>"; };
+		5F464599210C71790013ADC3 /* black_empty.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = black_empty.mp4; sourceTree = "<group>"; };
+		5F46459A210C71790013ADC3 /* AudioProcessingChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioProcessingChain.swift; sourceTree = "<group>"; };
+		5F46459D210C71790013ADC3 /* TrackConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackConfiguration.swift; sourceTree = "<group>"; };
+		5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetTrackResource.swift; sourceTree = "<group>"; };
+		5F46459F210C71790013ADC3 /* ImageResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageResource.swift; sourceTree = "<group>"; };
+		5F4645A0210C71790013ADC3 /* TrackItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackItem.swift; sourceTree = "<group>"; };
+		5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetImageResource.swift; sourceTree = "<group>"; };
+		5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAssetTrackResource.swift; sourceTree = "<group>"; };
+		5F4645A3210C71790013ADC3 /* Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
+		5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageGeneratorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +102,7 @@
 		5F464573210C713F0013ADC3 /* Cabbage */ = {
 			isa = PBXGroup;
 			children = (
+				5F464586210C71480013ADC3 /* Sources */,
 				5F464574210C713F0013ADC3 /* AppDelegate.swift */,
 				5F464576210C713F0013ADC3 /* ViewController.swift */,
 				5F464578210C713F0013ADC3 /* Main.storyboard */,
@@ -62,6 +111,93 @@
 				5F464580210C71400013ADC3 /* Info.plist */,
 			);
 			path = Cabbage;
+			sourceTree = "<group>";
+		};
+		5F464586210C71480013ADC3 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				5F46458B210C71790013ADC3 /* Uitl */,
+				5F464598210C71790013ADC3 /* Resource */,
+				5F4645BD210C71910013ADC3 /* Core */,
+				5F46459C210C71790013ADC3 /* Track */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		5F46458B210C71790013ADC3 /* Uitl */ = {
+			isa = PBXGroup;
+			children = (
+				5F46458C210C71790013ADC3 /* TimingFunctionFactory.swift */,
+				5F46458D210C71790013ADC3 /* Log.swift */,
+				5F46458E210C71790013ADC3 /* CGMathFunctions.swift */,
+				5F46458F210C71790013ADC3 /* CMTimeExtensition.swift */,
+				5F464590210C71790013ADC3 /* TimeRangeExtension.swift */,
+			);
+			path = Uitl;
+			sourceTree = "<group>";
+		};
+		5F464591210C71790013ADC3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5F464592210C71790013ADC3 /* VideoTransition.swift */,
+				5F464593210C71790013ADC3 /* Timeline.swift */,
+				5F464594210C71790013ADC3 /* CompositionProvider.swift */,
+				5F464595210C71790013ADC3 /* AudioTransition.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5F464598210C71790013ADC3 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				5F464599210C71790013ADC3 /* black_empty.mp4 */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		5F46459C210C71790013ADC3 /* Track */ = {
+			isa = PBXGroup;
+			children = (
+				5F46459D210C71790013ADC3 /* TrackConfiguration.swift */,
+				5F4645A0210C71790013ADC3 /* TrackItem.swift */,
+				5F4645A3210C71790013ADC3 /* Resource.swift */,
+				5F46459F210C71790013ADC3 /* ImageResource.swift */,
+				5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */,
+				5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */,
+				5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */,
+				5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */,
+			);
+			path = Track;
+			sourceTree = "<group>";
+		};
+		5F4645BD210C71910013ADC3 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				5F464591210C71790013ADC3 /* Model */,
+				5F4645BF210C71BC0013ADC3 /* Audio */,
+				5F4645BE210C71B30013ADC3 /* Video */,
+				5F46458A210C71790013ADC3 /* CompositionGenerator.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		5F4645BE210C71B30013ADC3 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				5F464588210C71790013ADC3 /* VideoCompositionInstruction.swift */,
+				5F464597210C71790013ADC3 /* VideoCompositor.swift */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		5F4645BF210C71BC0013ADC3 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				5F464589210C71790013ADC3 /* AudioProcessingTapHolder.swift */,
+				5F464596210C71790013ADC3 /* AudioMixer.swift */,
+				5F46459A210C71790013ADC3 /* AudioProcessingChain.swift */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -123,6 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F46457F210C71400013ADC3 /* LaunchScreen.storyboard in Resources */,
+				5F4645B3210C71790013ADC3 /* black_empty.mp4 in Resources */,
 				5F46457C210C71400013ADC3 /* Assets.xcassets in Resources */,
 				5F46457A210C713F0013ADC3 /* Main.storyboard in Resources */,
 			);
@@ -135,8 +272,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
+				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
+				5F4645B9210C71790013ADC3 /* PHAssetImageResource.swift in Sources */,
+				5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */,
+				5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */,
+				5F4645AC210C71790013ADC3 /* TimeRangeExtension.swift in Sources */,
+				5F4645B6210C71790013ADC3 /* PHAssetTrackResource.swift in Sources */,
+				5F4645AB210C71790013ADC3 /* CMTimeExtensition.swift in Sources */,
+				5F4645A8210C71790013ADC3 /* TimingFunctionFactory.swift in Sources */,
+				5F4645A9210C71790013ADC3 /* Log.swift in Sources */,
+				5F4645BB210C71790013ADC3 /* Resource.swift in Sources */,
+				5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */,
+				5F4645B2210C71790013ADC3 /* VideoCompositor.swift in Sources */,
+				5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */,
+				5F4645B7210C71790013ADC3 /* ImageResource.swift in Sources */,
+				5F4645A7210C71790013ADC3 /* CompositionGenerator.swift in Sources */,
+				5F4645B1210C71790013ADC3 /* AudioMixer.swift in Sources */,
+				5F4645B5210C71790013ADC3 /* TrackConfiguration.swift in Sources */,
+				5F4645AD210C71790013ADC3 /* VideoTransition.swift in Sources */,
 				5F464577210C713F0013ADC3 /* ViewController.swift in Sources */,
+				5F4645B4210C71790013ADC3 /* AudioProcessingChain.swift in Sources */,
 				5F464575210C713F0013ADC3 /* AppDelegate.swift in Sources */,
+				5F4645AA210C71790013ADC3 /* CGMathFunctions.swift in Sources */,
+				5F4645A5210C71790013ADC3 /* VideoCompositionInstruction.swift in Sources */,
+				5F4645A6210C71790013ADC3 /* AudioProcessingTapHolder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,7 +373,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -267,7 +427,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

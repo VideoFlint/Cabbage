@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -20,6 +21,24 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    func simpleDemo() {
+        let asset = AVAsset()
+        
+        let resource = AVAssetTrackResource(asset: asset)
+        
+        let trackItem = TrackItem(resource: resource)
+        trackItem.configuration.videoConfiguration.baseContentMode = .aspectFill
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [trackItem]
+        timeline.audioChannel = [trackItem]
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
+        let exportSession = compositionGenerator.buildExportSession(presetName: AVAssetExportPresetMediumQuality)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        let imageGenerator = compositionGenerator.buildImageGenerator()
+    }
 
 }
 
