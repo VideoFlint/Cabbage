@@ -1,5 +1,7 @@
 # Cabbage 
 
+[中文说明](https://github.com/VideoFlint/Cabbage/wiki/中文说明)
+
 A high-level video composition framework build on top of AVFoundation. It's simple to use and easy to extend. Use it and make life easier if you are implementing video composition feature.
 
 ## Features
