@@ -36,6 +36,7 @@
 		5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */; };
 		5F4645BB210C71790013ADC3 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A3210C71790013ADC3 /* Resource.swift */; };
 		5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */; };
+		5F4645C7211130470013ADC3 /* Marvel Studios.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAssetTrackResource.swift; sourceTree = "<group>"; };
 		5F4645A3210C71790013ADC3 /* Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
 		5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageGeneratorExtension.swift; sourceTree = "<group>"; };
+		5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Marvel Studios.mp4"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				5F464578210C713F0013ADC3 /* Main.storyboard */,
 				5F46457B210C71400013ADC3 /* Assets.xcassets */,
 				5F46457D210C71400013ADC3 /* LaunchScreen.storyboard */,
+				5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */,
 				5F464580210C71400013ADC3 /* Info.plist */,
 			);
 			path = Cabbage;
@@ -258,6 +261,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F4645C7211130470013ADC3 /* Marvel Studios.mp4 in Resources */,
 				5F46457F210C71400013ADC3 /* LaunchScreen.storyboard in Resources */,
 				5F4645B3210C71790013ADC3 /* black_empty.mp4 in Resources */,
 				5F46457C210C71400013ADC3 /* Assets.xcassets in Resources */,
