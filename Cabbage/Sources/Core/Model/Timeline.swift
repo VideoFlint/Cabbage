@@ -16,6 +16,12 @@ public class Timeline {
     public var passingThroughVideoCompositionProvider: PassingThroughVideoCompositionProvider?
     
     // MARK: - Main content, support transition.
+    
+    /*
+     videoChannel and audioChannel support transition, but you are responsible for update provider's time range.
+     The transition is only valid when there is an intersection of the time ranges of the two providers.
+     Usually, you may call reloadVideoStartTime(providers:) after you update videoChannel, call reloadAudioStartTime(providers:) after you update audioChannel, these two methods will update provider's timeRange based on provider's time range and transition duration.
+     */
     public var videoChannel: [TransitionableVideoProvider] = []
     public var audioChannel: [TransitionableAudioProvider] = []
     

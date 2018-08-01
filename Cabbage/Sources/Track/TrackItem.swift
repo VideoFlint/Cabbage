@@ -49,7 +49,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     }
     
     /// Resource's selected time range that mix with speed
-    open var resourceSelectedTimeRange: CMTimeRange {
+    open var resourceTargetTimeRange: CMTimeRange {
         get {
             var timeRange = resource.selectedTimeRange
             timeRange.start = CMTime.init(value: Int64(Float(timeRange.start.value) / configuration.speed),
@@ -65,6 +65,10 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
                                        newValue.duration.timescale)
             resource.selectedTimeRange = CMTimeRange.init(start: start, duration: duration)
         }
+    }
+    
+    open func reloadTimelineDuration() {
+        configuration.timelineTimeRange.duration = resourceTargetTimeRange.duration
     }
     
     // MARK: - TransitionableVideoProvider
@@ -90,11 +94,11 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
                     let range = CMTimeRangeMake(kCMTimeZero, emptyDuration)
                     try compositionTrack.insertTimeRange(range, of: track, at: timeRange.start)
                     compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: emptyDuration),
-                                                    toDuration: resourceSelectedTimeRange.duration)
+                                                    toDuration: resourceTargetTimeRange.duration)
                 } else {
                     try compositionTrack.insertTimeRange(resource.selectedTimeRange, of: track, at: timeRange.start)
                     compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: resource.selectedTimeRange.duration),
-                                                    toDuration: resourceSelectedTimeRange.duration)
+                                                    toDuration: resourceTargetTimeRange.duration)
                 }
             } catch {
                 Log.error(#function + error.localizedDescription)
@@ -150,7 +154,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
             do {
                 try compositionTrack.insertTimeRange(resource.selectedTimeRange, of: track, at: timeRange.start)
                 compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: resource.selectedTimeRange.duration),
-                                                toDuration: resourceSelectedTimeRange.duration)
+                                                toDuration: resourceTargetTimeRange.duration)
             } catch {
                 Log.error(#function + error.localizedDescription)
             }
@@ -164,14 +168,6 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         audioMixParameters.audioProcessingTapHolder = configuration.audioConfiguration.audioTapHolder
     }
     
-    
-}
-
-public extension TrackItem {
-    
-    public func reloadTimelineDuration() {
-        configuration.timelineTimeRange.duration = resourceSelectedTimeRange.duration
-    }
     
 }
 
