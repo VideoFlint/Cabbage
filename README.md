@@ -122,7 +122,7 @@ use_frameworks!
 target 'MyApp' do
   # your other pod
   # ...
-  pod 'Cabbage'
+  pod 'VFCabbage'
 end
 ```
 

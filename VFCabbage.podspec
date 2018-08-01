@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
 
-    s.name = 'Cabbage'
+    s.name = 'VFCabbage'
     s.version = '0.1'
-    s.summary = 'A high-level video composition framework build on top of AVFoundation. It\'s simple to use and easy to extend. Use it and make life easier if you are implementing video composition feature.'
+    s.summary = 'A high-level video composition framework build on top of AVFoundation. It\'s simple to use and easy to extend.'
 
     s.description  = <<-DESC
                     A high-level video composition framework build on top of AVFoundation. It\'s simple to use and easy to extend. Use it and make life easier if you are implementing video composition feature.
