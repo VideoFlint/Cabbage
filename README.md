@@ -143,3 +143,7 @@ $ git submodule add https://github.com/VideoFlint/Cabbage.git
 ## LICENSE
 
 Under MIT
+
+## Special Thanks
+
+- Icon designed by [熊猫先生](https://dribbble.com/viennaong)
