@@ -22,6 +22,10 @@ A high-level video composition framework build on top of AVFoundation. It's simp
 - iOS 9.0+
 - Swift 4.x
 
+## Projects using Cabbage
+
+- [VideoCat](https://github.com/vitoziv/VideoCat): A demo project demonstrates how to use Cabbage.
+
 ## Usage
 
 Below is the simplest example. Create a resource from AVAsset, set the video frame's scale mode to aspect fill, then insert trackItem to timeline, after all use CompositionGenerator to build AVAssetExportSession/AVAssetImageGenerator/AVPlayerItem.
