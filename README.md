@@ -1,4 +1,4 @@
-![](https://ws1.sinaimg.cn/large/6ca4705bgy1ftvagrvz3rj20rs07s758.jpg)
+![](https://ws1.sinaimg.cn/large/6ca4705bgy1ftvakl767wj215o07st9r.jpg)
 
 [中文说明](https://github.com/VideoFlint/Cabbage/wiki/中文说明)
 
