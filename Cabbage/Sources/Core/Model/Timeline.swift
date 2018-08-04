@@ -49,7 +49,7 @@ extension Timeline {
         var position = kCMTimeZero
         var previousTransitionDuration = kCMTimeZero
         for index in 0..<providers.count {
-            var provider = providers[index]
+            let provider = providers[index]
             
             // Precedence: the previous transition has priority. If clip doesn't have enough time to have begin transition and end transition, then begin transition will be considered first.
             var transitionDuration: CMTime = {

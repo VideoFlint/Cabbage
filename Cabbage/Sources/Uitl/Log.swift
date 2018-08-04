@@ -36,7 +36,7 @@ public class Log {
         #if DEBUG
         if output.contains(.info) {
             if #available(iOS 10.0, *) {
-                os_log("<INFO>: %@", log: infoLog, type: .info, string)
+                os_log("%@", log: infoLog, type: .info, string)
             } else {
                 print("<INFO>: %@", string)
             }
@@ -50,7 +50,7 @@ public class Log {
         #if DEBUG
         if output.contains(.debug) {
             if #available(iOS 10.0, *) {
-                os_log("<DEBUG>: %@", log: debugLog, type: .debug, string)
+                os_log("%@", log: debugLog, type: .debug, string)
             } else {
                 print("<DEBUG>: %@", string)
             }
@@ -63,7 +63,7 @@ public class Log {
     public static func warning(_ string: String) {
         if output.contains(.warning) {
             if #available(iOS 10.0, *) {
-                os_log("<WARNING>: %@", log: warningLog, type: .fault, string)
+                os_log("%@", log: warningLog, type: .fault, string)
             } else {
                 print("<WARNING>: %@", string)
             }
@@ -75,7 +75,7 @@ public class Log {
     public static func error(_ string: String) {
         if output.contains(.error) {
             if #available(iOS 10.0, *) {
-                os_log("<ERROR>: %@", log: errorLog, type: .error, string)
+                os_log("%@", log: errorLog, type: .error, string)
             } else {
                 print("<ERROR>: %@", string)
             }

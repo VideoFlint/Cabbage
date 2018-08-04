@@ -139,9 +139,13 @@ open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionP
         }
         return image
     }
+    
+    open override var debugDescription: String {
+        return "<VideoCompositionInstruction, timeRange: {start: \(timeRange.start.seconds), duration: \(timeRange.duration.seconds)}, requiredSourceTrackIDs: \(String(describing: requiredSourceTrackIDs))}>"
+    }
 }
 
-open class VideoCompositionLayerInstruction {
+open class VideoCompositionLayerInstruction: CustomDebugStringConvertible {
     
     public var trackID: Int32
     public var videoCompositionProvider: VideoCompositionProvider
@@ -162,6 +166,10 @@ open class VideoCompositionLayerInstruction {
         let finalImage = videoCompositionProvider.applyEffect(to: sourceImage, at: time, renderSize: renderSize)
         
         return finalImage
+    }
+    
+    public var debugDescription: String {
+        return "<VideoCompositionLayerInstruction, trackID: \(trackID), timeRange: {start: \(timeRange.start.seconds), duration: \(timeRange.duration.seconds)}>"
     }
     
 }

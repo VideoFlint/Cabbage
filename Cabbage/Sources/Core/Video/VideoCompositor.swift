@@ -34,7 +34,7 @@ open class VideoCompositor: NSObject, AVFoundation.AVVideoCompositing  {
         })
     }
     
-    enum PixelBufferRequestError: Error {
+    public enum PixelBufferRequestError: Error {
         case newRenderedPixelBufferForRequestFailure
     }
     
