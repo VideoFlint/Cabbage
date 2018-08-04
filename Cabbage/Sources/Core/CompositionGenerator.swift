@@ -68,6 +68,7 @@ public class CompositionGenerator {
     
     // MARK: - Build Composition
     
+    @discardableResult
     public func buildComposition() -> AVComposition {
         if let composition = self.composition, !needRebuildComposition {
             return composition
@@ -76,31 +77,65 @@ public class CompositionGenerator {
         resetSetupInfo()
         
         let composition = AVMutableComposition(urlAssetInitializationOptions: [AVURLAssetPreferPreciseDurationAndTimingKey: true])
-        timeline.videoChannel.forEach({ (provider) in
+        var videoChannelTrackIDs: [Int: Int32] = [:]
+        func getVideoTrackID(for index: Int) -> Int32 {
+            if let trackID = videoChannelTrackIDs[index] {
+                return trackID
+            }
+            let trackID = generateNextTrackID()
+            videoChannelTrackIDs[index] = trackID
+            return trackID
+        }
+        
+        timeline.videoChannel.enumerated().forEach({ (offset, provider) in
             for index in 0..<provider.numberOfVideoTracks() {
-                let trackID: Int32 = generateNextTrackID()
+                let trackID: Int32 = getVideoTrackID(for: index) + Int32((offset % 2 + 1) * 1000)
                 if let compositionTrack = provider.videoCompositionTrack(for: composition, at: index, preferredTrackID: trackID) {
-                    self.mainVideoTrackInfo[compositionTrack] = provider
+                    let info = mainVideoTrackInfo.first(where: { $0.track == compositionTrack })
+                    if let info = info {
+                        info.info.append(provider)
+                    } else {
+                        let info = TrackInfo.init(track: compositionTrack, info: [provider])
+                        mainVideoTrackInfo.append(info)
+                    }
                 }
             }
         })
         
+        var audioChannelTrackIDs: [Int: Int32] = [:]
+        func getAudioTrackID(for index: Int) -> Int32 {
+            if let trackID = audioChannelTrackIDs[index] {
+                return trackID
+            }
+            let trackID = generateNextTrackID()
+            audioChannelTrackIDs[index] = trackID
+            return trackID
+        }
         var previousAudioTransition: AudioTransition?
         timeline.audioChannel.enumerated().forEach { (offset, provider) in
             for index in 0..<provider.numberOfAudioTracks() {
-                let trackID: Int32 = generateNextTrackID()
+                let trackID: Int32 = getAudioTrackID(for: index) + Int32((offset % 2 + 1) * 1000)
                 if let compositionTrack = provider.audioCompositionTrack(for: composition, at: index, preferredTrackID: trackID) {
-                    self.mainAudioTrackInfo[compositionTrack] = provider
-                    if offset == 0 {
-                        if timeline.audioChannel.count > 1 {
-                            audioTransitionInfo[compositionTrack] = (nil, provider.audioTransition)
-                        }
-                    } else if offset == timeline.audioChannel.count - 1 {
-                        audioTransitionInfo[compositionTrack] = (previousAudioTransition, nil)
+                    
+                    let info = mainAudioTrackInfo.first(where: { $0.track == compositionTrack })
+                    if let info = info {
+                        info.info.append(provider)
                     } else {
-                        audioTransitionInfo[compositionTrack] = (previousAudioTransition, provider.audioTransition)
+                        let info = TrackInfo.init(track: compositionTrack, info: [provider])
+                        mainAudioTrackInfo.append(info)
                     }
                 }
+            }
+            
+            
+            if offset == 0 {
+                if timeline.audioChannel.count > 1 {
+                    audioTransitionInfo[offset] = (nil, provider.audioTransition)
+                }
+            } else if offset == timeline.audioChannel.count - 1 {
+                audioTransitionInfo[offset] = (previousAudioTransition, nil)
+            } else {
+                audioTransitionInfo[offset] = (previousAudioTransition, provider.audioTransition)
             }
             previousAudioTransition = provider.audioTransition
         }
@@ -109,7 +144,8 @@ public class CompositionGenerator {
             for index in 0..<provider.numberOfVideoTracks() {
                 let trackID: Int32 = generateNextTrackID()
                 if let compositionTrack = provider.videoCompositionTrack(for: composition, at: index, preferredTrackID: trackID) {
-                    self.overlayTrackInfo[compositionTrack] = provider
+                    let info = TrackInfo.init(track: compositionTrack, info: provider)
+                    overlayTrackInfo.append(info)
                 }
             }
         }
@@ -118,11 +154,12 @@ public class CompositionGenerator {
             for index in 0..<provider.numberOfAudioTracks() {
                 let trackID: Int32 = generateNextTrackID()
                 if let compositionTrack = provider.audioCompositionTrack(for: composition, at: index, preferredTrackID: trackID) {
-                    self.audioTrackInfo[compositionTrack] = provider
+                    let info = TrackInfo.init(track: compositionTrack, info: provider)
+                    audioTrackInfo.append(info)
                 }
             }
         }
-        
+        self.composition = composition
         return composition
     }
     
@@ -130,31 +167,37 @@ public class CompositionGenerator {
         if let videoComposition = self.videoComposition, !needRebuildVideoComposition {
             return videoComposition
         }
-        
-        let composition = buildComposition()
-        let videoTracks = composition.tracks(withMediaType: .video)
+        buildComposition()
         
         var layerInstructions: [VideoCompositionLayerInstruction] = []
-        videoTracks.forEach { (track) in
-            if let provider = mainVideoTrackInfo[track] {
-                let layerInstruction = VideoCompositionLayerInstruction.init(trackID: track.trackID, videoCompositionProvider: provider)
-                layerInstruction.prefferdTransform = track.preferredTransform
+        
+        mainVideoTrackInfo.forEach { info in
+            info.info.forEach({ (provider) in
+                let layerInstruction = VideoCompositionLayerInstruction.init(trackID: info.track.trackID, videoCompositionProvider: provider)
+                layerInstruction.prefferdTransform = info.track.preferredTransform
                 layerInstruction.timeRange = provider.timeRange
                 layerInstruction.transition = provider.videoTransition
                 layerInstructions.append(layerInstruction)
-            } else if let provider = overlayTrackInfo[track] {
-                // Other video overlay
-                let layerInstruction = VideoCompositionLayerInstruction.init(trackID: track.trackID, videoCompositionProvider: provider)
-                layerInstruction.prefferdTransform = track.preferredTransform
-                layerInstruction.timeRange = provider.timeRange
-                layerInstructions.append(layerInstruction)
-            }
+            })
+        }
+        
+        overlayTrackInfo.forEach { (info) in
+            let track = info.track
+            let provider = info.info
+            let layerInstruction = VideoCompositionLayerInstruction.init(trackID: track.trackID, videoCompositionProvider: provider)
+            layerInstruction.prefferdTransform = track.preferredTransform
+            layerInstruction.timeRange = provider.timeRange
+            layerInstructions.append(layerInstruction)
+        }
+        
+        layerInstructions.sort { (left, right) -> Bool in
+            return left.timeRange.end < right.timeRange.end
         }
         
         // Create multiple instructions，each instructions contains layerInstructions whose time range have insection with instruction，
         // When rendering the frame, the instruction can quickly find layerInstructions
         let layerInstructionsSlices = calculateSlices(for: layerInstructions)
-        let mainTrackIDs = mainVideoTrackInfo.keys.map({ $0.trackID })
+        let mainTrackIDs = mainVideoTrackInfo.map({ $0.track.trackID })
         let instructions: [VideoCompositionInstruction] = layerInstructionsSlices.map({ (slice) in
             let trackIDs = slice.1.map({ $0.trackID })
             let instruction = VideoCompositionInstruction(theSourceTrackIDs: trackIDs as [NSValue], forTimeRange: slice.0)
@@ -170,8 +213,8 @@ public class CompositionGenerator {
             if let renderSize = renderSize {
                 return renderSize
             }
-            let size = videoTracks.reduce(CGSize.zero, { (size, track) -> CGSize in
-                let trackSize = track.naturalSize.applying(track.preferredTransform)
+           let size =  mainVideoTrackInfo.reduce(CGSize.zero, { (size, info) -> CGSize in
+                let trackSize = info.track.naturalSize.applying(info.track.preferredTransform)
                 return CGSize(width: max(abs(trackSize.width), size.width),
                               height: max(abs(trackSize.height), size.height))
             })
@@ -179,6 +222,7 @@ public class CompositionGenerator {
         }()
         videoComposition.instructions = instructions
         videoComposition.customVideoCompositorClass = VideoCompositor.self
+        self.videoComposition = videoComposition
         
         return videoComposition
     }
@@ -188,32 +232,39 @@ public class CompositionGenerator {
             return audioMix
         }
         
-        let composition = buildComposition()
-        var audioParameters = [AVMutableAudioMixInputParameters]()
-        let audioTracks = composition.tracks(withMediaType: .audio)
+        buildComposition()
         
-        audioTracks.forEach { (track) in
-            if let provider = mainAudioTrackInfo[track] {
-                let inputParameter = AVMutableAudioMixInputParameters(track: track)
+        var audioParameters = [AVMutableAudioMixInputParameters]()
+        
+        mainAudioTrackInfo.forEach { (info) in
+            let track = info.track
+            let inputParameter = AVMutableAudioMixInputParameters(track: track)
+            info.info.forEach({ (provider) in
                 provider.configure(audioMixParameters: inputParameter)
-                let transitions = audioTransitionInfo[track]
-                if let transition = transitions?.0 {
-                    if let targetTimeRange = track.segments.first(where: { !$0.isEmpty })?.timeMapping.target {
-                        transition.applyNextAudioMixInputParameters(inputParameter, timeRange: targetTimeRange)
-                    }
-                }
-                if let transition = transitions?.1 {
-                    if let targetTimeRange = track.segments.first(where: { !$0.isEmpty })?.timeMapping.target {
-                        transition.applyPreviousAudioMixInputParameters(inputParameter, timeRange: targetTimeRange)
-                    }
-                }
                 
-                audioParameters.append(inputParameter)
-            } else if let provider = audioTrackInfo[track] {
-                let inputParameter = AVMutableAudioMixInputParameters(track: track)
-                provider.configure(audioMixParameters: inputParameter)
-                audioParameters.append(inputParameter)
-            }
+                if let index = timeline.audioChannel.index(where: { $0 === provider }) {
+                    if let transitions = audioTransitionInfo[index] {
+                        if let segment = track.segments.first(where: { $0.timeMapping.target == provider.timeRange }) {
+                            let targetTimeRange = segment.timeMapping.target
+                            if let transition = transitions.0 {
+                                transition.applyNextAudioMixInputParameters(inputParameter, timeRange: targetTimeRange)
+                            }
+                            if let transition = transitions.1 {
+                                transition.applyPreviousAudioMixInputParameters(inputParameter, timeRange: targetTimeRange)
+                            }
+                        }
+                    }
+                }
+            })
+            audioParameters.append(inputParameter)
+        }
+        
+        audioTrackInfo.forEach { (info) in
+            let track = info.track
+            let provider = info.info
+            let inputParameter = AVMutableAudioMixInputParameters(track: track)
+            provider.configure(audioMixParameters: inputParameter)
+            audioParameters.append(inputParameter)
         }
         
         if audioParameters.count == 0 {
@@ -222,6 +273,7 @@ public class CompositionGenerator {
         
         let audioMix = AVMutableAudioMix()
         audioMix.inputParameters = audioParameters
+        self.audioMix = audioMix
         return audioMix
     }
     
@@ -234,18 +286,18 @@ public class CompositionGenerator {
         return trackID
     }
     
-    private var mainVideoTrackInfo: [AVCompositionTrack: TransitionableVideoProvider] = [:]
-    private var mainAudioTrackInfo: [AVCompositionTrack: TransitionableAudioProvider] = [:]
-    private var overlayTrackInfo: [AVCompositionTrack: VideoProvider] = [:]
-    private var audioTrackInfo: [AVCompositionTrack: AudioProvider] = [:]
-    private var audioTransitionInfo = [AVCompositionTrack: (AudioTransition?, AudioTransition?)]()
+    private var mainVideoTrackInfo: [TrackInfo<[TransitionableVideoProvider]>] = []
+    private var mainAudioTrackInfo: [TrackInfo<[TransitionableAudioProvider]>] = []
+    private var overlayTrackInfo: [TrackInfo<VideoProvider>] = []
+    private var audioTrackInfo: [TrackInfo<AudioProvider>] = []
+    private var audioTransitionInfo: [Int: (AudioTransition?, AudioTransition?)] = [:]
     
     private func resetSetupInfo() {
         increasementTrackID = 0
-        mainVideoTrackInfo = [:]
-        mainAudioTrackInfo = [:]
-        overlayTrackInfo = [:]
-        audioTrackInfo = [:]
+        mainVideoTrackInfo = []
+        mainAudioTrackInfo = []
+        overlayTrackInfo = []
+        audioTrackInfo = []
         audioTransitionInfo = [:]
     }
     
@@ -283,6 +335,16 @@ public class CompositionGenerator {
         }
         return layerInstructionsSlices
     }
+    
+    private class TrackInfo<T> {
+        var track: AVCompositionTrack
+        var info: T
+        init(track: AVCompositionTrack, info: T) {
+            self.track = track
+            self.info = info
+        }
+    }
+    
 }
 
 // MARK: -

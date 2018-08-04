@@ -9,7 +9,7 @@
 import CoreImage
 import AVFoundation
 
-public protocol CompositionTimeRangeProvider {
+public protocol CompositionTimeRangeProvider: class {
     var timeRange: CMTimeRange { get set }
 }
 

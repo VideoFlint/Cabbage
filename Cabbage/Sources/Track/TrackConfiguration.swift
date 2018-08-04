@@ -74,7 +74,7 @@ public class AudioConfiguration: NSObject, NSCopying {
     }
 
     public var volume: Float = 1.0;
-    public var audioTapHolder: AudioProcessingTapHolder?
+    public var nodes: [AudioProcessingNode] = []
     
     public required override init() {
         super.init()
@@ -85,7 +85,7 @@ public class AudioConfiguration: NSObject, NSCopying {
     public func copy(with zone: NSZone? = nil) -> Any {
         let configuration = type(of: self).init()
         configuration.volume = volume
-        configuration.audioTapHolder = audioTapHolder?.copy() as? AudioProcessingTapHolder
+        configuration.nodes = nodes
         return configuration
     }
     
