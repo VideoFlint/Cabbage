@@ -174,7 +174,7 @@ public class CompositionGenerator {
         mainVideoTrackInfo.forEach { info in
             info.info.forEach({ (provider) in
                 let layerInstruction = VideoCompositionLayerInstruction.init(trackID: info.track.trackID, videoCompositionProvider: provider)
-                layerInstruction.prefferdTransform = info.track.preferredTransform
+                layerInstruction.prefferdTransform = info.track.preferredTransforms[provider.timeRange.vf_identifier]
                 layerInstruction.timeRange = provider.timeRange
                 layerInstruction.transition = provider.videoTransition
                 layerInstructions.append(layerInstruction)
@@ -185,7 +185,7 @@ public class CompositionGenerator {
             let track = info.track
             let provider = info.info
             let layerInstruction = VideoCompositionLayerInstruction.init(trackID: track.trackID, videoCompositionProvider: provider)
-            layerInstruction.prefferdTransform = track.preferredTransform
+            layerInstruction.prefferdTransform = track.preferredTransforms[provider.timeRange.vf_identifier]
             layerInstruction.timeRange = provider.timeRange
             layerInstructions.append(layerInstruction)
         }
@@ -213,12 +213,7 @@ public class CompositionGenerator {
             if let renderSize = renderSize {
                 return renderSize
             }
-           let size =  mainVideoTrackInfo.reduce(CGSize.zero, { (size, info) -> CGSize in
-                let trackSize = info.track.naturalSize.applying(info.track.preferredTransform)
-                return CGSize(width: max(abs(trackSize.width), size.width),
-                              height: max(abs(trackSize.height), size.height))
-            })
-            return size
+            return CGSize.zero
         }()
         videoComposition.instructions = instructions
         videoComposition.customVideoCompositorClass = VideoCompositor.self
@@ -368,4 +363,28 @@ extension AVMutableAudioMixInputParameters {
         audioProcessingTapHolder?.audioProcessingChain.nodes.append(node)
     }
 }
+
+extension AVCompositionTrack {
+    private static var preferredTransformsKey: UInt8 = 0
+    var preferredTransforms: [String: CGAffineTransform] {
+        get {
+            if let transforms = objc_getAssociatedObject(self, &AVCompositionTrack.preferredTransformsKey) as? [String: CGAffineTransform] {
+                return transforms
+            }
+            let transforms: [String: CGAffineTransform] = [:]
+            self.preferredTransforms = transforms
+            return transforms
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &AVCompositionTrack.preferredTransformsKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+}
+
+extension CMTimeRange {
+    var vf_identifier: String {
+        return "{\(String(format: "%.3f", start.seconds)), \(String(format: "%.3f", duration.seconds))}"
+    }
+}
+
 

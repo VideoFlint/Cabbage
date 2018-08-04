@@ -86,8 +86,9 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
             }
             return composition.addMutableTrack(withMediaType: track.mediaType, preferredTrackID: preferredTrackID)
         }()
+        
         if let compositionTrack = compositionTrack {
-            compositionTrack.preferredTransform = track.preferredTransform
+            compositionTrack.preferredTransforms[timeRange.vf_identifier] = track.preferredTransform
             do {
                 /*
                  Special logic for ImageResource, because of it provides a placeholder track,
