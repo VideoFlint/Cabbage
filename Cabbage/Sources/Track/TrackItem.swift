@@ -97,7 +97,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
                  */
                 if resource.isKind(of: ImageResource.self) {
                     let emptyDuration = CMTime(value: 1, 30)
-                    let range = CMTimeRangeMake(kCMTimeZero, emptyDuration)
+                    let range = CMTimeRangeMake(start: CMTime.zero, duration: emptyDuration)
                     try compositionTrack.insertTimeRange(range, of: track, at: timeRange.start)
                     compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: emptyDuration),
                                                     toDuration: resourceTargetTimeRange.duration)
@@ -200,9 +200,9 @@ public extension TrackItem {
     
     public func makeFullRangeCopy() -> TrackItem {
         let item = self.copy() as! TrackItem
-        item.resource.selectedTimeRange = CMTimeRange.init(start: kCMTimeZero, duration: item.resource.duration)
+        item.resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, duration: item.resource.duration)
         item.reloadTimelineDuration()
-        item.timeRange.start = kCMTimeZero
+        item.timeRange.start = CMTime.zero
         return item
     }
     

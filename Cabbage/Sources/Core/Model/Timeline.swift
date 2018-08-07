@@ -46,8 +46,8 @@ extension Timeline {
     }
     
     private static func reloadStartTime(providers: [CompositionTimeRangeProvider], transitionTime: (Int) -> CMTime?) {
-        var position = kCMTimeZero
-        var previousTransitionDuration = kCMTimeZero
+        var position = CMTime.zero
+        var previousTransitionDuration = CMTime.zero
         for index in 0..<providers.count {
             let provider = providers[index]
             
@@ -56,19 +56,19 @@ extension Timeline {
                 if let duration = transitionTime(index) {
                     return duration
                 }
-                return kCMTimeZero
+                return CMTime.zero
             }()
             let providerDuration = provider.timeRange.duration
             if providerDuration < transitionDuration {
-                transitionDuration = kCMTimeZero
+                transitionDuration = CMTime.zero
             } else {
                 if index < providers.count - 1 {
                     let nextProvider = providers[index + 1]
                     if nextProvider.timeRange.duration < transitionDuration {
-                        transitionDuration = kCMTimeZero
+                        transitionDuration = CMTime.zero
                     }
                 } else {
-                    transitionDuration = kCMTimeZero
+                    transitionDuration = CMTime.zero
                 }
             }
             

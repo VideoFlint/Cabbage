@@ -15,8 +15,8 @@ public class PHAssetTrackResource: AVAssetTrackResource {
     public init(phasset: PHAsset) {
         super.init()
         self.phasset = phasset
-        let duration = CMTimeMake(Int64(phasset.duration * 600), 600)
-        selectedTimeRange = CMTimeRangeMake(kCMTimeZero, duration)
+        let duration = CMTimeMake(value: Int64(phasset.duration * 600), timescale: 600)
+        selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
     }
     
     required public init() {

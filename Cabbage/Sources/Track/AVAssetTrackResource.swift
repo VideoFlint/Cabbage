@@ -17,8 +17,8 @@ public class AVAssetTrackResource: Resource {
     public init(asset: AVAsset) {
         super.init()
         self.asset = asset
-        let duration = CMTimeMake(Int64(asset.duration.seconds * 600), 600)
-        selectedTimeRange = CMTimeRangeMake(kCMTimeZero, duration)
+        let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
+        selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
     }
     
     required public init() {

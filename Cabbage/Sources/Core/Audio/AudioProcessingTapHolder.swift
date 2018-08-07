@@ -59,7 +59,7 @@ public class AudioProcessingTapHolder: NSObject, NSCopying {
         let tapHolderStorage = Unmanaged<AudioProcessingTapHolder>.fromOpaque(MTAudioProcessingTapGetStorage(tap))
         let tapHolder = tapHolderStorage.takeUnretainedValue()
         
-        var timeRange: CMTimeRange = kCMTimeRangeZero
+        var timeRange: CMTimeRange = CMTimeRange.zero
         let status = MTAudioProcessingTapGetSourceAudio(tap, numberFrames, bufferListInOut, flagsOut, &timeRange, numberFramesOut)
         if status != noErr {
             Log.error("error: failed to get source audio")

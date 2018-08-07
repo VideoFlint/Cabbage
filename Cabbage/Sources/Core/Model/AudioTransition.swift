@@ -35,7 +35,7 @@ public class FadeInOutAudioTransition: AudioTransition {
     
     open var duration: CMTime
     
-    public init(duration: CMTime = kCMTimeZero) {
+    public init(duration: CMTime = CMTime.zero) {
         self.duration = duration
     }
     

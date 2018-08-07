@@ -149,7 +149,7 @@ open class VideoCompositionLayerInstruction: CustomDebugStringConvertible {
     
     public var trackID: Int32
     public var videoCompositionProvider: VideoCompositionProvider
-    public var timeRange: CMTimeRange = kCMTimeRangeZero
+    public var timeRange: CMTimeRange = CMTimeRange.zero
     public var transition: VideoTransition?
     public var prefferdTransform: CGAffineTransform?
     

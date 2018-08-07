@@ -14,7 +14,7 @@ public class TrackConfiguration: NSObject, NSCopying {
     // MARK: - Timing
     
     /// Track's final time range, it will be calculated using track's time, speed, transition and so on
-    public var timelineTimeRange: CMTimeRange = kCMTimeRangeZero
+    public var timelineTimeRange: CMTimeRange = CMTimeRange.zero
     public var speed: Float = 1.0
     
     // MARK: - Media

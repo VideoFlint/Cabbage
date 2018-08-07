@@ -41,13 +41,13 @@ extension CMTimeRange {
             var timeRanges: [CMTimeRange] = []
             let leftTimeRangeDuration = instersectionTimeRange.start - minTimeRange.start
             if leftTimeRangeDuration.seconds > 0 {
-                let leftTimeRange = CMTimeRangeMake(minTimeRange.start, leftTimeRangeDuration)
+                let leftTimeRange = CMTimeRangeMake(start: minTimeRange.start, duration: leftTimeRangeDuration)
                 timeRanges.append(leftTimeRange)
             }
             timeRanges.append(instersectionTimeRange)
             let rightTimeRangeDuration = maxTimeRange.end - instersectionTimeRange.end
             if rightTimeRangeDuration.seconds > 0 {
-                let rightTimeRange = CMTimeRangeMake(instersectionTimeRange.end, rightTimeRangeDuration)
+                let rightTimeRange = CMTimeRangeMake(start: instersectionTimeRange.end, duration: rightTimeRangeDuration)
                 timeRanges.append(rightTimeRange)
             }
             return timeRanges

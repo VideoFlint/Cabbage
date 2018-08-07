@@ -23,8 +23,8 @@ extension AVAssetImageGenerator {
     
     static func create(fromAsset asset: AVAsset) -> AVAssetImageGenerator {
         let ge = AVAssetImageGenerator(asset: asset)
-        ge.requestedTimeToleranceBefore = kCMTimeZero
-        ge.requestedTimeToleranceAfter = kCMTimeZero
+        ge.requestedTimeToleranceBefore = CMTime.zero
+        ge.requestedTimeToleranceAfter = CMTime.zero
         ge.appliesPreferredTrackTransform = true
         return ge
     }

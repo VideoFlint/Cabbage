@@ -15,10 +15,10 @@ open class Resource: NSObject, NSCopying {
     }
     
     /// Max duration of this resource
-    open var duration: CMTime = kCMTimeZero
+    open var duration: CMTime = CMTime.zero
     
     /// Selected time range, indicate how many resources will be inserted to AVCompositionTrack
-    open var selectedTimeRange: CMTimeRange = kCMTimeRangeZero
+    open var selectedTimeRange: CMTimeRange = CMTimeRange.zero
     
     /// Natural frame size of this resource
     open var size: CGSize = .zero

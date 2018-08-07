@@ -24,7 +24,7 @@ open class NoneTransition: VideoTransition {
     
     open var duration: CMTime
     
-    public init(duration: CMTime = kCMTimeZero) {
+    public init(duration: CMTime = CMTime.zero) {
         self.duration = duration
     }
     
