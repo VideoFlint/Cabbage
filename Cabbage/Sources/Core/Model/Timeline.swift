@@ -12,8 +12,6 @@ public class Timeline {
 
     public init() {
     }
-    // MARK: - Global effect
-    public var passingThroughVideoCompositionProvider: PassingThroughVideoCompositionProvider?
     
     // MARK: - Main content, support transition.
     
@@ -28,6 +26,9 @@ public class Timeline {
     // MARK: - Other content, can place anywhere in timeline
     public var overlays: [VideoProvider] = []
     public var audios: [AudioProvider] = []
+    
+    // MARK: - Global effect
+    public var passingThroughVideoCompositionProvider: PassingThroughVideoCompositionProvider?
     
 }
 

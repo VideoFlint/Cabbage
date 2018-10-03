@@ -45,6 +45,18 @@ class ViewController: UIViewController {
         timeline.videoChannel = [trackItem]
         timeline.audioChannel = [trackItem]
         
+        timeline.passingThroughVideoCompositionProvider = {
+            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
+            let url = Bundle.main.url(forResource: "overlay", withExtension: "jpg")!
+            let image = CIImage(contentsOf: url)!
+            let resource = ImageResource(image: image)
+            let imageCompositionProvider = ImageOverlayItem(resource: resource)
+            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 5, preferredTimescale: 600))
+            imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 100, height: 100)
+            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
+            return imageCompositionGroupProvider
+        }()
+        
         let compositionGenerator = CompositionGenerator(timeline: timeline)
         compositionGenerator.renderSize = CGSize(width: 1080, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()

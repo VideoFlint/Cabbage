@@ -65,6 +65,34 @@ public class VideoConfiguration: NSObject, NSCopying {
         configuration.transform = transform
         return configuration
     }
+    
+    // MARK: - Helper
+    
+    public func applyTo(sourceImage: CIImage, renderSize: CGSize) -> CIImage {
+        var finalImage = sourceImage
+        var transform = CGAffineTransform.identity
+        switch baseContentMode {
+        case .aspectFit:
+            let fitTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: CGRect(origin: .zero, size: renderSize))
+            transform = transform.concatenating(fitTransform)
+        case .aspectFill:
+            let fillTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: CGRect(origin: .zero, size: renderSize))
+            transform = transform.concatenating(fillTransform)
+        case .custom:
+            break
+        }
+        finalImage = finalImage.transformed(by: transform)
+        
+        if let transform = self.transform {
+            finalImage = finalImage.transformed(by: transform)
+        }
+        
+        if let filterProcessor = filterProcessor {
+            finalImage = filterProcessor(finalImage)
+        }
+        
+        return finalImage
+    }
 }
 
 public class AudioConfiguration: NSObject, NSCopying {

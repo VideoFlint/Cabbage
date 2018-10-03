@@ -123,27 +123,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
             }
             return sourceImage
         }()
-        
-        var transform = CGAffineTransform.identity
-        switch configuration.videoConfiguration.baseContentMode {
-        case .aspectFit:
-            let fitTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: CGRect(origin: .zero, size: renderSize))
-            transform = transform.concatenating(fitTransform)
-        case .aspectFill:
-            let fillTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: CGRect(origin: .zero, size: renderSize))
-            transform = transform.concatenating(fillTransform)
-        case .custom:
-            break
-        }
-        finalImage = finalImage.transformed(by: transform)
-        
-        if let transform = configuration.videoConfiguration.transform {
-            finalImage = finalImage.transformed(by: transform)
-        }
-        
-        if let filterProcessor = configuration.videoConfiguration.filterProcessor {
-            finalImage = filterProcessor(finalImage)
-        }
+        finalImage = configuration.videoConfiguration.applyTo(sourceImage: finalImage, renderSize: renderSize)
         return finalImage
     }
     

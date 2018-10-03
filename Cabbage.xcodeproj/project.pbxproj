@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */; };
+		5F3BEE932163804A00881217 /* ImageOverlayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3BEE922163804A00881217 /* ImageOverlayItem.swift */; };
+		5F3BEE9A21645BB200881217 /* overlay.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5F3BEE9921645BB200881217 /* overlay.jpg */; };
 		5F464575210C713F0013ADC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464574210C713F0013ADC3 /* AppDelegate.swift */; };
 		5F464577210C713F0013ADC3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F464576210C713F0013ADC3 /* ViewController.swift */; };
 		5F46457A210C713F0013ADC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F464578210C713F0013ADC3 /* Main.storyboard */; };
@@ -40,6 +43,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompositionGroupProvider.swift; sourceTree = "<group>"; };
+		5F3BEE922163804A00881217 /* ImageOverlayItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageOverlayItem.swift; sourceTree = "<group>"; };
+		5F3BEE9921645BB200881217 /* overlay.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = overlay.jpg; sourceTree = "<group>"; };
 		5F464571210C713F0013ADC3 /* Cabbage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cabbage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F464574210C713F0013ADC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5F464576210C713F0013ADC3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +91,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F3BEE94216449B000881217 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				5F4645A3210C71790013ADC3 /* Resource.swift */,
+				5F46459F210C71790013ADC3 /* ImageResource.swift */,
+				5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */,
+				5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */,
+				5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		5F464568210C713F0013ADC3 = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +129,7 @@
 				5F46457B210C71400013ADC3 /* Assets.xcassets */,
 				5F46457D210C71400013ADC3 /* LaunchScreen.storyboard */,
 				5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */,
+				5F3BEE9921645BB200881217 /* overlay.jpg */,
 				5F464580210C71400013ADC3 /* Info.plist */,
 			);
 			path = Cabbage;
@@ -161,13 +180,11 @@
 		5F46459C210C71790013ADC3 /* Track */ = {
 			isa = PBXGroup;
 			children = (
-				5F46459D210C71790013ADC3 /* TrackConfiguration.swift */,
 				5F4645A0210C71790013ADC3 /* TrackItem.swift */,
-				5F4645A3210C71790013ADC3 /* Resource.swift */,
-				5F46459F210C71790013ADC3 /* ImageResource.swift */,
-				5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */,
-				5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */,
-				5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */,
+				5F46459D210C71790013ADC3 /* TrackConfiguration.swift */,
+				5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */,
+				5F3BEE922163804A00881217 /* ImageOverlayItem.swift */,
+				5F3BEE94216449B000881217 /* Resource */,
 				5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */,
 			);
 			path = Track;
@@ -263,6 +280,7 @@
 			files = (
 				5F4645C7211130470013ADC3 /* Marvel Studios.mp4 in Resources */,
 				5F46457F210C71400013ADC3 /* LaunchScreen.storyboard in Resources */,
+				5F3BEE9A21645BB200881217 /* overlay.jpg in Resources */,
 				5F4645B3210C71790013ADC3 /* black_empty.mp4 in Resources */,
 				5F46457C210C71400013ADC3 /* Assets.xcassets in Resources */,
 				5F46457A210C713F0013ADC3 /* Main.storyboard in Resources */,
@@ -278,9 +296,11 @@
 			files = (
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
+				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
 				5F4645B9210C71790013ADC3 /* PHAssetImageResource.swift in Sources */,
 				5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */,
 				5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */,
+				5F3BEE932163804A00881217 /* ImageOverlayItem.swift in Sources */,
 				5F4645AC210C71790013ADC3 /* TimeRangeExtension.swift in Sources */,
 				5F4645B6210C71790013ADC3 /* PHAssetTrackResource.swift in Sources */,
 				5F4645AB210C71790013ADC3 /* CMTimeExtensition.swift in Sources */,
