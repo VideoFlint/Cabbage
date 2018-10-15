@@ -123,7 +123,9 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
             }
             return sourceImage
         }()
-        finalImage = configuration.videoConfiguration.applyTo(sourceImage: finalImage, renderSize: renderSize)
+        configuration.videoConfigurations.forEach { (videoConfiguration) in
+            finalImage = videoConfiguration.applyTo(sourceImage: finalImage, renderSize: renderSize)
+        }
         return finalImage
     }
     

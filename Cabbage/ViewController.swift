@@ -36,7 +36,9 @@ class ViewController: UIViewController {
         let resource = AVAssetTrackResource(asset: asset)
         
         let trackItem = TrackItem(resource: resource)
-        trackItem.configuration.videoConfiguration.baseContentMode = .aspectFill
+        let videoConfiguration = VideoConfiguration.createDefaultConfiguration()
+        videoConfiguration.baseContentMode = .aspectFit
+        trackItem.configuration.videoConfigurations = [videoConfiguration]
         trackItem.configuration.speed = 2.0
         
         trackItem.reloadTimelineDuration()

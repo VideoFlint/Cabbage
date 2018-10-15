@@ -18,7 +18,7 @@ public class TrackConfiguration: NSObject, NSCopying {
     public var speed: Float = 1.0
     
     // MARK: - Media
-    public var videoConfiguration: VideoConfiguration = .createDefaultConfiguration()
+    public var videoConfigurations: [VideoConfigurationProtocol] = [VideoConfiguration.createDefaultConfiguration()]
     public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
     
     public required override init() {
@@ -31,13 +31,17 @@ public class TrackConfiguration: NSObject, NSCopying {
         let configuration = type(of: self).init()
         configuration.timelineTimeRange = timelineTimeRange
         configuration.speed = speed
-        configuration.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
+        configuration.videoConfigurations = videoConfigurations.map { $0.copy() as! VideoConfigurationProtocol }
         configuration.audioConfiguration = audioConfiguration.copy() as! AudioConfiguration
         return configuration
     }
 }
 
-public class VideoConfiguration: NSObject, NSCopying {
+public protocol VideoConfigurationProtocol: class, NSCopying {
+    func applyTo(sourceImage: CIImage, renderSize: CGSize) -> CIImage
+}
+
+public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     
     public static func createDefaultConfiguration() -> VideoConfiguration {
         return VideoConfiguration()
@@ -50,7 +54,6 @@ public class VideoConfiguration: NSObject, NSCopying {
     }
     public var baseContentMode: BaseContentMode = .aspectFit
     public var transform: CGAffineTransform?
-    public var filterProcessor: ((CIImage) -> CIImage)?
     
     public required override init() {
         super.init()
@@ -61,7 +64,6 @@ public class VideoConfiguration: NSObject, NSCopying {
     public func copy(with zone: NSZone? = nil) -> Any {
         let configuration = type(of: self).init()
         configuration.baseContentMode = baseContentMode
-        configuration.filterProcessor = filterProcessor
         configuration.transform = transform
         return configuration
     }
@@ -87,13 +89,11 @@ public class VideoConfiguration: NSObject, NSCopying {
             finalImage = finalImage.transformed(by: transform)
         }
         
-        if let filterProcessor = filterProcessor {
-            finalImage = filterProcessor(finalImage)
-        }
-        
         return finalImage
     }
 }
+
+public protocol AudioConfigurationProtocol: AudioProcessingNode, NSCopying { }
 
 public class AudioConfiguration: NSObject, NSCopying {
     
@@ -102,7 +102,7 @@ public class AudioConfiguration: NSObject, NSCopying {
     }
 
     public var volume: Float = 1.0;
-    public var nodes: [AudioProcessingNode] = []
+    public var nodes: [AudioConfigurationProtocol] = []
     
     public required override init() {
         super.init()
@@ -113,7 +113,43 @@ public class AudioConfiguration: NSObject, NSCopying {
     public func copy(with zone: NSZone? = nil) -> Any {
         let configuration = type(of: self).init()
         configuration.volume = volume
-        configuration.nodes = nodes
+        configuration.nodes = nodes.map { $0.copy() as! AudioConfigurationProtocol }
+        return configuration
+    }
+    
+}
+
+public class VolumeAudioConfiguration: NSObject, AudioConfigurationProtocol {
+    
+    public var timeRange: CMTimeRange
+    public var startVolume: Float
+    public var endVolume: Float
+    public var timingFunction: ((Double) -> Double)?
+    public required init(timeRange: CMTimeRange, startVolume: Float, endVolume: Float) {
+        self.timeRange = timeRange
+        self.startVolume = startVolume
+        self.endVolume = endVolume
+        super.init()
+    }
+    
+    public func process(timeRange: CMTimeRange, bufferListInOut: UnsafeMutablePointer<AudioBufferList>) {
+        if timeRange.duration.isValid {
+            if self.timeRange.intersection(timeRange).duration.seconds > 0 {
+                var percent = (timeRange.end.seconds - self.timeRange.start.seconds) / self.timeRange.duration.seconds
+                if let timingFunction = timingFunction {
+                    percent = timingFunction(percent)
+                }
+                let volume = startVolume + (endVolume - startVolume) * Float(percent)
+                AudioMixer.changeVolume(for: bufferListInOut, volume: volume)
+            }
+        }
+    }
+    
+    // MARK: - NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        let configuration = type(of: self).init(timeRange: timeRange, startVolume: startVolume, endVolume: endVolume)
+        configuration.timingFunction = timingFunction
         return configuration
     }
     

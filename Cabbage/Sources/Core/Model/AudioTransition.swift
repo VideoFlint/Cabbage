@@ -41,7 +41,7 @@ public class FadeInOutAudioTransition: AudioTransition {
     
     public func applyPreviousAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange) {
         let effectTimeRange = CMTimeRange.init(start: timeRange.end - duration, end: timeRange.end)
-        let node = VolumeAudioProcessingNode.init(timeRange: effectTimeRange, startVolume: 1, endVolume: 0)
+        let node = VolumeAudioConfiguration.init(timeRange: effectTimeRange, startVolume: 1, endVolume: 0)
         node.timingFunction = { (percent: Double) -> Double in
             return Double(TimingFunctionFactory.quarticEaseOut(p: Float(percent)))
         }
@@ -50,7 +50,7 @@ public class FadeInOutAudioTransition: AudioTransition {
     
     public func applyNextAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange) {
         let effectTimeRange = CMTimeRange(start: timeRange.start, end: timeRange.start + duration)
-        let node = VolumeAudioProcessingNode.init(timeRange: effectTimeRange, startVolume: 0, endVolume: 1)
+        let node = VolumeAudioConfiguration.init(timeRange: effectTimeRange, startVolume: 0, endVolume: 1)
         node.timingFunction = { (percent: Double) -> Double in
             return Double(TimingFunctionFactory.quarticEaseIn(p: Float(percent)))
         }
