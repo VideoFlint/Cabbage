@@ -19,7 +19,7 @@ open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionP
     
     open var layerInstructions: [VideoCompositionLayerInstruction] = []
     open var mainTrackIDs: [Int32] = []
-    public var passingThroughVideoCompositionProvider: PassingThroughVideoCompositionProvider?
+    public var passingThroughVideoCompositionProvider: VideoCompositionProvider?
     
     public init(thePassthroughTrackID: CMPersistentTrackID, forTimeRange theTimeRange: CMTimeRange) {
         super.init()

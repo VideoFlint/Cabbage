@@ -10,9 +10,6 @@ import AVFoundation
 
 public class Timeline {
 
-    public init() {
-    }
-    
     // MARK: - Main content, support transition.
     
     /*
@@ -28,7 +25,7 @@ public class Timeline {
     public var audios: [AudioProvider] = []
     
     // MARK: - Global effect
-    public var passingThroughVideoCompositionProvider: PassingThroughVideoCompositionProvider?
+    public var passingThroughVideoCompositionProvider: VideoCompositionProvider?
     
 }
 

@@ -27,7 +27,7 @@ public protocol AudioMixProvider {
     func configure(audioMixParameters: AVMutableAudioMixInputParameters)
 }
 
-public protocol VideoCompositionProvider {
+public protocol VideoCompositionProvider: class {
     
     /// Apply effect to sourceImage
     ///
@@ -38,10 +38,6 @@ public protocol VideoCompositionProvider {
     /// - Returns: result image after apply effect
     func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage
     
-}
-
-public protocol PassingThroughVideoCompositionProvider: class {
-    func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage
 }
 
 public protocol VideoProvider: VideoCompositionTrackProvider, VideoCompositionProvider {}

@@ -9,11 +9,11 @@
 import CoreImage
 import CoreMedia
 
-public protocol ImageCompositionProvider: CompositionTimeRangeProvider, PassingThroughVideoCompositionProvider {}
+public protocol ImageCompositionProvider: CompositionTimeRangeProvider, VideoCompositionProvider {}
 
-public class ImageCompositionGroupProvider: PassingThroughVideoCompositionProvider {
+public class ImageCompositionGroupProvider: VideoCompositionProvider {
     
-    public var passingThroughVideoCompositionProvider: PassingThroughVideoCompositionProvider?
+    public var passingThroughVideoCompositionProvider: VideoCompositionProvider?
     public var imageCompositionProviders: [ImageCompositionProvider] = []
     
     public func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
