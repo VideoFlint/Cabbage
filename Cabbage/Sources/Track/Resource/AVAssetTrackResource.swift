@@ -41,17 +41,23 @@ public class AVAssetTrackResource: Resource {
                         strongSelf.status = .avaliable
                         strongSelf.duration = asset.duration
                     }
-                    completion(strongSelf.status, strongSelf.statusError)
+                    DispatchQueue.main.async {                    
+                        completion(strongSelf.status, strongSelf.statusError)
+                    }
                 }
                 
                 var error: NSError?
                 let tracksStatus = asset.statusOfValue(forKey: "tracks", error: &error)
                 if tracksStatus != .loaded {
+                    strongSelf.statusError = error;
+                    strongSelf.status = .unavaliable;
                     Log.error("Failed to load tracks, status: \(tracksStatus), error: \(String(describing: error))")
                     return
                 }
                 let durationStatus = asset.statusOfValue(forKey: "duration", error: &error)
                 if durationStatus != .loaded {
+                    strongSelf.statusError = error;
+                    strongSelf.status = .unavaliable;
                     Log.error("Failed to duration tracks, status: \(tracksStatus), error: \(String(describing: error))")
                     return
                 }

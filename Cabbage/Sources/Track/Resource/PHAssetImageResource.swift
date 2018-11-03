@@ -58,9 +58,11 @@ open class PHAssetImageResource: ImageResource {
         let requestID = PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: 720, height: 720), contentMode: .aspectFit, options: imageRequestOptions) { [weak self] (image, info) in
             guard let strongSelf = self else { return }
             if let error = info?[PHImageErrorKey] as? NSError {
-                strongSelf.statusError = error
-                strongSelf.status = .unavaliable
-                completion(strongSelf.status, strongSelf.statusError)
+                DispatchQueue.main.async {
+                    strongSelf.statusError = error
+                    strongSelf.status = .unavaliable
+                    completion(strongSelf.status, strongSelf.statusError)
+                }
                 return
             }
             DispatchQueue.main.async {
