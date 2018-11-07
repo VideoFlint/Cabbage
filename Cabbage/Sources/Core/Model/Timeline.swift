@@ -9,6 +9,8 @@
 import AVFoundation
 
 public class Timeline {
+    
+    public init() {}
 
     // MARK: - Main content, support transition.
     
