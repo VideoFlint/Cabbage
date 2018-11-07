@@ -66,6 +66,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         let configuration = type(of: self).init()
         configuration.baseContentMode = baseContentMode
         configuration.transform = transform
+        configuration.configurations = configurations.map({ $0.copy(with: zone) as! VideoConfigurationProtocol });
         return configuration
     }
     
