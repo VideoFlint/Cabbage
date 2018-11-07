@@ -18,7 +18,7 @@ public class TrackConfiguration: NSObject, NSCopying {
     public var speed: Float = 1.0
     
     // MARK: - Media
-    public var videoConfigurations: [VideoConfigurationProtocol] = [VideoConfiguration.createDefaultConfiguration()]
+    public var videoConfiguration: VideoConfiguration = VideoConfiguration.createDefaultConfiguration()
     public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
     
     public required override init() {
@@ -31,7 +31,7 @@ public class TrackConfiguration: NSObject, NSCopying {
         let configuration = type(of: self).init()
         configuration.timelineTimeRange = timelineTimeRange
         configuration.speed = speed
-        configuration.videoConfigurations = videoConfigurations.map { $0.copy() as! VideoConfigurationProtocol }
+        configuration.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
         configuration.audioConfiguration = audioConfiguration.copy() as! AudioConfiguration
         return configuration
     }
@@ -54,6 +54,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     }
     public var baseContentMode: BaseContentMode = .aspectFit
     public var transform: CGAffineTransform?
+    public var configurations: [VideoConfigurationProtocol] = []
     
     public required override init() {
         super.init()
@@ -87,6 +88,10 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         
         if let transform = self.transform {
             finalImage = finalImage.transformed(by: transform)
+        }
+        
+        configurations.forEach { (videoConfiguration) in
+            finalImage = videoConfiguration.applyTo(sourceImage: finalImage, renderSize: renderSize)
         }
         
         return finalImage
