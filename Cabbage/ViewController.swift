@@ -10,40 +10,62 @@ import UIKit
 import AVFoundation
 import AVKit
 
-class ViewController: UIViewController {
+class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
     }
 
-    @IBAction func showPlayerAction(_ sender: Any) {
-        if let playerItem = fetchPlayerItem() {
-            let controller = AVPlayerViewController.init()
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let playerItem: AVPlayerItem? = {
+            if indexPath.row == 1 {
+                return overlayPlayerItem()
+            } else if indexPath.row == 2 {
+                return transitionPlayerItem()
+            }
+            return simplePlayerItem()
+        }()
+        if let playerItem = playerItem {
+            let controller = AVPlayerViewController()
             controller.player = AVPlayer.init(playerItem: playerItem)
-            controller.view.backgroundColor = UIColor.white
-            present(controller, animated: true, completion: nil)
+            navigationController?.pushViewController(controller, animated: true)
         }
     }
     
-    func fetchPlayerItem() -> AVPlayerItem? {
-        guard let url = Bundle.main.url(forResource: "Marvel Studios", withExtension: "mp4") else {
-            return nil
-        }
-        
-        let asset = AVAsset.init(url: url)
-        
-        let resource = AVAssetTrackResource(asset: asset)
-        
-        let trackItem = TrackItem(resource: resource)
-        trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
-        trackItem.configuration.speed = 2.0
-        
-        trackItem.reloadTimelineDuration()
+    // MARK: - Demo
+    
+    func simplePlayerItem() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
         
         let timeline = Timeline()
-        timeline.videoChannel = [trackItem]
-        timeline.audioChannel = [trackItem]
+        timeline.videoChannel = [bambooTrackItem]
+        timeline.audioChannel = [bambooTrackItem]
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
+    
+    func overlayPlayerItem() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [bambooTrackItem]
+        timeline.audioChannel = [bambooTrackItem]
         
         timeline.passingThroughVideoCompositionProvider = {
             let imageCompositionGroupProvider = ImageCompositionGroupProvider()
@@ -51,17 +73,51 @@ class ViewController: UIViewController {
             let image = CIImage(contentsOf: url)!
             let resource = ImageResource(image: image)
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
-            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 5, preferredTimescale: 600))
-            imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 100, height: 100)
+            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
+            imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
             imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
             return imageCompositionGroupProvider
         }()
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1080, height: 1080)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
-
+    
+    func transitionPlayerItem() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let seaTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let transitionDuration = CMTime(seconds: 2, preferredTimescale: 600)
+        bambooTrackItem.videoTransition = PushTransition(duration: transitionDuration)
+        bambooTrackItem.audioTransition = FadeInOutAudioTransition.init(duration: transitionDuration)
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [bambooTrackItem, seaTrackItem]
+        timeline.audioChannel = [bambooTrackItem, seaTrackItem]
+        
+        Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
+        Timeline.reloadAudioStartTime(providers: timeline.audioChannel)
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
+    
 }
 

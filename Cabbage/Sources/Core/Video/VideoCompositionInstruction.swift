@@ -82,7 +82,7 @@ open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionP
                     
                     let transitionTimeRange = layerInstruction1.timeRange.intersection(layerInstruction2.timeRange)
                     let tweenFactor = factorForTimeInRange(time, range: transitionTimeRange)
-                    let transitionImage = transition.renderImage(foregroundImage: sourceImage1, backgroundImage: sourceImage2, forTweenFactor: tweenFactor)
+                    let transitionImage = transition.renderImage(foregroundImage: sourceImage2, backgroundImage: sourceImage1, forTweenFactor: tweenFactor)
                     image = transitionImage
                 } else {
                     image = sourceImage1

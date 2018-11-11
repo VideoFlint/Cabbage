@@ -39,7 +39,9 @@
 		5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */; };
 		5F4645BB210C71790013ADC3 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A3210C71790013ADC3 /* Resource.swift */; };
 		5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */; };
-		5F4645C7211130470013ADC3 /* Marvel Studios.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */; };
+		5F5682272198223F00BBF5FE /* KeyframeVideoConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5682262198223F00BBF5FE /* KeyframeVideoConfiguration.swift */; };
+		5F64D0E621981E850084A0AA /* sea.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E421981E850084A0AA /* sea.mp4 */; };
+		5F64D0E721981E850084A0AA /* bamboo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E521981E850084A0AA /* bamboo.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,7 +79,9 @@
 		5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAssetTrackResource.swift; sourceTree = "<group>"; };
 		5F4645A3210C71790013ADC3 /* Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
 		5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageGeneratorExtension.swift; sourceTree = "<group>"; };
-		5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Marvel Studios.mp4"; sourceTree = "<group>"; };
+		5F5682262198223F00BBF5FE /* KeyframeVideoConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyframeVideoConfiguration.swift; sourceTree = "<group>"; };
+		5F64D0E421981E850084A0AA /* sea.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sea.mp4; sourceTree = "<group>"; };
+		5F64D0E521981E850084A0AA /* bamboo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = bamboo.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +132,8 @@
 				5F464578210C713F0013ADC3 /* Main.storyboard */,
 				5F46457B210C71400013ADC3 /* Assets.xcassets */,
 				5F46457D210C71400013ADC3 /* LaunchScreen.storyboard */,
-				5F4645C6211130470013ADC3 /* Marvel Studios.mp4 */,
+				5F64D0E521981E850084A0AA /* bamboo.mp4 */,
+				5F64D0E421981E850084A0AA /* sea.mp4 */,
 				5F3BEE9921645BB200881217 /* overlay.jpg */,
 				5F464580210C71400013ADC3 /* Info.plist */,
 			);
@@ -180,11 +185,10 @@
 		5F46459C210C71790013ADC3 /* Track */ = {
 			isa = PBXGroup;
 			children = (
-				5F4645A0210C71790013ADC3 /* TrackItem.swift */,
-				5F46459D210C71790013ADC3 /* TrackConfiguration.swift */,
-				5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */,
-				5F3BEE922163804A00881217 /* ImageOverlayItem.swift */,
 				5F3BEE94216449B000881217 /* Resource */,
+				5F568225219821E300BBF5FE /* Configuration */,
+				5F4645A0210C71790013ADC3 /* TrackItem.swift */,
+				5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */,
 				5F4645A4210C71790013ADC3 /* ImageGeneratorExtension.swift */,
 			);
 			path = Track;
@@ -218,6 +222,16 @@
 				5F46459A210C71790013ADC3 /* AudioProcessingChain.swift */,
 			);
 			path = Audio;
+			sourceTree = "<group>";
+		};
+		5F568225219821E300BBF5FE /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				5F46459D210C71790013ADC3 /* TrackConfiguration.swift */,
+				5F3BEE922163804A00881217 /* ImageOverlayItem.swift */,
+				5F5682262198223F00BBF5FE /* KeyframeVideoConfiguration.swift */,
+			);
+			path = Configuration;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,8 +292,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F4645C7211130470013ADC3 /* Marvel Studios.mp4 in Resources */,
+				5F64D0E721981E850084A0AA /* bamboo.mp4 in Resources */,
 				5F46457F210C71400013ADC3 /* LaunchScreen.storyboard in Resources */,
+				5F64D0E621981E850084A0AA /* sea.mp4 in Resources */,
 				5F3BEE9A21645BB200881217 /* overlay.jpg in Resources */,
 				5F4645B3210C71790013ADC3 /* black_empty.mp4 in Resources */,
 				5F46457C210C71400013ADC3 /* Assets.xcassets in Resources */,
@@ -294,6 +309,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F5682272198223F00BBF5FE /* KeyframeVideoConfiguration.swift in Sources */,
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
 				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
