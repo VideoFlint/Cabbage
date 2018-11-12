@@ -135,37 +135,26 @@ public class BoundingUpTransition: NoneTransition {
 public class FadeTransition: NoneTransition {
     
     override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
-        let foregroundAlpha: CGFloat = {
+        let backgroundAlpha: CGFloat = {
             let alpha: CGFloat = CGFloat((0.5 - tween) * 2)
             if alpha > 0 {
                 return alpha
             }
             return 0
         }()
-        let backgroundAlpha: CGFloat = {
+        let foregroundAlpha: CGFloat = {
             let alpha: CGFloat = CGFloat((tween - 0.5) * 2)
             if alpha > 0 {
                 return alpha
             }
             return 0
         }()
-        let bgImage = image(foregroundImage, apply: backgroundAlpha)
-        let frontImage = image(backgroundImage, apply: foregroundAlpha)
+        let bgImage = foregroundImage.apply(alpha: foregroundAlpha)
+        let frontImage = backgroundImage.apply(alpha: backgroundAlpha)
         
         let resultImage = bgImage.composited(over: frontImage)
         return resultImage
     }
     
-    private func image(_ image: CIImage, apply alpha: CGFloat) -> CIImage {
-        let filter = CIFilter(name: "CIColorMatrix")
-        filter?.setDefaults()
-        filter?.setValue(image, forKey: kCIInputImageKey)
-        let alphaVector = CIVector.init(x: 0, y: 0, z: 0, w: alpha)
-        filter?.setValue(alphaVector, forKey: "inputAVector")
-        if let outputImage = filter?.outputImage {
-            return outputImage
-        }
-        return image
-    }
     
 }

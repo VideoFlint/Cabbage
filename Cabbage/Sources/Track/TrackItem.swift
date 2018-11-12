@@ -123,7 +123,8 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
             }
             return sourceImage
         }()
-        finalImage = configuration.videoConfiguration.applyEffect(to: finalImage, at: time, renderSize: renderSize)
+        let info = VideoConfigurationEffectInfo.init(time: time, renderSize: renderSize, timeRange: timeRange)
+        finalImage = configuration.videoConfiguration.applyEffect(to: finalImage, info: info)
         
         return finalImage
     }

@@ -37,7 +37,15 @@ public class TrackConfiguration: NSObject, NSCopying {
     }
 }
 
-public protocol VideoConfigurationProtocol: VideoCompositionProvider, NSCopying { }
+public struct VideoConfigurationEffectInfo {
+    public var time = CMTime.zero
+    public var renderSize = CGSize.zero
+    public var timeRange = CMTimeRange.zero
+}
+
+public protocol VideoConfigurationProtocol: NSCopying {
+    func applyEffect(to sourceImage: CIImage, info: VideoConfigurationEffectInfo) -> CIImage
+}
 
 public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     
@@ -50,8 +58,9 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         case aspectFill
         case custom
     }
-    public var baseContentMode: BaseContentMode = .aspectFit
+    public var baseContentMode: BaseContentMode = .custom
     public var transform: CGAffineTransform?
+    public var opacity: Float = 1.0
     public var configurations: [VideoConfigurationProtocol] = []
     
     public required override init() {
@@ -70,15 +79,15 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     
     // MARK: - Helper
     
-    public func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
+    public func applyEffect(to sourceImage: CIImage, info: VideoConfigurationEffectInfo) -> CIImage {
         var finalImage = sourceImage
         var transform = CGAffineTransform.identity
         switch baseContentMode {
         case .aspectFit:
-            let fitTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: CGRect(origin: .zero, size: renderSize))
+            let fitTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: CGRect(origin: .zero, size: info.renderSize))
             transform = transform.concatenating(fitTransform)
         case .aspectFill:
-            let fillTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: CGRect(origin: .zero, size: renderSize))
+            let fillTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: CGRect(origin: .zero, size: info.renderSize))
             transform = transform.concatenating(fillTransform)
         case .custom:
             break
@@ -89,8 +98,10 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             finalImage = finalImage.transformed(by: transform)
         }
         
+        finalImage = finalImage.apply(alpha: CGFloat(opacity))
+        
         configurations.forEach { (videoConfiguration) in
-            finalImage = videoConfiguration.applyEffect(to: finalImage, at: time, renderSize: renderSize)
+            finalImage = videoConfiguration.applyEffect(to: finalImage, info: info)
         }
         
         return finalImage

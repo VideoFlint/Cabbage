@@ -73,8 +73,45 @@ class ViewController: UITableViewController {
             let image = CIImage(contentsOf: url)!
             let resource = ImageResource(image: image)
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
-            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
+            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 4, preferredTimescale: 600))
             imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            
+            let keyframeConfiguration: KeyframeVideoConfiguration<OpacityKeyframeValue> = {
+                let configuration = KeyframeVideoConfiguration<OpacityKeyframeValue>()
+                
+                let timeValues: [(Double, CGFloat)] = [(0.0, 0), (0.5, 1.0), (2.5, 1.0), (3.0, 0.0)]
+                timeValues.forEach({ (time, value) in
+                    let opacityKeyframeValue = OpacityKeyframeValue()
+                    opacityKeyframeValue.opacity = value
+                    let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
+                    configuration.insert(keyframe)
+                })
+                
+                return configuration
+            }()
+            imageCompositionProvider.videoConfiguration.configurations.append(keyframeConfiguration)
+            
+            let transformKeyframeConfiguration: KeyframeVideoConfiguration<TransformKeyframeValue> = {
+                let configuration = KeyframeVideoConfiguration<TransformKeyframeValue>()
+                
+                let timeValues: [(Double, (CGFloat, CGFloat, CGPoint))] =
+                    [(0.0, (1.0, 0, CGPoint.zero)),
+                     (0.5, (1.0, 0, CGPoint(x: 300, y: 0))),
+                     (2.5, (1.0, 0, CGPoint(x: 300, y: 300))),
+                     (3.0, (1.0, 0, CGPoint.zero))]
+                timeValues.forEach({ (time, value) in
+                    let opacityKeyframeValue = TransformKeyframeValue()
+                    opacityKeyframeValue.scale = value.0
+                    opacityKeyframeValue.rotation = value.1
+                    opacityKeyframeValue.transalation = value.2
+                    let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
+                    configuration.insert(keyframe)
+                })
+                
+                return configuration
+            }()
+            imageCompositionProvider.videoConfiguration.configurations.append(transformKeyframeConfiguration)
+            
             imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
             return imageCompositionGroupProvider
         }()
