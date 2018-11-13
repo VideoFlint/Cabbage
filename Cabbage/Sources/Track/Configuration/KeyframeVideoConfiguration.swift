@@ -10,9 +10,15 @@ import Foundation
 import CoreImage
 import CoreMedia
 
+public struct KeyframeValueParam {
+    public var fromValue: KeyframeValue?
+    public var toValue: KeyframeValue
+    public var tween: CGFloat
+    public var info: VideoConfigurationEffectInfo
+}
 
 public protocol KeyframeValue: class, NSCopying {
-    static func applyEffect(to sourceImage: CIImage, fromValue: KeyframeValue?, toValue: KeyframeValue, tween: CGFloat) -> CIImage
+    static func applyEffect(to sourceImage: CIImage, param: KeyframeValueParam) -> CIImage
 }
 
 public class KeyframeVideoConfiguration<Value: KeyframeValue>: VideoConfigurationProtocol {
@@ -102,7 +108,8 @@ public class KeyframeVideoConfiguration<Value: KeyframeValue>: VideoConfiguratio
             if let timingFunction = toKeyframe.timingFunction {
                 tween = timingFunction(tween)
             }
-            finalImage = Value.applyEffect(to: sourceImage, fromValue: fromKeyframe?.value, toValue: toKeyframe.value, tween: tween)
+            let param = KeyframeValueParam(fromValue: fromKeyframe?.value, toValue: toKeyframe.value, tween: tween, info: info)
+            finalImage = Value.applyEffect(to: sourceImage, param: param)
         }
         
         return finalImage
@@ -126,31 +133,37 @@ public class TransformKeyframeValue: KeyframeValue {
         return value
     }
     
-    public static func applyEffect(to sourceImage: CIImage, fromValue: KeyframeValue?, toValue: KeyframeValue, tween: CGFloat) -> CIImage {
-        guard let toValue = toValue as? TransformKeyframeValue else {
+    public static func applyEffect(to sourceImage: CIImage, param: KeyframeValueParam) -> CIImage {
+        guard let toValue = param.toValue as? TransformKeyframeValue else {
             return sourceImage
         }
+        var finalImage = sourceImage
         
         let fromValue: TransformKeyframeValue = {
-            if let fromValue = fromValue as? TransformKeyframeValue {
+            if let fromValue = param.fromValue as? TransformKeyframeValue {
                 return fromValue
             }
             return TransformKeyframeValue()
         }()
         
         var transform = CGAffineTransform.identity
-
-        let rotation = fromValue.rotation + (toValue.rotation - fromValue.rotation) * tween
-        transform = transform.concatenating(CGAffineTransform.init(rotationAngle: rotation))
+        transform = transform.concatenating(CGAffineTransform(translationX: -param.info.renderSize.width/2, y: -param.info.renderSize.height/2))
         
-        let scale = fromValue.scale + (toValue.scale - fromValue.scale) * tween
+        let scale = fromValue.scale + (toValue.scale - fromValue.scale) * param.tween
         transform = transform.concatenating(CGAffineTransform(scaleX: scale, y: scale))
         
-        let translationX = fromValue.transalation.x + (toValue.transalation.x - fromValue.transalation.x) * tween
-        let translationY = fromValue.transalation.y + (toValue.transalation.y - fromValue.transalation.y) * tween
+        let rotation = fromValue.rotation + (toValue.rotation - fromValue.rotation) * param.tween
+        transform = transform.concatenating(CGAffineTransform(rotationAngle: rotation))
+        
+        let translationX = fromValue.transalation.x + (toValue.transalation.x - fromValue.transalation.x) * param.tween
+        let translationY = fromValue.transalation.y + (toValue.transalation.y - fromValue.transalation.y) * param.tween
         transform = transform.concatenating(CGAffineTransform(translationX: translationX, y: translationY))
         
-        return sourceImage.transformed(by: transform)
+        transform = transform.concatenating(CGAffineTransform(translationX: param.info.renderSize.width/2, y: param.info.renderSize.height/2))
+        
+        finalImage = sourceImage.transformed(by: transform)
+        
+        return finalImage
     }
     
 }
@@ -165,19 +178,19 @@ public class OpacityKeyframeValue: KeyframeValue {
         return value
     }
     
-    public static func applyEffect(to sourceImage: CIImage, fromValue: KeyframeValue?, toValue: KeyframeValue, tween: CGFloat) -> CIImage {
-        guard let toValue = toValue as? OpacityKeyframeValue else {
+    public static func applyEffect(to sourceImage: CIImage, param: KeyframeValueParam) -> CIImage {
+        guard let toValue = param.toValue as? OpacityKeyframeValue else {
             return sourceImage
         }
         let fromValue: OpacityKeyframeValue = {
-            if let fromValue = fromValue as? OpacityKeyframeValue {
+            if let fromValue = param.fromValue as? OpacityKeyframeValue {
                 return fromValue
             }
             return OpacityKeyframeValue()
         }()
         let toOpacity = toValue.opacity
         let fromOpacity = fromValue.opacity
-        let opacity = fromOpacity + (toOpacity - fromOpacity) * tween
+        let opacity = fromOpacity + (toOpacity - fromOpacity) * param.tween
         return sourceImage.apply(alpha: opacity)
     }
     

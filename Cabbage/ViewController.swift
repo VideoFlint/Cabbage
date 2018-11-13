@@ -23,6 +23,8 @@ class ViewController: UITableViewController {
                 return overlayPlayerItem()
             } else if indexPath.row == 2 {
                 return transitionPlayerItem()
+            } else if indexPath.row == 3 {
+                return keyframePlayerItem()
             }
             return simplePlayerItem()
         }()
@@ -91,27 +93,6 @@ class ViewController: UITableViewController {
             }()
             imageCompositionProvider.videoConfiguration.configurations.append(keyframeConfiguration)
             
-            let transformKeyframeConfiguration: KeyframeVideoConfiguration<TransformKeyframeValue> = {
-                let configuration = KeyframeVideoConfiguration<TransformKeyframeValue>()
-                
-                let timeValues: [(Double, (CGFloat, CGFloat, CGPoint))] =
-                    [(0.0, (1.0, 0, CGPoint.zero)),
-                     (0.5, (1.0, 0, CGPoint(x: 300, y: 0))),
-                     (2.5, (1.0, 0, CGPoint(x: 300, y: 300))),
-                     (3.0, (1.0, 0, CGPoint.zero))]
-                timeValues.forEach({ (time, value) in
-                    let opacityKeyframeValue = TransformKeyframeValue()
-                    opacityKeyframeValue.scale = value.0
-                    opacityKeyframeValue.rotation = value.1
-                    opacityKeyframeValue.transalation = value.2
-                    let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
-                    configuration.insert(keyframe)
-                })
-                
-                return configuration
-            }()
-            imageCompositionProvider.videoConfiguration.configurations.append(transformKeyframeConfiguration)
-            
             imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
             return imageCompositionGroupProvider
         }()
@@ -149,6 +130,46 @@ class ViewController: UITableViewController {
         
         Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
         Timeline.reloadAudioStartTime(providers: timeline.audioChannel)
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
+    
+    func keyframePlayerItem() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            
+            let transformKeyframeConfiguration: KeyframeVideoConfiguration<TransformKeyframeValue> = {
+                let configuration = KeyframeVideoConfiguration<TransformKeyframeValue>()
+                
+                let timeValues: [(Double, (CGFloat, CGFloat, CGPoint))] =
+                    [(0.0, (1.0, 0, CGPoint.zero)),
+                     (1.0, (1.2, CGFloat.pi / 20, CGPoint(x: 100, y: 80))),
+                     (2.0, (1.5, CGFloat.pi / 15, CGPoint(x: 300, y: 240))),
+                     (3.0, (1.0, 0, CGPoint.zero))]
+                timeValues.forEach({ (time, value) in
+                    let opacityKeyframeValue = TransformKeyframeValue()
+                    opacityKeyframeValue.scale = value.0
+                    opacityKeyframeValue.rotation = value.1
+                    opacityKeyframeValue.transalation = value.2
+                    let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
+                    configuration.insert(keyframe)
+                })
+                
+                return configuration
+            }()
+            trackItem.configuration.videoConfiguration.configurations.append(transformKeyframeConfiguration)
+            return trackItem
+        }()
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [bambooTrackItem]
+        timeline.audioChannel = [bambooTrackItem]
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
         compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
