@@ -351,7 +351,7 @@ extension AVMutableAudioMixInputParameters {
             return objc_getAssociatedObject(self, &AVMutableAudioMixInputParameters.audioProcessingTapHolderKey) as? AudioProcessingTapHolder
         }
         set(newValue) {
-            objc_setAssociatedObject(self, &AVMutableAudioMixInputParameters.audioProcessingTapHolderKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(self, &AVMutableAudioMixInputParameters.audioProcessingTapHolderKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             audioTapProcessor = newValue?.tap
         }
     }
@@ -376,7 +376,7 @@ extension AVCompositionTrack {
             return transforms
         }
         set(newValue) {
-            objc_setAssociatedObject(self, &AVCompositionTrack.preferredTransformsKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(self, &AVCompositionTrack.preferredTransformsKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
