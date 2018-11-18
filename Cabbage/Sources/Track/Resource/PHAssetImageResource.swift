@@ -80,4 +80,12 @@ open class PHAssetImageResource: ImageResource {
         })
     }
     
+    // MARK: - NSCopying
+    
+    override open func copy(with zone: NSZone? = nil) -> Any {
+        let resource = super.copy(with: zone) as! PHAssetImageResource
+        resource.asset = asset
+        
+        return resource
+    }
 }
