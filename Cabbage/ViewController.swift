@@ -25,6 +25,8 @@ class ViewController: UITableViewController {
                 return transitionPlayerItem()
             } else if indexPath.row == 3 {
                 return keyframePlayerItem()
+            } else if indexPath.row == 4 {
+                return testReaderOutput()
             }
             return simplePlayerItem()
         }()
@@ -34,6 +36,8 @@ class ViewController: UITableViewController {
             navigationController?.pushViewController(controller, animated: true)
         }
     }
+    
+    
     
     // MARK: - Demo
     
@@ -170,6 +174,37 @@ class ViewController: UITableViewController {
         let timeline = Timeline()
         timeline.videoChannel = [bambooTrackItem]
         timeline.audioChannel = [bambooTrackItem]
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
+    
+    func testReaderOutput() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [bambooTrackItem]
+        timeline.audioChannel = [bambooTrackItem]
+        
+        timeline.passingThroughVideoCompositionProvider = {
+            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
+            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+            let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
+            let imageCompositionProvider = ImageOverlayItem(resource: resource)
+            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 4, preferredTimescale: 600))
+            imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            
+            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
+            return imageCompositionGroupProvider
+        }()
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
         compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)

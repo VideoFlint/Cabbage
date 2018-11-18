@@ -39,7 +39,12 @@ open class ImageOverlayItem: NSObject, ImageCompositionProvider, NSCopying {
     public var timeRange: CMTimeRange = CMTimeRange()
     
     open func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
-        guard let image = resource.image(at: time, renderSize: renderSize) else {
+        var relativeTime = time - timeRange.start
+//        if relativeTime.seconds > 0 {
+//            relativeTime = CMTime.init(value: Int64(Float(relativeTime.value) / configuration.speed),
+//                                       timescale: relativeTime.timescale)
+//        }
+        guard let image = resource.image(at: relativeTime, renderSize: renderSize) else {
             return sourceImage
         }
         

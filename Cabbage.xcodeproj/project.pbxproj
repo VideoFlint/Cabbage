@@ -43,6 +43,8 @@
 		5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56822A2198580E00BBF5FE /* CoreImageExtension.swift */; };
 		5F64D0E621981E850084A0AA /* sea.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E421981E850084A0AA /* sea.mp4 */; };
 		5F64D0E721981E850084A0AA /* bamboo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E521981E850084A0AA /* bamboo.mp4 */; };
+		5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */; };
+		5FE63CC921A1B131006FD15A /* AVAssetImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +86,8 @@
 		5F56822A2198580E00BBF5FE /* CoreImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreImageExtension.swift; sourceTree = "<group>"; };
 		5F64D0E421981E850084A0AA /* sea.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sea.mp4; sourceTree = "<group>"; };
 		5F64D0E521981E850084A0AA /* bamboo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = bamboo.mp4; sourceTree = "<group>"; };
+		5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReaderImageResource.swift; sourceTree = "<group>"; };
+		5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetImageResource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,8 @@
 				5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */,
 				5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */,
 				5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */,
+				5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */,
+				5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -316,6 +322,7 @@
 				5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */,
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
+				5FE63CC921A1B131006FD15A /* AVAssetImageResource.swift in Sources */,
 				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
 				5F4645B9210C71790013ADC3 /* PHAssetImageResource.swift in Sources */,
 				5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */,
@@ -335,6 +342,7 @@
 				5F4645B1210C71790013ADC3 /* AudioMixer.swift in Sources */,
 				5F4645B5210C71790013ADC3 /* TrackConfiguration.swift in Sources */,
 				5F4645AD210C71790013ADC3 /* VideoTransition.swift in Sources */,
+				5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */,
 				5F464577210C713F0013ADC3 /* ViewController.swift in Sources */,
 				5F4645B4210C71790013ADC3 /* AudioProcessingChain.swift in Sources */,
 				5F464575210C713F0013ADC3 /* AppDelegate.swift in Sources */,
