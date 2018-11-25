@@ -11,12 +11,11 @@ import AVFoundation
 import AVKit
 
 class ViewController: UITableViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let playerItem: AVPlayerItem? = {
             if indexPath.row == 1 {
@@ -80,7 +79,9 @@ class ViewController: UITableViewController {
             let resource = ImageResource(image: image)
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
             imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 4, preferredTimescale: 600))
-            imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
+            imageCompositionProvider.videoConfiguration.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4)
             
             let keyframeConfiguration: KeyframeVideoConfiguration<OpacityKeyframeValue> = {
                 let configuration = KeyframeVideoConfiguration<OpacityKeyframeValue>()
@@ -96,6 +97,27 @@ class ViewController: UITableViewController {
                 return configuration
             }()
             imageCompositionProvider.videoConfiguration.configurations.append(keyframeConfiguration)
+
+            let transformKeyframeConfiguration: KeyframeVideoConfiguration<TransformKeyframeValue> = {
+                let configuration = KeyframeVideoConfiguration<TransformKeyframeValue>()
+
+                let timeValues: [(Double, (CGFloat, CGFloat, CGPoint))] =
+                    [(0.0, (1.0, 0, CGPoint.zero)),
+                     (1.0, (1.0, CGFloat.pi, CGPoint(x: 100, y: 80))),
+                     (2.0, (1.0, CGFloat.pi * 2, CGPoint(x: 300, y: 240))),
+                     (3.0, (1.0, 0, CGPoint.zero))]
+                timeValues.forEach({ (time, value) in
+                    let opacityKeyframeValue = TransformKeyframeValue()
+                    opacityKeyframeValue.scale = value.0
+                    opacityKeyframeValue.rotation = value.1
+                    opacityKeyframeValue.transalation = value.2
+                    let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
+                    configuration.insert(keyframe)
+                })
+
+                return configuration
+            }()
+            imageCompositionProvider.videoConfiguration.configurations.append(transformKeyframeConfiguration)
             
             imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
             return imageCompositionGroupProvider
@@ -200,7 +222,8 @@ class ViewController: UITableViewController {
             let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
             imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 4, preferredTimescale: 600))
-            imageCompositionProvider.frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
             
             imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
             return imageCompositionGroupProvider

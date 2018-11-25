@@ -147,7 +147,7 @@ public class TransformKeyframeValue: KeyframeValue {
         }()
         
         var transform = CGAffineTransform.identity
-        transform = transform.concatenating(CGAffineTransform(translationX: -param.info.renderSize.width/2, y: -param.info.renderSize.height/2))
+        transform = transform.concatenating(CGAffineTransform(translationX: -(sourceImage.extent.origin.x + sourceImage.extent.width/2), y: -(sourceImage.extent.origin.y + sourceImage.extent.height/2)))
         
         let scale = fromValue.scale + (toValue.scale - fromValue.scale) * param.tween
         transform = transform.concatenating(CGAffineTransform(scaleX: scale, y: scale))
@@ -159,7 +159,7 @@ public class TransformKeyframeValue: KeyframeValue {
         let translationY = fromValue.transalation.y + (toValue.transalation.y - fromValue.transalation.y) * param.tween
         transform = transform.concatenating(CGAffineTransform(translationX: translationX, y: translationY))
         
-        transform = transform.concatenating(CGAffineTransform(translationX: param.info.renderSize.width/2, y: param.info.renderSize.height/2))
+        transform = transform.concatenating(CGAffineTransform(translationX: (sourceImage.extent.origin.x + sourceImage.extent.width/2), y: (sourceImage.extent.origin.y + sourceImage.extent.height/2)))
         
         finalImage = sourceImage.transformed(by: transform)
         

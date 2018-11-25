@@ -56,9 +56,9 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     public enum BaseContentMode {
         case aspectFit
         case aspectFill
-        case custom
+        case custom(CGRect?)
     }
-    public var baseContentMode: BaseContentMode = .custom
+    public var baseContentMode: BaseContentMode = .custom(nil)
     public var transform: CGAffineTransform?
     public var opacity: Float = 1.0
     public var configurations: [VideoConfigurationProtocol] = []
@@ -77,7 +77,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         return configuration
     }
     
-    // MARK: - Helper
+    // MARK: - VideoConfigurationProtocol
     
     public func applyEffect(to sourceImage: CIImage, info: VideoConfigurationEffectInfo) -> CIImage {
         var finalImage = sourceImage
@@ -86,17 +86,31 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         case .aspectFit:
             let fitTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: CGRect(origin: .zero, size: info.renderSize))
             transform = transform.concatenating(fitTransform)
+            break
         case .aspectFill:
             let fillTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: CGRect(origin: .zero, size: info.renderSize))
             transform = transform.concatenating(fillTransform)
-        case .custom:
+            break
+        case .custom(let frame):
+            if let frame = frame {
+                let scaleTransform = CGAffineTransform(scaleX: frame.size.width / sourceImage.extent.size.width, y: frame.size.height / sourceImage.extent.size.height)
+                transform = transform.concatenating(scaleTransform)
+                let translateTransform = CGAffineTransform.init(translationX: frame.origin.x, y: frame.origin.y)
+                transform = transform.concatenating(translateTransform)
+            }
             break
         }
+        
         finalImage = finalImage.transformed(by: transform)
         
-        if let transform = self.transform {
+        if let userTransform = self.transform {
+            var transform = CGAffineTransform.identity
+            transform = transform.concatenating(CGAffineTransform(translationX: -(finalImage.extent.origin.x + finalImage.extent.width/2), y: -(finalImage.extent.origin.y + finalImage.extent.height/2)))
+            transform = transform.concatenating(userTransform)
+            transform = transform.concatenating(CGAffineTransform(translationX: (finalImage.extent.origin.x + finalImage.extent.width/2), y: (finalImage.extent.origin.y + finalImage.extent.height/2)))
             finalImage = finalImage.transformed(by: transform)
         }
+        
         
         finalImage = finalImage.apply(alpha: CGFloat(opacity))
         
