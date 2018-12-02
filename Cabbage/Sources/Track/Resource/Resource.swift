@@ -9,7 +9,18 @@
 import AVFoundation
 import CoreImage
 
-open class Resource: NSObject, NSCopying {
+public struct ResourceTrackInfo {
+    public var track: AVAssetTrack
+    public var selectedTimeRange: CMTimeRange
+    public var scaleToDuration: CMTime
+}
+
+
+public protocol ResourceTrackInfoProvider: class {
+    func trackInfo(for type: AVMediaType, at index: Int) -> ResourceTrackInfo
+}
+
+open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
 
     required override public init() {
     }
@@ -20,6 +31,12 @@ open class Resource: NSObject, NSCopying {
     /// Selected time range, indicate how many resources will be inserted to AVCompositionTrack
     open var selectedTimeRange: CMTimeRange = CMTimeRange.zero
     
+    open var scaledDuration: CMTime {
+        get {
+            return selectedTimeRange.duration
+        }
+    }
+    
     /// Natural frame size of this resource
     open var size: CGSize = .zero
     
@@ -29,6 +46,9 @@ open class Resource: NSObject, NSCopying {
     /// - Parameter type: specific media type, currently only support AVMediaTypeVideo and AVMediaTypeAudio
     /// - Returns: tracks
     open func tracks(for type: AVMediaType) -> [AVAssetTrack] {
+        if let tracks = Resource.emptyAsset?.tracks(withMediaType: type) {
+            return tracks
+        }
         return []
     }
     
@@ -61,6 +81,36 @@ open class Resource: NSObject, NSCopying {
         resource.selectedTimeRange = selectedTimeRange
         return resource
     }
+    
+    // MARK: - ResourceTrackInfoProvider
+    
+    public func trackInfo(for type: AVMediaType, at index: Int) -> ResourceTrackInfo {
+        let track = tracks(for: type)[index]
+        let emptyDuration = CMTime(value: 1, 30)
+        let emptyTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: emptyDuration)
+        return ResourceTrackInfo(track: track,
+                                 selectedTimeRange: emptyTimeRange,
+                                 scaleToDuration: selectedTimeRange.duration)
+    }
+    
+    // MARK: - Helper
+    
+    private static let emptyAsset: AVAsset? = {
+        let bundle = Bundle(for: ImageResource.self)
+        if let bundleURL = bundle.resourceURL?.appendingPathComponent("Cabbage.bundle") {
+            let resourceBundle = Bundle.init(url: bundleURL)
+            if let videoURL = resourceBundle?.url(forResource: "black_empty", withExtension: "mp4") {
+                return AVAsset(url: videoURL)
+            }
+        }
+        
+        if let url = Bundle.main.url(forResource: "black_empty", withExtension: "mp4") {
+            let asset = AVAsset(url: url)
+            return asset
+        }
+        
+        return nil
+    }()
     
 }
 

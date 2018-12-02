@@ -13,10 +13,6 @@ public class TrackConfiguration: NSObject, NSCopying {
     
     // MARK: - Timing
     
-    /// Track's final time range, it will be calculated using track's time, speed, transition and so on
-    public var timelineTimeRange: CMTimeRange = CMTimeRange.zero
-    public var speed: Float = 1.0
-    
     // MARK: - Media
     public var videoConfiguration: VideoConfiguration = VideoConfiguration.createDefaultConfiguration()
     public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
@@ -29,8 +25,6 @@ public class TrackConfiguration: NSObject, NSCopying {
     
     public func copy(with zone: NSZone? = nil) -> Any {
         let configuration = type(of: self).init()
-        configuration.timelineTimeRange = timelineTimeRange
-        configuration.speed = speed
         configuration.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
         configuration.audioConfiguration = audioConfiguration.copy() as! AudioConfiguration
         return configuration

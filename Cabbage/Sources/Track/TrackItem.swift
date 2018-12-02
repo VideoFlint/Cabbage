@@ -23,7 +23,6 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         self.resource = resource
         configuration = TrackConfiguration()
         super.init()
-        self.reloadTimelineDuration()
     }
     
     // MARK: - NSCopying
@@ -39,36 +38,11 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     
     // MARK: - CompositionTimeRangeProvider
     
-    open var timeRange: CMTimeRange {
+    open var startTime: CMTime = CMTime.zero
+    open var duration: CMTime {
         get {
-            return configuration.timelineTimeRange
+            return resource.scaledDuration
         }
-        set {
-            configuration.timelineTimeRange = newValue
-        }
-    }
-    
-    /// Resource's selected time range that mix with speed
-    open var resourceTargetTimeRange: CMTimeRange {
-        get {
-            var timeRange = resource.selectedTimeRange
-            timeRange.start = CMTime.init(value: Int64(Float(timeRange.start.value) / configuration.speed),
-                                          timeRange.start.timescale)
-            timeRange.duration = CMTime.init(value: Int64(Float(timeRange.duration.value) / configuration.speed),
-                                             timeRange.duration.timescale)
-            return timeRange
-        }
-        set {
-            let start = CMTime.init(value: Int64(Float(newValue.start.value) * configuration.speed),
-                                    newValue.start.timescale)
-            let duration = CMTime.init(value: Int64(Float(newValue.duration.value) * configuration.speed),
-                                       newValue.duration.timescale)
-            resource.selectedTimeRange = CMTimeRange.init(start: start, duration: duration)
-        }
-    }
-    
-    open func reloadTimelineDuration() {
-        configuration.timelineTimeRange.duration = resourceTargetTimeRange.duration
     }
     
     // MARK: - TransitionableVideoProvider
@@ -90,22 +64,9 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         if let compositionTrack = compositionTrack {
             compositionTrack.preferredTransforms[timeRange.vf_identifier] = track.preferredTransform
             do {
-                /*
-                 Special logic for ImageResource, because of it provides a placeholder track,
-                 Maybe not enough to fill the selectedTimeRange.
-                 But ImageResource usually support unlimited time.
-                 */
-                if resource.isKind(of: ImageResource.self) {
-                    let emptyDuration = CMTime(value: 1, 30)
-                    let range = CMTimeRangeMake(start: CMTime.zero, duration: emptyDuration)
-                    try compositionTrack.insertTimeRange(range, of: track, at: timeRange.start)
-                    compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: emptyDuration),
-                                                    toDuration: resourceTargetTimeRange.duration)
-                } else {
-                    try compositionTrack.insertTimeRange(resource.selectedTimeRange, of: track, at: timeRange.start)
-                    compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: resource.selectedTimeRange.duration),
-                                                    toDuration: resourceTargetTimeRange.duration)
-                }
+                let trackInfo = resource.trackInfo(for: .video, at: index)
+                try compositionTrack.insertTimeRange(trackInfo.selectedTimeRange, of: trackInfo.track, at: timeRange.start)
+                compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: trackInfo.selectedTimeRange.duration), toDuration: trackInfo.scaleToDuration)
             } catch {
                 Log.error(#function + error.localizedDescription)
             }
@@ -116,12 +77,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     open func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
         var finalImage: CIImage = {
             if let resource = resource as? ImageResource {
-                var relativeTime = time - timeRange.start
-                if relativeTime.seconds > 0 {
-                    relativeTime = CMTime.init(value: Int64(Float(relativeTime.value) / configuration.speed),
-                                               timescale: relativeTime.timescale)
-                }
-                if let resourceImage = resource.image(at: relativeTime, renderSize: renderSize) {
+                if let resourceImage = resource.image(at: time, renderSize: renderSize) {
                     return resourceImage
                 }
             }
@@ -149,9 +105,9 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         }()
         if let compositionTrack = compositionTrack {
             do {
-                try compositionTrack.insertTimeRange(resource.selectedTimeRange, of: track, at: timeRange.start)
-                compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: resource.selectedTimeRange.duration),
-                                                toDuration: resourceTargetTimeRange.duration)
+                let trackInfo = resource.trackInfo(for: .audio, at: index)
+                try compositionTrack.insertTimeRange(trackInfo.selectedTimeRange, of: trackInfo.track, at: timeRange.start)
+                compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: trackInfo.selectedTimeRange.duration), toDuration: trackInfo.scaleToDuration)
             } catch {
                 Log.error(#function + error.localizedDescription)
             }
@@ -161,7 +117,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     
     open func configure(audioMixParameters: AVMutableAudioMixInputParameters) {
         let volume = configuration.audioConfiguration.volume
-        audioMixParameters.setVolumeRamp(fromStartVolume: volume, toEndVolume: volume, timeRange: configuration.timelineTimeRange)
+        audioMixParameters.setVolumeRamp(fromStartVolume: volume, toEndVolume: volume, timeRange: timeRange)
         if configuration.audioConfiguration.nodes.count > 0 {
             if audioMixParameters.audioProcessingTapHolder == nil {
                 audioMixParameters.audioProcessingTapHolder = AudioProcessingTapHolder()
@@ -187,8 +143,7 @@ public extension TrackItem {
     public func makeFullRangeCopy() -> TrackItem {
         let item = self.copy() as! TrackItem
         item.resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, duration: item.resource.duration)
-        item.reloadTimelineDuration()
-        item.timeRange.start = CMTime.zero
+        item.startTime = CMTime.zero
         return item
     }
     

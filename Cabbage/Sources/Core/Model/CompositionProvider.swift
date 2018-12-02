@@ -10,15 +10,24 @@ import CoreImage
 import AVFoundation
 
 public protocol CompositionTimeRangeProvider: class {
-    var timeRange: CMTimeRange { get set }
+    var startTime: CMTime { get set }
+    var duration: CMTime { get }
 }
 
-public protocol VideoCompositionTrackProvider: CompositionTimeRangeProvider {
+public extension CompositionTimeRangeProvider {
+    var timeRange: CMTimeRange {
+        get {
+            return CMTimeRange.init(start: startTime, duration: duration)
+        }
+    }
+}
+
+public protocol VideoCompositionTrackProvider: class {
     func numberOfVideoTracks() -> Int
     func videoCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack?
 }
 
-public protocol AudioCompositionTrackProvider: CompositionTimeRangeProvider {
+public protocol AudioCompositionTrackProvider: class {
     func numberOfAudioTracks() -> Int
     func audioCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack?
 }
@@ -40,8 +49,8 @@ public protocol VideoCompositionProvider: class {
     
 }
 
-public protocol VideoProvider: VideoCompositionTrackProvider, VideoCompositionProvider {}
-public protocol AudioProvider: AudioCompositionTrackProvider, AudioMixProvider { }
+public protocol VideoProvider: CompositionTimeRangeProvider, VideoCompositionTrackProvider, VideoCompositionProvider {}
+public protocol AudioProvider: CompositionTimeRangeProvider, AudioCompositionTrackProvider, AudioMixProvider { }
 
 public protocol TransitionableVideoProvider: VideoProvider {
     var videoTransition: VideoTransition? { get }

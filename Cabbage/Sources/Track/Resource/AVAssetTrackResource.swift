@@ -13,6 +13,13 @@ import UIKit
 public class AVAssetTrackResource: Resource {
     
     public var asset: AVAsset?
+    public var speed: Float = 1.0
+    
+    open override var scaledDuration: CMTime {
+        get {
+            return selectedTimeRange.duration * speed
+        }
+    }
     
     public init(asset: AVAsset) {
         super.init()
@@ -80,11 +87,21 @@ public class AVAssetTrackResource: Resource {
         return []
     }
     
+    // MARK: - ResourceTrackInfoProvider
+    
+    public override func trackInfo(for type: AVMediaType, at index: Int) -> ResourceTrackInfo {
+        let track = tracks(for: type)[index]
+        return ResourceTrackInfo(track: track,
+                                 selectedTimeRange: selectedTimeRange,
+                                 scaleToDuration: scaledDuration)
+    }
+    
     // MARK: - NSCopying
     
     override public func copy(with zone: NSZone? = nil) -> Any {
         let resource = super.copy(with: zone) as! AVAssetTrackResource
         resource.asset = asset
+        resource.speed = speed;
         
         return resource
     }

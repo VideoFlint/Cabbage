@@ -15,10 +15,11 @@ open class PHAssetImageResource: ImageResource {
     
     open var asset: PHAsset?
     
-    public init(asset: PHAsset) {
+    public init(asset: PHAsset, duration: CMTime) {
         super.init()
         self.asset = asset
-        self.duration = CMTime.init(value: 3000, 600)
+        self.duration = duration
+        self.selectedTimeRange = CMTimeRange(start: CMTime.zero, duration: duration)
     }
     
     required public init() {

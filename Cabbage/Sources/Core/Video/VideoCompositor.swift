@@ -39,20 +39,20 @@ open class VideoCompositor: NSObject, AVFoundation.AVVideoCompositing  {
     }
     
     open func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
-            renderingQueue.async(execute: { [weak self] in
-                guard let strongSelf = self else { return }
-                if strongSelf.shouldCancelAllRequests {
-                    request.finishCancelledRequest()
-                } else {
-                    autoreleasepool {
-                        if let resultPixels = strongSelf.newRenderedPixelBufferForRequest(request: request) {
-                            request.finish(withComposedVideoFrame: resultPixels)
-                        } else {
-                            request.finish(with: PixelBufferRequestError.newRenderedPixelBufferForRequestFailure)
-                        }
+        renderingQueue.async(execute: { [weak self] in
+            guard let strongSelf = self else { return }
+            if strongSelf.shouldCancelAllRequests {
+                request.finishCancelledRequest()
+            } else {
+                autoreleasepool {
+                    if let resultPixels = strongSelf.newRenderedPixelBufferForRequest(request: request) {
+                        request.finish(withComposedVideoFrame: resultPixels)
+                    } else {
+                        request.finish(with: PixelBufferRequestError.newRenderedPixelBufferForRequestFailure)
                     }
                 }
-            })
+            }
+        })
     }
     
     open func cancelAllPendingVideoCompositionRequests() {

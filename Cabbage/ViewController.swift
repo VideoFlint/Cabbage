@@ -76,9 +76,9 @@ class ViewController: UITableViewController {
             let imageCompositionGroupProvider = ImageCompositionGroupProvider()
             let url = Bundle.main.url(forResource: "overlay", withExtension: "jpg")!
             let image = CIImage(contentsOf: url)!
-            let resource = ImageResource(image: image)
+            let resource = ImageResource(image: image, duration: CMTime.init(seconds: 3, preferredTimescale: 600))
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
-            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 4, preferredTimescale: 600))
+            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
             let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
             imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
             imageCompositionProvider.videoConfiguration.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4)
@@ -138,6 +138,15 @@ class ViewController: UITableViewController {
             return trackItem
         }()
         
+        let overlayTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "overlay", withExtension: "jpg")!
+            let image = CIImage(contentsOf: url)!
+            let resource = ImageResource(image: image, duration: CMTime.init(seconds: 5, preferredTimescale: 600))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
         let seaTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
@@ -148,14 +157,19 @@ class ViewController: UITableViewController {
         
         let transitionDuration = CMTime(seconds: 2, preferredTimescale: 600)
         bambooTrackItem.videoTransition = PushTransition(duration: transitionDuration)
-        bambooTrackItem.audioTransition = FadeInOutAudioTransition.init(duration: transitionDuration)
+        bambooTrackItem.audioTransition = FadeInOutAudioTransition(duration: transitionDuration)
+        
+        overlayTrackItem.videoTransition = BoundingUpTransition(duration: transitionDuration)
         
         let timeline = Timeline()
-        timeline.videoChannel = [bambooTrackItem, seaTrackItem]
+        timeline.videoChannel = [bambooTrackItem, overlayTrackItem, seaTrackItem]
         timeline.audioChannel = [bambooTrackItem, seaTrackItem]
         
-        Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
-        Timeline.reloadAudioStartTime(providers: timeline.audioChannel)
+        do {
+            try Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
+        } catch {
+            assert(false, error.localizedDescription)
+        }
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
         compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
@@ -221,7 +235,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
-            imageCompositionProvider.timeRange = CMTimeRange(start: CMTime.init(seconds: 1, preferredTimescale: 600), end: CMTime(seconds: 4, preferredTimescale: 600))
+            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
             let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
             imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
             

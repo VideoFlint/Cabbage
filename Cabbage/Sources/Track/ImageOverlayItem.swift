@@ -10,7 +10,7 @@ import CoreMedia
 import CoreImage
 
 open class ImageOverlayItem: NSObject, ImageCompositionProvider, NSCopying {
-   
+    
     public var identifier: String
     public var resource: ImageResource
     required public init(resource: ImageResource) {
@@ -28,13 +28,18 @@ open class ImageOverlayItem: NSObject, ImageCompositionProvider, NSCopying {
         let item = type(of: self).init(resource: resource.copy() as! ImageResource)
         item.identifier = identifier
         item.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
-        item.timeRange = timeRange
+        item.startTime = startTime
         return item
     }
     
     // MARK: - ImageCompositionProvider
     
-    public var timeRange: CMTimeRange = CMTimeRange()
+    public var startTime: CMTime = CMTime.zero
+    public var duration: CMTime {
+        get {
+            return resource.scaledDuration
+        }
+    }
     
     open func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
         let relativeTime = time - timeRange.start
