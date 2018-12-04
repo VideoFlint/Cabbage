@@ -23,6 +23,8 @@ public protocol KeyframeValue: class, NSCopying {
 
 public class KeyframeVideoConfiguration<Value: KeyframeValue>: VideoConfigurationProtocol {
     
+    public init() { }
+    
     public class Keyframe: NSCopying {
         public var time = CMTime.zero
         public var value: Value
@@ -125,6 +127,8 @@ public class TransformKeyframeValue: KeyframeValue {
     public var rotation: CGFloat = 0
     public var transalation: CGPoint = CGPoint.zero
     
+    public init() { }
+    
     public func copy(with zone: NSZone? = nil) -> Any {
         let value = TransformKeyframeValue.init()
         value.scale = scale
@@ -171,6 +175,8 @@ public class TransformKeyframeValue: KeyframeValue {
 public class OpacityKeyframeValue: KeyframeValue {
     
     public var opacity: CGFloat = 1.0
+    
+    public init() { }
     
     public func copy(with zone: NSZone? = nil) -> Any {
         let value = OpacityKeyframeValue.init()
