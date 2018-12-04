@@ -9,8 +9,8 @@
 import AVFoundation
 import Accelerate
 
-class AudioMixer {
-    static func changeVolume(for bufferList: UnsafeMutablePointer<AudioBufferList>, volume: Float) {
+public class AudioMixer {
+    public static func changeVolume(for bufferList: UnsafeMutablePointer<AudioBufferList>, volume: Float) {
         let bufferList = UnsafeMutableAudioBufferListPointer(bufferList)
         for bufferIndex in 0..<bufferList.count {
             let audioBuffer = bufferList[bufferIndex]

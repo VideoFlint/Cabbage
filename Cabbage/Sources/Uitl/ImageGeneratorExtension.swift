@@ -9,9 +9,9 @@
 import AVFoundation
 import UIKit
 
-extension AVAssetImageGenerator {
+public extension AVAssetImageGenerator {
     
-    static func create(from items: [TrackItem], renderSize: CGSize) -> AVAssetImageGenerator? {
+    static public func create(from items: [TrackItem], renderSize: CGSize) -> AVAssetImageGenerator? {
         let timeline = Timeline()
         timeline.videoChannel = items
         let generator = CompositionGenerator(timeline: timeline)
@@ -21,7 +21,7 @@ extension AVAssetImageGenerator {
         return imageGenerator
     }
     
-    static func create(fromAsset asset: AVAsset) -> AVAssetImageGenerator {
+    static public func create(fromAsset asset: AVAsset) -> AVAssetImageGenerator {
         let ge = AVAssetImageGenerator(asset: asset)
         ge.requestedTimeToleranceBefore = CMTime.zero
         ge.requestedTimeToleranceAfter = CMTime.zero
@@ -29,7 +29,7 @@ extension AVAssetImageGenerator {
         return ge
     }
     
-    func updateAspectFitSize(_ size: CGSize) {
+    public func updateAspectFitSize(_ size: CGSize) {
         var maximumSize = size
         if !maximumSize.equalTo(.zero) {
             let tracks = asset.tracks(withMediaType: .video)
@@ -51,7 +51,7 @@ extension AVAssetImageGenerator {
         self.maximumSize = maximumSize
     }
     
-    func makeCopy() -> AVAssetImageGenerator {
+    public func makeCopy() -> AVAssetImageGenerator {
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = appliesPreferredTrackTransform
         generator.maximumSize = maximumSize

@@ -13,9 +13,9 @@ public protocol AudioProcessingNode: class {
 }
 
 public class AudioProcessingChain: NSObject, NSCopying {
-    var nodes: [AudioProcessingNode] = []
+    public var nodes: [AudioProcessingNode] = []
     
-    func process(timeRange: CMTimeRange, bufferListInOut: UnsafeMutablePointer<AudioBufferList>) {
+    public func process(timeRange: CMTimeRange, bufferListInOut: UnsafeMutablePointer<AudioBufferList>) {
         nodes.forEach { (node) in
             node.process(timeRange: timeRange, bufferListInOut: bufferListInOut)
         }
