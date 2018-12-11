@@ -149,10 +149,10 @@ public class FadeTransition: NoneTransition {
             }
             return 0
         }()
-        let bgImage = foregroundImage.apply(alpha: foregroundAlpha)
-        let frontImage = backgroundImage.apply(alpha: backgroundAlpha)
+        let frontImage = foregroundImage.apply(alpha: foregroundAlpha)
+        let bgImage = backgroundImage.apply(alpha: backgroundAlpha)
         
-        let resultImage = bgImage.composited(over: frontImage)
+        let resultImage = frontImage.composited(over: bgImage)
         return resultImage
     }
     

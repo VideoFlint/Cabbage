@@ -17,7 +17,7 @@ public class AVAssetTrackResource: Resource {
     
     open override var scaledDuration: CMTime {
         get {
-            return selectedTimeRange.duration * speed
+            return selectedTimeRange.duration * (1 / speed)
         }
     }
     
@@ -25,6 +25,7 @@ public class AVAssetTrackResource: Resource {
         super.init()
         self.asset = asset
         let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
+        self.duration = duration;
         selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
     }
     

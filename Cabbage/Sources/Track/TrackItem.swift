@@ -52,7 +52,8 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     }
     
     open func videoCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
-        let track = resource.tracks(for: .video)[index]
+        let trackInfo = resource.trackInfo(for: .video, at: index)
+        let track = trackInfo.track
         
         let compositionTrack: AVMutableCompositionTrack? = {
             if let track = composition.track(withTrackID: preferredTrackID) {
@@ -64,7 +65,6 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         if let compositionTrack = compositionTrack {
             compositionTrack.preferredTransforms[timeRange.vf_identifier] = track.preferredTransform
             do {
-                let trackInfo = resource.trackInfo(for: .video, at: index)
                 try compositionTrack.insertTimeRange(trackInfo.selectedTimeRange, of: trackInfo.track, at: timeRange.start)
                 compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: trackInfo.selectedTimeRange.duration), toDuration: trackInfo.scaleToDuration)
             } catch {
@@ -77,7 +77,8 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     open func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
         var finalImage: CIImage = {
             if let resource = resource as? ImageResource {
-                if let resourceImage = resource.image(at: time, renderSize: renderSize) {
+                let relativeTime = time - self.startTime
+                if let resourceImage = resource.image(at: relativeTime, renderSize: renderSize) {
                     return resourceImage
                 }
             }
@@ -96,16 +97,15 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     }
     
     open func audioCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
-        let track = resource.tracks(for: .audio)[index]
+        let trackInfo = resource.trackInfo(for: .audio, at: index)
         let compositionTrack: AVMutableCompositionTrack? = {
             if let track = composition.track(withTrackID: preferredTrackID) {
                 return track
             }
-            return composition.addMutableTrack(withMediaType: track.mediaType, preferredTrackID: preferredTrackID)
+            return composition.addMutableTrack(withMediaType: trackInfo.track.mediaType, preferredTrackID: preferredTrackID)
         }()
         if let compositionTrack = compositionTrack {
             do {
-                let trackInfo = resource.trackInfo(for: .audio, at: index)
                 try compositionTrack.insertTimeRange(trackInfo.selectedTimeRange, of: trackInfo.track, at: timeRange.start)
                 compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: trackInfo.selectedTimeRange.duration), toDuration: trackInfo.scaleToDuration)
             } catch {

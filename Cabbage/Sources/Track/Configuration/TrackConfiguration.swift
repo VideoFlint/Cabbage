@@ -11,8 +11,6 @@ import CoreImage
 
 public class TrackConfiguration: NSObject, NSCopying {
     
-    // MARK: - Timing
-    
     // MARK: - Media
     public var videoConfiguration: VideoConfiguration = VideoConfiguration.createDefaultConfiguration()
     public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
@@ -67,6 +65,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         let configuration = type(of: self).init()
         configuration.baseContentMode = baseContentMode
         configuration.transform = transform
+        configuration.opacity = opacity;
         configuration.configurations = configurations.map({ $0.copy(with: zone) as! VideoConfigurationProtocol });
         return configuration
     }
