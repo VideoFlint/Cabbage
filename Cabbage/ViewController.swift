@@ -110,7 +110,7 @@ class ViewController: UITableViewController {
                     let opacityKeyframeValue = TransformKeyframeValue()
                     opacityKeyframeValue.scale = value.0
                     opacityKeyframeValue.rotation = value.1
-                    opacityKeyframeValue.transalation = value.2
+                    opacityKeyframeValue.translation = value.2
                     let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
                     configuration.insert(keyframe)
                 })
@@ -196,7 +196,7 @@ class ViewController: UITableViewController {
                     let opacityKeyframeValue = TransformKeyframeValue()
                     opacityKeyframeValue.scale = value.0
                     opacityKeyframeValue.rotation = value.1
-                    opacityKeyframeValue.transalation = value.2
+                    opacityKeyframeValue.translation = value.2
                     let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
                     configuration.insert(keyframe)
                 })

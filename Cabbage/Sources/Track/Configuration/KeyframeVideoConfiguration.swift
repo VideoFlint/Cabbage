@@ -125,7 +125,7 @@ public class TransformKeyframeValue: KeyframeValue {
     
     public var scale: CGFloat = 1.0
     public var rotation: CGFloat = 0
-    public var transalation: CGPoint = CGPoint.zero
+    public var translation: CGPoint = CGPoint.zero
     
     public init() { }
     
@@ -133,7 +133,7 @@ public class TransformKeyframeValue: KeyframeValue {
         let value = TransformKeyframeValue.init()
         value.scale = scale
         value.rotation = rotation
-        value.transalation = transalation
+        value.translation = translation
         return value
     }
     
@@ -159,8 +159,8 @@ public class TransformKeyframeValue: KeyframeValue {
         let rotation = fromValue.rotation + (toValue.rotation - fromValue.rotation) * param.tween
         transform = transform.concatenating(CGAffineTransform(rotationAngle: rotation))
         
-        let translationX = fromValue.transalation.x + (toValue.transalation.x - fromValue.transalation.x) * param.tween
-        let translationY = fromValue.transalation.y + (toValue.transalation.y - fromValue.transalation.y) * param.tween
+        let translationX = fromValue.translation.x + (toValue.translation.x - fromValue.translation.x) * param.tween
+        let translationY = fromValue.translation.y + (toValue.translation.y - fromValue.translation.y) * param.tween
         transform = transform.concatenating(CGAffineTransform(translationX: translationX, y: translationY))
         
         transform = transform.concatenating(CGAffineTransform(translationX: (sourceImage.extent.origin.x + sourceImage.extent.width/2), y: (sourceImage.extent.origin.y + sourceImage.extent.height/2)))
