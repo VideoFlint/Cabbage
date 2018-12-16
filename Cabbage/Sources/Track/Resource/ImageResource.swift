@@ -19,6 +19,7 @@ open class ImageResource: Resource {
         self.status = .avaliable
         self.duration = duration
         self.selectedTimeRange = CMTimeRange(start: CMTime.zero, duration: duration)
+        self.scaledDuration = duration
     }
     
     required public init() {

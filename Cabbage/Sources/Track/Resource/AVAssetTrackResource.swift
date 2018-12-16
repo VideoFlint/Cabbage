@@ -13,13 +13,6 @@ import UIKit
 public class AVAssetTrackResource: Resource {
     
     public var asset: AVAsset?
-    public var speed: Float = 1.0
-    
-    open override var scaledDuration: CMTime {
-        get {
-            return selectedTimeRange.duration * (1 / speed)
-        }
-    }
     
     public init(asset: AVAsset) {
         super.init()
@@ -27,6 +20,7 @@ public class AVAssetTrackResource: Resource {
         let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
         self.duration = duration;
         selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
+        scaledDuration = duration
     }
     
     required public init() {
@@ -102,9 +96,14 @@ public class AVAssetTrackResource: Resource {
     override public func copy(with zone: NSZone? = nil) -> Any {
         let resource = super.copy(with: zone) as! AVAssetTrackResource
         resource.asset = asset
-        resource.speed = speed;
         
         return resource
     }
     
+}
+
+public extension AVAssetTrackResource {
+    public func setSpeed(_ speed: Float) {
+        scaledDuration = selectedTimeRange.duration * (1 / speed)
+    }
 }

@@ -140,12 +140,45 @@ public class CompositionGenerator {
             previousAudioTransition = provider.audioTransition
         }
         
+        // Reuse trackID, because AVFoundation can only add 16 tracks currently
+        
+        var overlaysTrackIDs: [Int32] = []
         timeline.overlays.forEach { (provider) in
             for index in 0..<provider.numberOfVideoTracks() {
-                let trackID: Int32 = generateNextTrackID()
+                
+                let trackID: Int32 = {
+                    if let trackID = overlaysTrackIDs.first(where: { (trackID) -> Bool in
+                        if let track: AVCompositionTrack = composition.track(withTrackID: trackID) {
+                            for segment in track.segments {
+                                if segment.timeMapping.target.start > provider.timeRange.end {
+                                    break
+                                }
+                                if segment.timeMapping.target.end < provider.timeRange.start {
+                                    continue
+                                }
+                                if !segment.isEmpty {
+                                    let intersection = provider.timeRange.intersection(segment.timeMapping.target)
+                                    if intersection.duration.seconds > 0 {
+                                        return false
+                                    }
+                                }
+                                return true
+                            }
+                        }
+                        return false
+                    }) {
+                        return trackID;
+                    }
+                    return generateNextTrackID()
+                }()
+                
                 if let compositionTrack = provider.videoCompositionTrack(for: composition, at: index, preferredTrackID: trackID) {
                     let info = TrackInfo.init(track: compositionTrack, info: provider)
                     overlayTrackInfo.append(info)
+                }
+                
+                if !overlaysTrackIDs.contains(trackID) {
+                    overlaysTrackIDs.append(trackID);
                 }
             }
         }
@@ -191,7 +224,7 @@ public class CompositionGenerator {
         }
         
         layerInstructions.sort { (left, right) -> Bool in
-            return left.timeRange.end < right.timeRange.end
+            return left.timeRange.start < right.timeRange.start
         }
         
         // Create multiple instructions，each instructions contains layerInstructions whose time range have insection with instruction，
@@ -308,15 +341,17 @@ public class CompositionGenerator {
                     slices.remove(at: offset)
                     let sliceTimeRanges = CMTimeRange.sliceTimeRanges(for: layerInstruction.timeRange, timeRange2: slice.0)
                     sliceTimeRanges.forEach({ (timeRange) in
-                        if slice.0.containsTimeRange(timeRange) && layerInstruction.timeRange.containsTimeRange(timeRange) {
-                            let newSlice = (timeRange, slice.1 + [layerInstruction])
-                            slices.append(newSlice)
-                            leftTimeRanges = leftTimeRanges.flatMap({ (leftTimeRange) -> [CMTimeRange] in
-                                return leftTimeRange.substruct(timeRange)
-                            })
-                        } else if slice.0.containsTimeRange(timeRange) {
-                            let newSlice = (timeRange, slice.1)
-                            slices.append(newSlice)
+                        if slice.0.containsTimeRange(timeRange) {
+                            if layerInstruction.timeRange.containsTimeRange(timeRange)  {
+                                let newSlice = (timeRange, slice.1 + [layerInstruction])
+                                slices.insert(newSlice, at: offset)
+                                leftTimeRanges = leftTimeRanges.flatMap({ (leftTimeRange) -> [CMTimeRange] in
+                                    return leftTimeRange.substruct(timeRange)
+                                })
+                            } else {
+                                let newSlice = (timeRange, slice.1)
+                                slices.insert(newSlice, at: offset)
+                            }
                         }
                     })
                 }

@@ -33,6 +33,8 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         item.configuration = configuration.copy() as! TrackConfiguration
         item.videoTransition = videoTransition
         item.audioTransition = audioTransition
+        item.startTime = startTime
+        item.duration = duration
         return item
     }
     
@@ -42,6 +44,9 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     open var duration: CMTime {
         get {
             return resource.scaledDuration
+        }
+        set {
+            resource.scaledDuration = newValue
         }
     }
     
@@ -65,6 +70,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         if let compositionTrack = compositionTrack {
             compositionTrack.preferredTransforms[timeRange.vf_identifier] = track.preferredTransform
             do {
+                compositionTrack.removeTimeRange(CMTimeRange(start: timeRange.start, duration: trackInfo.scaleToDuration))
                 try compositionTrack.insertTimeRange(trackInfo.selectedTimeRange, of: trackInfo.track, at: timeRange.start)
                 compositionTrack.scaleTimeRange(CMTimeRange(start: timeRange.start, duration: trackInfo.selectedTimeRange.duration), toDuration: trackInfo.scaleToDuration)
             } catch {

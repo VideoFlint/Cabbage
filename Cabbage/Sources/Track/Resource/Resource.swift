@@ -31,11 +31,7 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     /// Selected time range, indicate how many resources will be inserted to AVCompositionTrack
     open var selectedTimeRange: CMTimeRange = CMTimeRange.zero
     
-    open var scaledDuration: CMTime {
-        get {
-            return selectedTimeRange.duration
-        }
-    }
+    open var scaledDuration: CMTime = CMTime.zero
     
     /// Natural frame size of this resource
     open var size: CGSize = .zero
@@ -77,8 +73,10 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     // MARK: - NSCopying
     open func copy(with zone: NSZone? = nil) -> Any {
         let resource = type(of: self).init()
+        resource.size = size
         resource.duration = duration
         resource.selectedTimeRange = selectedTimeRange
+        resource.scaledDuration = scaledDuration
         return resource
     }
     
