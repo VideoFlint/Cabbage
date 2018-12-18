@@ -43,8 +43,10 @@
 		5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56822A2198580E00BBF5FE /* CoreImageExtension.swift */; };
 		5F64D0E621981E850084A0AA /* sea.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E421981E850084A0AA /* sea.mp4 */; };
 		5F64D0E721981E850084A0AA /* bamboo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E521981E850084A0AA /* bamboo.mp4 */; };
+		5FBFBE0221C883140081FBB3 /* cute.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FBFBE0121C883140081FBB3 /* cute.mp4 */; };
 		5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */; };
 		5FE63CC921A1B131006FD15A /* AVAssetImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */; };
+		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,8 +88,10 @@
 		5F56822A2198580E00BBF5FE /* CoreImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreImageExtension.swift; sourceTree = "<group>"; };
 		5F64D0E421981E850084A0AA /* sea.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sea.mp4; sourceTree = "<group>"; };
 		5F64D0E521981E850084A0AA /* bamboo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = bamboo.mp4; sourceTree = "<group>"; };
+		5FBFBE0121C883140081FBB3 /* cute.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = cute.mp4; sourceTree = "<group>"; };
 		5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReaderImageResource.swift; sourceTree = "<group>"; };
 		5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetImageResource.swift; sourceTree = "<group>"; };
+		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +145,8 @@
 				5F46457B210C71400013ADC3 /* Assets.xcassets */,
 				5F46457D210C71400013ADC3 /* LaunchScreen.storyboard */,
 				5F64D0E521981E850084A0AA /* bamboo.mp4 */,
+				5FBFBE0121C883140081FBB3 /* cute.mp4 */,
+				5FFDD53C21C4E34400AD08E5 /* 853.mp4 */,
 				5F64D0E421981E850084A0AA /* sea.mp4 */,
 				5F3BEE9921645BB200881217 /* overlay.jpg */,
 				5F464580210C71400013ADC3 /* Info.plist */,
@@ -307,6 +313,8 @@
 				5F3BEE9A21645BB200881217 /* overlay.jpg in Resources */,
 				5F4645B3210C71790013ADC3 /* black_empty.mp4 in Resources */,
 				5F46457C210C71400013ADC3 /* Assets.xcassets in Resources */,
+				5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */,
+				5FBFBE0221C883140081FBB3 /* cute.mp4 in Resources */,
 				5F46457A210C713F0013ADC3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

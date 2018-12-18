@@ -25,7 +25,7 @@ class ViewController: UITableViewController {
             } else if indexPath.row == 3 {
                 return keyframePlayerItem()
             } else if indexPath.row == 4 {
-                return testReaderOutput()
+                return fuourSquareVideo()
             }
             return simplePlayerItem()
         }()
@@ -221,6 +221,7 @@ class ViewController: UITableViewController {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            resource.setSpeed(0.5)
             let trackItem = TrackItem(resource: resource)
             trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
             return trackItem
@@ -232,11 +233,12 @@ class ViewController: UITableViewController {
         
         timeline.passingThroughVideoCompositionProvider = {
             let imageCompositionGroupProvider = ImageCompositionGroupProvider()
-            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+            let url = Bundle.main.url(forResource: "853", withExtension: "mp4")!
             let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
+            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 5, preferredTimescale: 600), end: CMTime(seconds: 9, preferredTimescale: 600))
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
             imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
-            let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
+            let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
             imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
             
             imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
@@ -248,6 +250,114 @@ class ViewController: UITableViewController {
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
+    
+    func fuourSquareVideo() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let seaTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        
+        let flyTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "cute", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let bamboo2TrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let trackItems = [flyTrackItem, bambooTrackItem, seaTrackItem, bamboo2TrackItem]
+        
+        let timeline = Timeline()
+        timeline.videoChannel = trackItems
+        timeline.audioChannel = trackItems
+        
+        try! Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
+        
+        let renderSize = CGSize(width: 1920, height: 1080)
+        
+        timeline.overlays = {
+            let foursquareRenderSize = CGSize(width: renderSize.width / 2, height: renderSize.height / 2)
+            var overlays: [VideoProvider] = []
+            let fullTimeRange: CMTimeRange = {
+                var duration = CMTime.zero
+                trackItems.forEach({ duration = $0.duration + duration })
+                return CMTimeRange.init(start: CMTime.zero, duration: duration)
+            }()
+            
+            // Update main item's frame
+            func frameWithIndex(_ index: Int) -> CGRect {
+                switch index {
+                case 0:
+                    return CGRect(origin: CGPoint.zero, size: foursquareRenderSize)
+                case 1:
+                    return CGRect(origin: CGPoint(x: foursquareRenderSize.width, y: 0), size: foursquareRenderSize)
+                case 2:
+                    return CGRect(origin: CGPoint(x: 0, y:  foursquareRenderSize.height), size: foursquareRenderSize)
+                case 3:
+                    return CGRect(origin: CGPoint(x: foursquareRenderSize.width, y: foursquareRenderSize.height), size: foursquareRenderSize)
+                default:
+                    break
+                }
+                return CGRect(origin: CGPoint.zero, size: foursquareRenderSize)
+            }
+            
+            trackItems.enumerated().forEach({ (offset, mainTrackItem) in
+                let frame: CGRect = {
+                    let index = offset % 4
+                    return frameWithIndex(index)
+                }()
+                mainTrackItem.configuration.videoConfiguration.baseContentMode = .custom(frame)
+                
+                let timeRanges = fullTimeRange.substruct(mainTrackItem.timeRange)
+                for timeRange in timeRanges {
+                    Log.debug("timeRange: {\(String(format: "%.2f", timeRange.start.seconds)) - \(String(format: "%.2f", timeRange.end.seconds))}")
+                    if timeRange.duration.seconds > 0 {
+                        let staticTrackItem = mainTrackItem.copy() as! TrackItem
+                        staticTrackItem.startTime = timeRange.start
+                        staticTrackItem.duration = timeRange.duration
+                        if timeRange.start <= mainTrackItem.timeRange.start {
+                            let start = staticTrackItem.resource.selectedTimeRange.start
+                            staticTrackItem.resource.selectedTimeRange = CMTimeRange(start: start, duration: CMTime(value: 1, 30))
+                        } else {
+                            let start = staticTrackItem.resource.selectedTimeRange.end - CMTime(value: 1, 30)
+                            staticTrackItem.resource.selectedTimeRange = CMTimeRange(start: start, duration: CMTime(value: 1, 30))
+                        }
+                        overlays.append(staticTrackItem)
+                    }
+                }
+            })
+            
+            return overlays
+        }()
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = renderSize
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
+    
+    
+    
     
 }
 

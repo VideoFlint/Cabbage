@@ -35,7 +35,7 @@ public class AVAssetTrackResource: Resource {
             asset.loadValuesAsynchronously(forKeys: ["tracks", "duration"], completionHandler: { [weak self] in
                 guard let strongSelf = self else { return }
                 
-                defer {
+                func finished() {
                     if asset.tracks.count > 0 {
                         if let track = asset.tracks(withMediaType: .video).first {
                             strongSelf.size = track.naturalSize.applying(track.preferredTransform)
@@ -43,7 +43,7 @@ public class AVAssetTrackResource: Resource {
                         strongSelf.status = .avaliable
                         strongSelf.duration = asset.duration
                     }
-                    DispatchQueue.main.async {                    
+                    DispatchQueue.main.async {
                         completion(strongSelf.status, strongSelf.statusError)
                     }
                 }
@@ -54,6 +54,7 @@ public class AVAssetTrackResource: Resource {
                     strongSelf.statusError = error;
                     strongSelf.status = .unavaliable;
                     Log.error("Failed to load tracks, status: \(tracksStatus), error: \(String(describing: error))")
+                    finished()
                     return
                 }
                 let durationStatus = asset.statusOfValue(forKey: "duration", error: &error)
@@ -61,8 +62,10 @@ public class AVAssetTrackResource: Resource {
                     strongSelf.statusError = error;
                     strongSelf.status = .unavaliable;
                     Log.error("Failed to duration tracks, status: \(tracksStatus), error: \(String(describing: error))")
+                    finished()
                     return
                 }
+                finished()
             })
             return ResourceTask.init(cancel: {
                 asset.cancelLoading()
