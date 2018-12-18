@@ -9,7 +9,6 @@
 import Foundation
 import CoreImage
 import AVFoundation
-import VideoToolbox
 
 
 /// Load image from PHAsset as video frame
@@ -17,22 +16,17 @@ open class AVAssetReaderImageResource: ImageResource {
     
     public var asset: AVAsset?
     
-    private var decompressionSession: VTDecompressionSession?
+    private var lastReaderTime = CMTime.zero
     
-    private var sampleBuffers: [CMSampleBuffer] = []
-    private var currentTimeRange = CMTimeRange.zero
-    
-    deinit {
-        if let decompressionSession = decompressionSession {
-            VTDecompressionSessionInvalidate(decompressionSession)
-        }
-    }
+    private var assetReader: AVAssetReader?
+    private var trackOutput: AVAssetReaderTrackOutput?
     
     public init(asset: AVAsset) {
         super.init()
         self.asset = asset
         let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
         selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
+        scaledDuration = duration
     }
     
     required public init() {
@@ -44,101 +38,71 @@ open class AVAssetReaderImageResource: ImageResource {
             return image
         }
         
-        createDecodeCompressionIfNeed()
-        loadSamplebuffersIfNeed(for: time)
-        
-        let sampleBuffer: CMSampleBuffer? = {
-            for sampleBuffer in sampleBuffers {
-                let presentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                let currentTime = selectedTimeRange.start + time
-                if fabs(presentationTime.seconds - currentTime.seconds) <= 0.17 {
-                    return sampleBuffer
-                }
-            }
-            return nil
-        }()
-        if let sampleBuffer = sampleBuffer {
-            if let decodedImageBuffer = decode(sampleBuffer: sampleBuffer) {
-                let image = CIImage(cvPixelBuffer: decodedImageBuffer)
-                return image
-            }
+        let sampleBuffer: CMSampleBuffer? = loadSamplebuffer(for: time)
+        if let sampleBuffer = sampleBuffer, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            return CIImage(cvPixelBuffer: imageBuffer)
         }
         
         return image;
     }
     
-    private func createDecodeCompressionIfNeed() {
-        if decompressionSession != nil {
-            return
+    private func loadSamplebuffer(for time: CMTime) -> CMSampleBuffer? {
+        if time < self.lastReaderTime || time.seconds > self.lastReaderTime.seconds + 1.0 {
+            self.cleanReader()
         }
-        guard let asset = asset,
-            let track = asset.tracks(withMediaType: .video).first,
-            track.formatDescriptions.count > 0 else {
-                return
+        
+        if assetReader == nil || trackOutput == nil {
+            createAssetReaderOutput(at: time)
         }
-        let formatDesc = track.formatDescriptions.first as! CMVideoFormatDescription
-        let status = VTDecompressionSessionCreate(allocator: nil, formatDescription: formatDesc, decoderSpecification: nil, imageBufferAttributes: nil, outputCallback: nil, decompressionSessionOut: &decompressionSession)
-        if status != noErr {
-            // throw someError(status)
-            Log.error("Can't create decompressionSession")
+        
+        if assetReader == nil || trackOutput == nil {
+            return nil
         }
-    }
-    
-    private func decode(sampleBuffer: CMSampleBuffer) -> CVImageBuffer? {
-        guard let decompressionSession = decompressionSession else {
-            return nil;
-        }
-        var decodedImageBuffer: CVImageBuffer?
-        let status = VTDecompressionSessionDecodeFrame(decompressionSession, sampleBuffer: sampleBuffer, flags: [], infoFlagsOut: nil) { (status, flags, imageBuffer, presentationTimeStamp, presentationDuration) in
-            if status != noErr {
-                // throw someError(status)
-                Log.error("1. Can't decode frame, status: \(status)")
-                return
+        
+        self.lastReaderTime = time
+        
+        var currentSampleBuffer: CMSampleBuffer?
+        while let sampleBuffer = trackOutput?.copyNextSampleBuffer() {
+            if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
+                let presentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+                if presentationTime.seconds > (selectedTimeRange.start.seconds + time.seconds) - 0.017 {
+                    currentSampleBuffer = sampleBuffer
+                    break
+                }
             }
-            decodedImageBuffer = imageBuffer
         }
-        if status != noErr {
-            // throw someError(status)
-            Log.error("2. Can't decode frame, status: \(status)")
-        }
-        return decodedImageBuffer
+        return currentSampleBuffer
     }
     
-    private func loadSamplebuffersIfNeed(for time: CMTime) {
+    private func createAssetReaderOutput(at time: CMTime) {
         guard let asset = asset,
             let reader = try? AVAssetReader.init(asset: asset),
             let track = asset.tracks(withMediaType: .video).first else {
                 return
         }
-        let trackOutput = AVAssetReaderTrackOutput(track: track, outputSettings: nil)
+        let outputSettings: [String : Any] =
+            [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_32BGRA,
+             String(kCVPixelBufferOpenGLESCompatibilityKey): true]
+        let trackOutput = AVAssetReaderTrackOutput(track: track, outputSettings: outputSettings)
         trackOutput.alwaysCopiesSampleData = false
         
         guard reader.canAdd(trackOutput) else {
             return
         }
         reader.add(trackOutput)
+        reader.timeRange = CMTimeRange(start: selectedTimeRange.start + time, end: selectedTimeRange.end);
+        reader.startReading()
         
-        if !currentTimeRange.containsTime(time) {
-            var readerTimeRange = CMTimeRange(start: selectedTimeRange.start + time, duration: CMTime(value:60, timescale: 600))
-            if readerTimeRange.end > selectedTimeRange.end {
-                readerTimeRange.duration = selectedTimeRange.end - readerTimeRange.start
-            }
-            reader.timeRange = readerTimeRange
-            reader.startReading()
-            
-            currentTimeRange = CMTimeRange(start: time, duration: readerTimeRange.duration)
-        
-            while let sampleBuffer = trackOutput.copyNextSampleBuffer() {
-                if CMSampleBufferGetDataBuffer(sampleBuffer) != nil {
-                    sampleBuffers.append(sampleBuffer)
-                }
-            }
-            
-            reader.cancelReading()
-        }
-        
-        return
+        self.assetReader = reader
+        self.trackOutput = trackOutput
     }
+    
+    private func cleanReader() {
+        self.assetReader?.cancelReading()
+        self.assetReader = nil
+        self.trackOutput = nil
+    }
+    
     
     // MARK: - Load Media before use resource
     

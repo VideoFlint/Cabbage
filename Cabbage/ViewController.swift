@@ -26,6 +26,8 @@ class ViewController: UITableViewController {
                 return keyframePlayerItem()
             } else if indexPath.row == 4 {
                 return fuourSquareVideo()
+            } else if indexPath.row == 5 {
+                return testReaderOutput()
             }
             return simplePlayerItem()
         }()
@@ -233,9 +235,9 @@ class ViewController: UITableViewController {
         
         timeline.passingThroughVideoCompositionProvider = {
             let imageCompositionGroupProvider = ImageCompositionGroupProvider()
-            let url = Bundle.main.url(forResource: "853", withExtension: "mp4")!
+            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
-            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 5, preferredTimescale: 600), end: CMTime(seconds: 9, preferredTimescale: 600))
+            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 0, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
             imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
             let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
