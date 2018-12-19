@@ -45,7 +45,7 @@
 		5F64D0E721981E850084A0AA /* bamboo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5F64D0E521981E850084A0AA /* bamboo.mp4 */; };
 		5FBFBE0221C883140081FBB3 /* cute.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FBFBE0121C883140081FBB3 /* cute.mp4 */; };
 		5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */; };
-		5FE63CC921A1B131006FD15A /* AVAssetImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */; };
+		5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */; };
 		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
 /* End PBXBuildFile section */
 
@@ -90,7 +90,7 @@
 		5F64D0E521981E850084A0AA /* bamboo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = bamboo.mp4; sourceTree = "<group>"; };
 		5FBFBE0121C883140081FBB3 /* cute.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = cute.mp4; sourceTree = "<group>"; };
 		5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReaderImageResource.swift; sourceTree = "<group>"; };
-		5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetImageResource.swift; sourceTree = "<group>"; };
+		5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReverseImageResource.swift; sourceTree = "<group>"; };
 		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,7 +114,7 @@
 				5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */,
 				5F4645A2210C71790013ADC3 /* AVAssetTrackResource.swift */,
 				5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */,
-				5FE63CC821A1B131006FD15A /* AVAssetImageResource.swift */,
+				5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -330,7 +330,7 @@
 				5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */,
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
-				5FE63CC921A1B131006FD15A /* AVAssetImageResource.swift in Sources */,
+				5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */,
 				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
 				5F4645B9210C71790013ADC3 /* PHAssetImageResource.swift in Sources */,
 				5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */,

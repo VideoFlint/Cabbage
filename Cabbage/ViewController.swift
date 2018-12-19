@@ -28,6 +28,8 @@ class ViewController: UITableViewController {
                 return fuourSquareVideo()
             } else if indexPath.row == 5 {
                 return testReaderOutput()
+            } else if indexPath.row == 6 {
+                return reversePlayerItem()
             }
             return simplePlayerItem()
         }()
@@ -358,7 +360,23 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    
+    func reversePlayerItem() -> AVPlayerItem? {
+        let seaTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+            let resource = AVAssetReverseImageResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [seaTrackItem]
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
     
     
 }

@@ -1,5 +1,5 @@
 //
-//  AVAssetImageResource.swift
+//  AVAssetReaderImageResource.swift
 //  Cabbage
 //
 //  Created by Vito on 2018/11/18.
@@ -34,10 +34,6 @@ open class AVAssetReaderImageResource: ImageResource {
     }
     
     open override func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
-        guard selectedTimeRange.containsTime(time) else {
-            return image
-        }
-        
         let sampleBuffer: CMSampleBuffer? = loadSamplebuffer(for: time)
         if let sampleBuffer = sampleBuffer, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             return CIImage(cvPixelBuffer: imageBuffer)
