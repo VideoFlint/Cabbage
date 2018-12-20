@@ -23,7 +23,7 @@ open class AVAssetReverseImageResource: ImageResource {
     
     private var loadBufferQueue: DispatchQueue = DispatchQueue(label: "com.cabbage.reverse.loadbuffer")
     
-    private var bufferDuration = CMTime(seconds: 0.2, preferredTimescale: 600)
+    private var bufferDuration = CMTime(seconds: 0.3, preferredTimescale: 600)
     
     public init(asset: AVAsset) {
         super.init()
@@ -38,10 +38,11 @@ open class AVAssetReverseImageResource: ImageResource {
     }
     
     open override func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
+        let time = sourceTime(for: time)
         guard selectedTimeRange.duration > time else {
             return nil
         }
-        let realTime = max(0, selectedTimeRange.duration.seconds - time.seconds - 0.033)
+        let realTime = max(0, selectedTimeRange.end.seconds - time.seconds)
         
         let sampleBuffer: CMSampleBuffer? = loadSamplebuffer(for: CMTime(seconds: realTime, preferredTimescale: 600))
         if let sampleBuffer = sampleBuffer, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
@@ -52,15 +53,6 @@ open class AVAssetReverseImageResource: ImageResource {
     }
     
     private func loadSamplebuffer(for time: CMTime) -> CMSampleBuffer? {
-        
-        loadBufferQueue.async {
-        self.sampleBuffers.removeAll { (sampleBuffer) -> Bool in
-            let presentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
-            return presentationTime > (self.selectedTimeRange.start.seconds + time.seconds) ||
-                (presentationTime < (self.selectedTimeRange.start.seconds - self.bufferDuration.seconds * 2))
-        }
-        }
-        
         // 1. If seeking backward, reset
         if time > self.lastReaderTime {
             loadBufferQueue.sync {
@@ -70,49 +62,78 @@ open class AVAssetReverseImageResource: ImageResource {
         }
         self.lastReaderTime = time
         
-        // preload if need
-        preloadSampleBuffers(at: time)
-        
         
         // 2. get currentSampleBuffer
         var currentSampleBuffer: CMSampleBuffer?
-        
-        
-        let sampleBuffers = self.sampleBuffers
-        currentSampleBuffer = sampleBuffers.first { (sampleBuffer) -> Bool in
-            return abs(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds - (selectedTimeRange.start.seconds + time.seconds)) < 0.017
+        func getCurrentSampleBuffer() -> CMSampleBuffer? {
+            let sampleBuffers = self.sampleBuffers
+            return sampleBuffers.first { (sampleBuffer) -> Bool in
+                return abs(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds - time.seconds) < 0.05
+            }
         }
         
+        func removeUnusedBuffers() {
+            loadBufferQueue.async {
+                self.sampleBuffers.removeAll { (sampleBuffer) -> Bool in
+                    let presentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
+                    return presentationTime > time.seconds ||
+                        (presentationTime < (self.selectedTimeRange.start.seconds - self.bufferDuration.seconds * 2))
+                }
+                Log.debug("remove at:\(String.init(format: "%.5f", time.seconds)) sample count: \(self.sampleBuffers.count)")
+            }
+        }
+        
+        currentSampleBuffer = getCurrentSampleBuffer()
+        
         if currentSampleBuffer != nil {
-            Log.debug("load time:\(String.init(format: "%.5f", selectedTimeRange.start.seconds + time.seconds)) presentationTime: \(String.init(format: "%.5f", CMSampleBufferGetPresentationTimeStamp(currentSampleBuffer!).seconds)), sample count: \(sampleBuffers.count)")
+            removeUnusedBuffers()
+            
+            Log.debug("load time:\(String.init(format: "%.5f", time.seconds)) presentationTime: \(String.init(format: "%.5f", CMSampleBufferGetPresentationTimeStamp(currentSampleBuffer!).seconds)), sample count: \(sampleBuffers.count)")
+            // preload if need
+            preloadSampleBuffers(at: time)
             return currentSampleBuffer
         }
         
         // 3. Did not preload, force load
-        currentSampleBuffer = forceLoadSampleBuffer(at: time)
+        loadBufferQueue.sync {
+            currentSampleBuffer = getCurrentSampleBuffer()
+            if currentSampleBuffer == nil {
+                self.forceLoadSampleBuffer(at: time)
+            }
+        }
+        
+        currentSampleBuffer = getCurrentSampleBuffer()
+        
+        preloadSampleBuffers(at: time)
+        
+        removeUnusedBuffers()
         
         return currentSampleBuffer
     }
     
-    private func forceLoadSampleBuffer(at time: CMTime) -> CMSampleBuffer? {
-        Log.debug("========= force load sample buffer time: \(String.init(format: "%.5f", selectedTimeRange.start.seconds + time.seconds)) =========")
-        let reader = createAssetReader(for: CMTimeRange(start: selectedTimeRange.start + time, duration: CMTime(value: 30, 600)))
+    private func forceLoadSampleBuffer(at time: CMTime) {
+        Log.debug("========= force load sample buffer time: \(String.init(format: "%.5f", time.seconds)) =========")
+        var endTime = time
+        if let sampleBuffer = sampleBuffers.last {
+            endTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        }
+        let startSeconds: Double = max(endTime.seconds - bufferDuration.seconds, selectedTimeRange.start.seconds);
+        let startTime = CMTime(seconds: startSeconds, preferredTimescale: 600)
+        let timeRange = CMTimeRange(start: startTime, end: endTime);
+        let reader = createAssetReader(for: timeRange)
         if let assetReader = reader.0, let trackOutput = reader.1 {
             assetReader.startReading()
             
-            var resultSampleBuffer: CMSampleBuffer?
-            
             while let sampleBuffer = trackOutput.copyNextSampleBuffer() {
                 if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
-                    resultSampleBuffer = sampleBuffer
-                    break
+                    self.sampleBuffers.insert(sampleBuffer, at: 0)
                 }
             }
+            self.sampleBuffers.sort { (buffer1, buffer2) -> Bool in
+                return CMSampleBufferGetPresentationTimeStamp(buffer1) > CMSampleBufferGetPresentationTimeStamp(buffer2)
+            }
             assetReader.cancelReading()
-            
-            return resultSampleBuffer
         }
-        return nil
     }
     
     private var isPreloading = false
@@ -125,9 +146,9 @@ open class AVAssetReverseImageResource: ImageResource {
         
         if let sampleBuffer = sampleBuffers.last {
             let presentationDuration = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
-            needPreload = presentationDuration > 0 && presentationDuration > (selectedTimeRange.start.seconds + time.seconds) - bufferDuration.seconds
+            needPreload = presentationDuration > 0 && presentationDuration > (time.seconds) - bufferDuration.seconds
             if needPreload {
-                Log.debug("2. preload sample buffer: \(String.init(format: "%.3f", selectedTimeRange.start.seconds + time.seconds)), lastSampleBuffer time: \(String.init(format: "%.3f", CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds))")
+                Log.debug("2. preload sample buffer: \(String.init(format: "%.3f", time.seconds)), lastSampleBuffer time: \(String.init(format: "%.3f", CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds))")
             }
         } else {
             needPreload = true
@@ -170,8 +191,10 @@ open class AVAssetReverseImageResource: ImageResource {
             let track = asset.tracks(withMediaType: .video).first else {
                 return (nil, nil)
         }
+        let size = track.naturalSize.applying(track.preferredTransform)
         let outputSettings: [String : Any] =
-            [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_32BGRA]
+            [String(kCVPixelBufferWidthKey): size.width,
+             String(kCVPixelBufferHeightKey): size.height]
         let trackOutput = AVAssetReaderTrackOutput(track: track, outputSettings: outputSettings)
         trackOutput.alwaysCopiesSampleData = false
         trackOutput.supportsRandomAccess = true
@@ -186,7 +209,7 @@ open class AVAssetReverseImageResource: ImageResource {
     }
     
     private func createAssetReaderOutput(at time: CMTime) {
-        let startSeconds: Double = max(selectedTimeRange.start.seconds + time.seconds - bufferDuration.seconds, selectedTimeRange.start.seconds);
+        let startSeconds: Double = max(time.seconds - bufferDuration.seconds, selectedTimeRange.start.seconds);
         let startTime = CMTime(seconds: startSeconds, preferredTimescale: 600)
         let timeRange = CMTimeRange(start: startTime, end: time);
         let reader = createAssetReader(for: timeRange)
@@ -200,9 +223,13 @@ open class AVAssetReverseImageResource: ImageResource {
         guard let trackOutput = self.trackOutput else {
             return
         }
-        let startSeconds: Double = max(selectedTimeRange.start.seconds + time.seconds - bufferDuration.seconds, selectedTimeRange.start.seconds);
+        var endTime = time
+        if let sampleBuffer = sampleBuffers.last {
+            endTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        }
+        let startSeconds: Double = max(endTime.seconds - bufferDuration.seconds, selectedTimeRange.start.seconds);
         let startTime = CMTime(seconds: startSeconds, preferredTimescale: 600)
-        trackOutput.reset(forReadingTimeRanges: [NSValue(timeRange: CMTimeRange(start: startTime, end: time))])
+        trackOutput.reset(forReadingTimeRanges: [NSValue(timeRange: CMTimeRange(start: startTime, end: endTime))])
     }
     
     private func cleanReader() {

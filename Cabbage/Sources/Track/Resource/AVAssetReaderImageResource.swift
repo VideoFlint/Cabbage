@@ -34,6 +34,7 @@ open class AVAssetReaderImageResource: ImageResource {
     }
     
     open override func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
+        let time = sourceTime(for: time)
         let sampleBuffer: CMSampleBuffer? = loadSamplebuffer(for: time)
         if let sampleBuffer = sampleBuffer, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             return CIImage(cvPixelBuffer: imageBuffer)
@@ -61,7 +62,7 @@ open class AVAssetReaderImageResource: ImageResource {
         while let sampleBuffer = trackOutput?.copyNextSampleBuffer() {
             if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
                 let presentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                if presentationTime.seconds > (selectedTimeRange.start.seconds + time.seconds) - 0.017 {
+                if presentationTime.seconds > time.seconds - 0.017 {
                     currentSampleBuffer = sampleBuffer
                     break
                 }
@@ -86,7 +87,7 @@ open class AVAssetReaderImageResource: ImageResource {
             return
         }
         reader.add(trackOutput)
-        reader.timeRange = CMTimeRange(start: selectedTimeRange.start + time, end: selectedTimeRange.end);
+        reader.timeRange = CMTimeRange(start: time, end: selectedTimeRange.end);
         reader.startReading()
         
         self.assetReader = reader

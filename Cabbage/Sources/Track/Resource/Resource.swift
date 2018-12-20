@@ -33,6 +33,11 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     
     open var scaledDuration: CMTime = CMTime.zero
     
+    public func sourceTime(for timelineTime: CMTime) -> CMTime {
+        let seconds = selectedTimeRange.start.seconds + timelineTime.seconds * (selectedTimeRange.duration.seconds / scaledDuration.seconds)
+        return CMTime(seconds: seconds, preferredTimescale: 600)
+    }
+    
     /// Natural frame size of this resource
     open var size: CGSize = .zero
     
