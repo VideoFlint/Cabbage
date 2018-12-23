@@ -39,9 +39,9 @@ extension CMTimeRange {
     static func mixTimeRanges(minTimeRange: CMTimeRange, instersectionTimeRange: CMTimeRange, maxTimeRange: CMTimeRange) -> [CMTimeRange] {
         if maxTimeRange.containsTimeRange(minTimeRange) {
             var timeRanges: [CMTimeRange] = []
-            let leftTimeRangeDuration = instersectionTimeRange.start - minTimeRange.start
+            let leftTimeRangeDuration = instersectionTimeRange.start - maxTimeRange.start
             if leftTimeRangeDuration.seconds > 0 {
-                let leftTimeRange = CMTimeRangeMake(start: minTimeRange.start, duration: leftTimeRangeDuration)
+                let leftTimeRange = CMTimeRangeMake(start: maxTimeRange.start, duration: leftTimeRangeDuration)
                 timeRanges.append(leftTimeRange)
             }
             timeRanges.append(instersectionTimeRange)
