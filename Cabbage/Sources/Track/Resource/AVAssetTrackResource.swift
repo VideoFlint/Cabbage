@@ -104,8 +104,3 @@ public class AVAssetTrackResource: Resource {
     
 }
 
-public extension AVAssetTrackResource {
-    public func setSpeed(_ speed: Float) {
-        scaledDuration = selectedTimeRange.duration * (1 / speed)
-    }
-}
