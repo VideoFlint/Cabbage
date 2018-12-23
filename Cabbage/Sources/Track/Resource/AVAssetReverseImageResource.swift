@@ -98,6 +98,10 @@ open class AVAssetReverseImageResource: ImageResource {
             }
         }
         
+        if currentSampleBuffer != nil {
+            return currentSampleBuffer
+        }
+        
         currentSampleBuffer = getCurrentSampleBuffer()
         
         preloadSampleBuffers(at: time)
@@ -279,6 +283,7 @@ open class AVAssetReverseImageResource: ImageResource {
     override open func copy(with zone: NSZone? = nil) -> Any {
         let resource = super.copy(with: zone) as! AVAssetReverseImageResource
         resource.asset = asset
+        resource.bufferDuration = bufferDuration;
         return resource
     }
 }
