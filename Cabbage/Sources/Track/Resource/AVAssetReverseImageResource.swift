@@ -79,7 +79,6 @@ open class AVAssetReverseImageResource: ImageResource {
                     return presentationTime > time.seconds ||
                         (presentationTime < (self.selectedTimeRange.start.seconds - self.bufferDuration.seconds * 2))
                 }
-                Log.debug("remove at:\(String.init(format: "%.5f", time.seconds)) sample count: \(self.sampleBuffers.count)")
             }
         }
         
@@ -87,8 +86,6 @@ open class AVAssetReverseImageResource: ImageResource {
         
         if currentSampleBuffer != nil {
             removeUnusedBuffers()
-            
-            Log.debug("load time:\(String.init(format: "%.5f", time.seconds)) presentationTime: \(String.init(format: "%.5f", CMSampleBufferGetPresentationTimeStamp(currentSampleBuffer!).seconds)), sample count: \(sampleBuffers.count)")
             // preload if need
             preloadSampleBuffers(at: time)
             return currentSampleBuffer
@@ -112,7 +109,6 @@ open class AVAssetReverseImageResource: ImageResource {
     }
     
     private func forceLoadSampleBuffer(at time: CMTime) {
-        Log.debug("========= force load sample buffer time: \(String.init(format: "%.5f", time.seconds)) =========")
         var endTime = time
         if let sampleBuffer = sampleBuffers.last {
             endTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
@@ -147,9 +143,6 @@ open class AVAssetReverseImageResource: ImageResource {
         if let sampleBuffer = sampleBuffers.last {
             let presentationDuration = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
             needPreload = presentationDuration > 0 && presentationDuration > (time.seconds) - bufferDuration.seconds
-            if needPreload {
-                Log.debug("2. preload sample buffer: \(String.init(format: "%.3f", time.seconds)), lastSampleBuffer time: \(String.init(format: "%.3f", CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds))")
-            }
         } else {
             needPreload = true
         }
@@ -170,7 +163,6 @@ open class AVAssetReverseImageResource: ImageResource {
                 return
             }
             
-            let timeStamp = CFAbsoluteTimeGetCurrent();
             while let sampleBuffer = self.trackOutput?.copyNextSampleBuffer() {
                 if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
                     self.sampleBuffers.insert(sampleBuffer, at: 0)
@@ -179,7 +171,6 @@ open class AVAssetReverseImageResource: ImageResource {
             self.sampleBuffers.sort { (buffer1, buffer2) -> Bool in
                 return CMSampleBufferGetPresentationTimeStamp(buffer1) > CMSampleBufferGetPresentationTimeStamp(buffer2)
             }
-            Log.debug("decode all frame count:\(self.sampleBuffers.count) time: \(String.init(format: "%.5f", CFAbsoluteTimeGetCurrent() - timeStamp))")
             
             self.isPreloading = false
         }
