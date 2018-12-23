@@ -363,6 +363,9 @@ public class CompositionGenerator {
             
             layerInstructionsSlices = slices
         }
+        layerInstructionsSlices = layerInstructionsSlices.sorted { (slice1, slice2) -> Bool in
+            return slice1.0.start < slice2.0.start
+        }
         return layerInstructionsSlices
     }
     

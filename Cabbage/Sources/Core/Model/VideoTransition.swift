@@ -115,7 +115,7 @@ public class BoundingUpTransition: NoneTransition {
         let foregroundTransform = CGAffineTransform(translationX: 0, y: height * CGFloat(-1 + tween)).scaledBy(x: scale, y: scale)
         let frontImage = image(foregroundImage, apply: foregroundTransform)
         
-        let resultImage = bgImage.composited(over: frontImage)
+        let resultImage = frontImage.composited(over: bgImage)
         return resultImage
     }
     
