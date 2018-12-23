@@ -20,7 +20,6 @@ public class AVAssetTrackResource: Resource {
         let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
         self.duration = duration;
         selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
-        scaledDuration = duration
     }
     
     required public init() {

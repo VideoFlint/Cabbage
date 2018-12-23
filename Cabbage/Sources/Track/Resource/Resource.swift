@@ -31,7 +31,18 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     /// Selected time range, indicate how many resources will be inserted to AVCompositionTrack
     open var selectedTimeRange: CMTimeRange = CMTimeRange.zero
     
-    open var scaledDuration: CMTime = CMTime.zero
+    private var _scaledDuration: CMTime = CMTime.invalid
+    public var scaledDuration: CMTime {
+        get {
+            if !_scaledDuration.isValid {
+                return selectedTimeRange.duration
+            }
+            return _scaledDuration
+        }
+        set {
+            _scaledDuration = newValue
+        }
+    }
     
     public func sourceTime(for timelineTime: CMTime) -> CMTime {
         let seconds = selectedTimeRange.start.seconds + timelineTime.seconds * (selectedTimeRange.duration.seconds / scaledDuration.seconds)
@@ -93,7 +104,7 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
         let emptyTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: emptyDuration)
         return ResourceTrackInfo(track: track,
                                  selectedTimeRange: emptyTimeRange,
-                                 scaleToDuration: selectedTimeRange.duration)
+                                 scaleToDuration: scaledDuration)
     }
     
     // MARK: - Helper

@@ -20,7 +20,6 @@ open class PHAssetImageResource: ImageResource {
         self.asset = asset
         self.duration = duration
         self.selectedTimeRange = CMTimeRange(start: CMTime.zero, duration: duration)
-        self.scaledDuration = duration
     }
     
     required public init() {

@@ -26,7 +26,6 @@ open class AVAssetReaderImageResource: ImageResource {
         self.asset = asset
         let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
         selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
-        scaledDuration = duration
     }
     
     required public init() {
