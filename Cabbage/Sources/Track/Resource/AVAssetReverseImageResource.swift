@@ -11,7 +11,7 @@ import CoreImage
 import AVFoundation
 
 
-/// Load image from PHAsset as video frame
+/// Load image from AVAssetReader as video frame, but order reversed
 open class AVAssetReverseImageResource: ImageResource {
     
     public var asset: AVAsset?
@@ -90,7 +90,7 @@ open class AVAssetReverseImageResource: ImageResource {
             return currentSampleBuffer
         }
         
-        // 3. Did not preload, force load
+        // 3. Not preload yet, force load
         loadBufferQueue.sync {
             currentSampleBuffer = getCurrentSampleBuffer()
             if currentSampleBuffer == nil {

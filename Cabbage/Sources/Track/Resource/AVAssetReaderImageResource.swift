@@ -11,7 +11,7 @@ import CoreImage
 import AVFoundation
 
 
-/// Load image from PHAsset as video frame
+/// Load image from AVAssetReader as video frame
 open class AVAssetReaderImageResource: ImageResource {
     
     public var asset: AVAsset?

@@ -10,7 +10,7 @@ import AVFoundation
 import CoreImage
 
 
-/// Provider a Image as video frame
+/// Provide a Image as video frame
 open class ImageResource: Resource {
     
     public init(image: CIImage, duration: CMTime) {

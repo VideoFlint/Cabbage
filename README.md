@@ -1,8 +1,10 @@
 ![](https://ws1.sinaimg.cn/large/6ca4705bgy1ftvakl767wj215o07st9r.jpg)
 
-[中文说明](https://github.com/VideoFlint/Cabbage/wiki/中文说明)
+[中文说明](https://github.com/VideoFlint/Cabbage/wiki/中文说明) [中文使用文档](https://github.com/VideoFlint/Cabbage/wiki/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3)
 
 A high-level video composition framework build on top of AVFoundation. It's simple to use and easy to extend. Use it and make life easier if you are implementing video composition feature.
+
+This project has a Timeline concept. Any resource can put into Timeline. A resource can be Image, Video, Audio, Gif and so on.
 
 ## Features
 
@@ -10,21 +12,13 @@ A high-level video composition framework build on top of AVFoundation. It's simp
 
 1. Create resource  
 2. Set configuration 
-3. Generate AVPlayerItem/AVAssetImageGenerator/AVExportSession
+3. Put them into Timeline
+4. Use Timeline to generate AVPlayerItem/AVAssetImageGenerator/AVExportSession
 
 - Resouce: Support video, audio, and image. Resource is extendable, you can create your customized resource type. e.g gif image resource
-- Video configuration support: transform, speed, filter and so on. The configuration is extendable.
-- Audio configuration support: change volume or process with audio raw data in real time, you can be a rocker. The configuration is extendable.
+- Video configuration support: transform, opacity and so on. The configuration is extendable.
+- Audio configuration support: change volume or process with audio raw data in real time. The configuration is extendable.
 - Transition: Clips may transition with previous and next clip
-
-## Requirements
-
-- iOS 9.0+
-- Swift 4.x
-
-## Projects using Cabbage
-
-- [VideoCat](https://github.com/vitoziv/VideoCat): A demo project demonstrates how to use Cabbage.
 
 ## Usage
 
@@ -56,6 +50,8 @@ let imageGenerator = compositionGenerator.buildImageGenerator()
 
 ```
 
+### Basic Concept
+
 **Timeline**
 
 Use to construct resource, the developer is responsible for putting resources at the right time range.
@@ -68,25 +64,55 @@ CompositionGenerator use Timeline instance translate to AVFoundation API.
 
 **Resource**
 
+Resource provider Image or/and audio data. It also provide time infomation about the data.
+
 Currently support
 
- - Image type: `ImageResource`, `PHAssetImageResource`
- - Video&Audio type: `AVAssetTrackResource`, `PHAssetTrackResource`
+ - Image type: 
+    - `ImageResource`: Provide a CIImage as video frame
+    - `PHAssetImageResource`: Provide a PHAsset, load CIImage as video frame
+    - `AVAssetReaderImageResource`: Provide AVAsset, reader samplebuffer as video frame using AVAssetReader
+    - `AVAssetReverseImageResource`: Provide AVAsset, reader samplebuffer as video frame using AVAssetReader, but reverse the order
+ - Video&Audio type: 
+    - `AVAssetTrackResource`: Provide AVAsset, use AVAssetTrack as video frame and audio frame.
+    - `PHAssetTrackResource`: Provide PHAsset, load AVAsset from it.
 
 **TrackItem**
 
+A TrackItem contains Resource, VideoConfiguration and AudioConfiguration.
+
 Currently support
 
-- Change speed
 - Video Configuration
     - baseContentMode, video frame's scale mode base on canvas size
     - transform
-    - filterProcessor, apply custom video frame process operation
+    - opacity
+    - configurations, custom filter can be added here.
 - Audio Configuration
     - volume
-    - audioTapHolder, apply custom audio process operation 
+    - nodes, apply custom audio process operation, e.g VolumeAudioConfiguration
 - videoTransition, audioTransition
 
+
+## Advance usage
+
+### Custom Resource
+
+You can provide custom resource type by subclass `Resource`, and implement `func tracks(for type: AVMediaType) -> [AVAssetTrack]`.
+
+By subclass `ImageResource`, you can use CIImage as video frame.
+
+### Custom Image Filter
+
+Image filter need Implement `VideoConfigurationProtocol` protocol, then it can be added to `TrackItem.configuration.videoConfiguration.configurations`
+
+`KeyframeVideoConfiguration` is a concrete class.
+
+### Custom Audio Mixer
+
+Audio Mixer need implement `AudioConfigurationProtocol` protocol, then it can be added to `TrackItem.configuration.audioConfiguration.nodes`
+
+`VolumeAudioConfiguration` is a concrete class.
 
 ## Why I create this project
 
@@ -143,6 +169,15 @@ You can
 ```
 $ git submodule add https://github.com/VideoFlint/Cabbage.git
 ```
+
+## Requirements
+
+- iOS 9.0+
+- Swift 4.x
+
+## Projects using Cabbage
+
+- [VideoCat](https://github.com/vitoziv/VideoCat): A demo project demonstrates how to use Cabbage.
 
 ## LICENSE
 

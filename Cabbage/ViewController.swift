@@ -25,7 +25,7 @@ class ViewController: UITableViewController {
             } else if indexPath.row == 3 {
                 return keyframePlayerItem()
             } else if indexPath.row == 4 {
-                return fuourSquareVideo()
+                return fourSquareVideo()
             } else if indexPath.row == 5 {
                 return testReaderOutput()
             } else if indexPath.row == 6 {
@@ -255,7 +255,48 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    func fuourSquareVideo() -> AVPlayerItem? {
+    
+    func twoVideoPlayerItem() -> AVPlayerItem? {
+        let renderSize = CGSize(width: 1920, height: 1080)
+        let bambooTrackItem: TrackItem = {
+            let width = renderSize.width / 2
+            let height = width * (9/16)
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 1800, 600))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.videoConfiguration.baseContentMode = .custom(CGRect.init(x: 0, y: (renderSize.height - height) / 2, width: width, height: height))
+            return trackItem
+        }()
+        
+        let seaTrackItem: TrackItem = {
+            let height = renderSize.height
+            let width = height * (9/16)
+            let url = Bundle.main.url(forResource: "cute", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 1800, 600))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.configuration.audioConfiguration.volume = 0.3
+            trackItem.configuration.videoConfiguration.baseContentMode = .custom(CGRect.init(x: renderSize.width / 2 + (renderSize.width / 2 - width) / 2, y: (renderSize.height - height) / 2, width: width, height: height))
+            return trackItem
+        }()
+        
+        let trackItems = [bambooTrackItem]
+        
+        let timeline = Timeline()
+        timeline.videoChannel = trackItems
+        timeline.audioChannel = trackItems
+        
+        timeline.overlays = [seaTrackItem]
+        timeline.audios = [seaTrackItem]
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        compositionGenerator.renderSize = renderSize
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
+    
+    func fourSquareVideo() -> AVPlayerItem? {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
