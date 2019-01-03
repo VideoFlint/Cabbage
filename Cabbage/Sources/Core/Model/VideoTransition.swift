@@ -14,7 +14,8 @@ public protocol VideoTransition: class {
     var duration: CMTime { get }
     func renderImage(foregroundImage: CIImage,
                      backgroundImage: CIImage,
-                     forTweenFactor tween: Float64) -> CIImage
+                     forTweenFactor tween: Float64,
+                     renderSize: CGSize) -> CIImage
 }
 
 open class NoneTransition: VideoTransition {
@@ -28,14 +29,14 @@ open class NoneTransition: VideoTransition {
         self.duration = duration
     }
     
-    open func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
+    open func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         return foregroundImage.composited(over: backgroundImage)
     }
 }
 
 public class CrossDissolveTransition: NoneTransition {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
+    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         if let crossDissolveFilter = CIFilter(name: "CIDissolveTransition") {
             crossDissolveFilter.setValue(foregroundImage, forKey: "inputImage")
             crossDissolveFilter.setValue(backgroundImage, forKey: "inputTargetImage")
@@ -44,13 +45,13 @@ public class CrossDissolveTransition: NoneTransition {
                 return outputImage
             }
         }
-        return super.renderImage(foregroundImage: foregroundImage, backgroundImage: backgroundImage, forTweenFactor: tween)
+        return super.renderImage(foregroundImage: foregroundImage, backgroundImage: backgroundImage, forTweenFactor: tween, renderSize: renderSize)
     }
 }
 
 public class SwipeTransition: NoneTransition {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
+    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         if let filter = CIFilter(name: "CISwipeTransition") {
             let targetImage = foregroundImage
             filter.setValue(backgroundImage, forKey: "inputImage")
@@ -67,20 +68,20 @@ public class SwipeTransition: NoneTransition {
                 return outputImage
             }
         }
-        return super.renderImage(foregroundImage: foregroundImage, backgroundImage: backgroundImage, forTweenFactor: tween)
+        return super.renderImage(foregroundImage: foregroundImage, backgroundImage: backgroundImage, forTweenFactor: tween, renderSize: renderSize)
     }
     
 }
 
 public class PushTransition: NoneTransition {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
+    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         
         let tween = TimingFunctionFactory.quadraticEaseInOut(p: Float(tween))
-        let offsetTransform = CGAffineTransform(translationX: backgroundImage.extent.width * CGFloat(tween), y: 0)
+        let offsetTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(tween), y: 0)
         let bgImage = image(backgroundImage, apply: offsetTransform)
         
-        let foregroundTransform = CGAffineTransform(translationX: backgroundImage.extent.width * CGFloat(-1 + tween), y: 0)
+        let foregroundTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(-1 + tween), y: 0)
         let frontImage = image(foregroundImage, apply: foregroundTransform)
         
         let resultImage = bgImage.composited(over: frontImage)
@@ -102,9 +103,9 @@ public class PushTransition: NoneTransition {
 
 public class BoundingUpTransition: NoneTransition {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
+    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         let tween = TimingFunctionFactory.quadraticEaseInOut(p: Float(tween))
-        let height = backgroundImage.extent.height
+        let height = renderSize.height
         let offsetTransform = CGAffineTransform(translationX: 0, y: height * CGFloat(tween))
         let bgImage = image(backgroundImage, apply: offsetTransform)
         
@@ -134,7 +135,7 @@ public class BoundingUpTransition: NoneTransition {
 
 public class FadeTransition: NoneTransition {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64) -> CIImage {
+    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         let backgroundAlpha: CGFloat = {
             let alpha: CGFloat = CGFloat((0.5 - tween) * 2)
             if alpha > 0 {
