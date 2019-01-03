@@ -71,8 +71,7 @@ open class VideoCompositor: NSObject, AVFoundation.AVVideoCompositing  {
         var image = CIImage(cvPixelBuffer: outputPixels)
         
         // Background
-        let backgroundColor = CIColor(red: 0, green: 0, blue: 0)
-        let backgroundImage = CIImage(color: backgroundColor).cropped(to: image.extent)
+        let backgroundImage = CIImage(color: instruction.backgroundColor).cropped(to: image.extent)
         image = backgroundImage.composited(over: image)
         
         if let destinationImage = instruction.apply(request: request) {

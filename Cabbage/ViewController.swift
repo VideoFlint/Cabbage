@@ -56,9 +56,9 @@ class ViewController: UITableViewController {
         let timeline = Timeline()
         timeline.videoChannel = [bambooTrackItem]
         timeline.audioChannel = [bambooTrackItem]
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -127,8 +127,8 @@ class ViewController: UITableViewController {
             return imageCompositionGroupProvider
         }()
         
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -174,9 +174,9 @@ class ViewController: UITableViewController {
         } catch {
             assert(false, error.localizedDescription)
         }
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -214,9 +214,9 @@ class ViewController: UITableViewController {
         let timeline = Timeline()
         timeline.videoChannel = [bambooTrackItem]
         timeline.audioChannel = [bambooTrackItem]
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -249,8 +249,8 @@ class ViewController: UITableViewController {
             return imageCompositionGroupProvider
         }()
         
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -289,9 +289,9 @@ class ViewController: UITableViewController {
         
         timeline.overlays = [seaTrackItem]
         timeline.audios = [seaTrackItem]
+        timeline.renderSize = renderSize;
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = renderSize
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -394,9 +394,8 @@ class ViewController: UITableViewController {
             
             return overlays
         }()
-        
+        timeline.renderSize = renderSize;
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = renderSize
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
@@ -412,9 +411,9 @@ class ViewController: UITableViewController {
         
         let timeline = Timeline()
         timeline.videoChannel = [seaTrackItem]
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
-        compositionGenerator.renderSize = CGSize(width: 1920, height: 1080)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }

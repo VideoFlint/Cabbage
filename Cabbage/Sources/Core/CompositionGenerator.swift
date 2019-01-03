@@ -18,11 +18,6 @@ public class CompositionGenerator {
             needRebuildAudioMix = true
         }
     }
-    public var renderSize: CGSize? {
-        didSet {
-            needRebuildVideoComposition = true
-        }
-    }
     
     private var composition: AVComposition?
     private var videoComposition: AVVideoComposition?
@@ -234,6 +229,7 @@ public class CompositionGenerator {
         let instructions: [VideoCompositionInstruction] = layerInstructionsSlices.map({ (slice) in
             let trackIDs = slice.1.map({ $0.trackID })
             let instruction = VideoCompositionInstruction(theSourceTrackIDs: trackIDs as [NSValue], forTimeRange: slice.0)
+            instruction.backgroundColor = timeline.backgroundColor
             instruction.layerInstructions = slice.1
             instruction.passingThroughVideoCompositionProvider = timeline.passingThroughVideoCompositionProvider
             instruction.mainTrackIDs = mainTrackIDs.filter({ trackIDs.contains($0) })
@@ -242,12 +238,7 @@ public class CompositionGenerator {
         
         let videoComposition = AVMutableVideoComposition()
         videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
-        videoComposition.renderSize = {
-            if let renderSize = renderSize {
-                return renderSize
-            }
-            return CGSize.zero
-        }()
+        videoComposition.renderSize = self.timeline.renderSize
         videoComposition.instructions = instructions
         videoComposition.customVideoCompositorClass = VideoCompositor.self
         self.videoComposition = videoComposition

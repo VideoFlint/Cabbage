@@ -14,8 +14,8 @@ public extension AVAssetImageGenerator {
     static public func create(from items: [TrackItem], renderSize: CGSize) -> AVAssetImageGenerator? {
         let timeline = Timeline()
         timeline.videoChannel = items
+        timeline.renderSize = renderSize;
         let generator = CompositionGenerator(timeline: timeline)
-        generator.renderSize = renderSize
         let imageGenerator = generator.buildImageGenerator()
         
         return imageGenerator

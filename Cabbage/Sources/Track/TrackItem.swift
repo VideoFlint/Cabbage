@@ -165,8 +165,8 @@ public extension TrackItem {
         let timeline = Timeline()
         timeline.videoChannel = [item]
         timeline.audioChannel = [item]
+        timeline.renderSize = size
         let generator = CompositionGenerator(timeline: timeline)
-        generator.renderSize = size
         let playerItem = generator.buildPlayerItem()
         return playerItem
     }

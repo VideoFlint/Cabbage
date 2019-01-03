@@ -21,6 +21,8 @@ open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionP
     open var mainTrackIDs: [Int32] = []
     public var passingThroughVideoCompositionProvider: VideoCompositionProvider?
     
+    public var backgroundColor: CIColor = CIColor(red: 0, green: 0, blue: 0)
+    
     public init(thePassthroughTrackID: CMPersistentTrackID, forTimeRange theTimeRange: CMTimeRange) {
         super.init()
         

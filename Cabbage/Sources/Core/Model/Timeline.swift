@@ -7,11 +7,15 @@
 //
 
 import AVFoundation
+import CoreImage
 
 public class Timeline {
     
     public init() {}
-
+    
+    public var renderSize: CGSize = CGSize(width: 960, height: 540)
+    public var backgroundColor: CIColor = CIColor(red: 0, green: 0, blue: 0)
+    
     // MARK: - Main content, support transition.
     
     /*
