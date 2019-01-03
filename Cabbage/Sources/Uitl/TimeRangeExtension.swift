@@ -24,7 +24,8 @@ extension CMTimeRange {
         var timeRanges: [CMTimeRange] = []
         let instersectionTimeRange = timeRange1.intersection(timeRange2)
         if instersectionTimeRange.duration.seconds > 0 {
-            if (timeRange1.start.seconds < timeRange2.start.seconds) {
+            if (timeRange2.containsTimeRange(timeRange1) ||
+                (timeRange1.start.seconds < timeRange2.start.seconds && timeRange1.end < timeRange2.end)) {
                 timeRanges = mixTimeRanges(minTimeRange: timeRange1, instersectionTimeRange: instersectionTimeRange, maxTimeRange: timeRange2)
             } else {
                 timeRanges = mixTimeRanges(minTimeRange: timeRange2, instersectionTimeRange: instersectionTimeRange, maxTimeRange: timeRange1)
