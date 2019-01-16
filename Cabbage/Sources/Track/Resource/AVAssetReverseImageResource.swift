@@ -41,7 +41,7 @@ open class AVAssetReverseImageResource: ImageResource {
         guard selectedTimeRange.duration > time else {
             return nil
         }
-        let realTime = max(0, selectedTimeRange.end.seconds - time.seconds)
+        let realTime = max(0, selectedTimeRange.end.seconds - time.seconds) + selectedTimeRange.start.seconds
         
         let sampleBuffer: CMSampleBuffer? = loadSamplebuffer(for: CMTime(seconds: realTime, preferredTimescale: 600))
         if let sampleBuffer = sampleBuffer, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
