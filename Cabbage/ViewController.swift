@@ -30,6 +30,8 @@ class ViewController: UITableViewController {
                 return testReaderOutput()
             } else if indexPath.row == 6 {
                 return reversePlayerItem()
+            } else if indexPath.row == 7 {
+                return twoVideoPlayerItem()
             }
             return simplePlayerItem()
         }()
@@ -40,8 +42,6 @@ class ViewController: UITableViewController {
         }
     }
     
-    
-    
     // MARK: - Demo
     
     func simplePlayerItem() -> AVPlayerItem? {
@@ -49,7 +49,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -68,7 +68,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -84,7 +84,8 @@ class ViewController: UITableViewController {
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
             imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
             let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
-            imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
+            imageCompositionProvider.videoConfiguration.contentMode = .custom
+            imageCompositionProvider.videoConfiguration.frame = frame;
             imageCompositionProvider.videoConfiguration.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4)
             
             let keyframeConfiguration: KeyframeVideoConfiguration<OpacityKeyframeValue> = {
@@ -138,7 +139,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -147,7 +148,7 @@ class ViewController: UITableViewController {
             let image = CIImage(contentsOf: url)!
             let resource = ImageResource(image: image, duration: CMTime.init(seconds: 5, preferredTimescale: 600))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -155,7 +156,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -186,7 +187,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             
             let transformKeyframeConfiguration: KeyframeVideoConfiguration<TransformKeyframeValue> = {
                 let configuration = KeyframeVideoConfiguration<TransformKeyframeValue>()
@@ -207,7 +208,7 @@ class ViewController: UITableViewController {
                 
                 return configuration
             }()
-            trackItem.configuration.videoConfiguration.configurations.append(transformKeyframeConfiguration)
+            trackItem.videoConfiguration.configurations.append(transformKeyframeConfiguration)
             return trackItem
         }()
         
@@ -225,29 +226,37 @@ class ViewController: UITableViewController {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
-            resource.setSpeed(0.5)
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let flyTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "cute", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
         let timeline = Timeline()
-        timeline.videoChannel = [bambooTrackItem]
-        timeline.audioChannel = [bambooTrackItem]
+        timeline.videoChannel = [bambooTrackItem, flyTrackItem]
         
-        timeline.passingThroughVideoCompositionProvider = {
-            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
-            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
-            let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
-            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 0, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
-            let imageCompositionProvider = ImageOverlayItem(resource: resource)
-            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
-            let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
-            imageCompositionProvider.videoConfiguration.baseContentMode = .custom(frame)
-            
-            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
-            return imageCompositionGroupProvider
-        }()
+        try! Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
+        
+//        timeline.passingThroughVideoCompositionProvider = {
+//            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
+//            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+//            let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
+//            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 0, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
+//            let imageCompositionProvider = ImageOverlayItem(resource: resource)
+//            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
+//            let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
+//            imageCompositionProvider.videoConfiguration.contentMode = .custom(frame)
+//            
+//            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
+//            return imageCompositionGroupProvider
+//        }()
         
         timeline.renderSize = CGSize(width: 1920, height: 1080)
         let compositionGenerator = CompositionGenerator(timeline: timeline)
@@ -265,7 +274,8 @@ class ViewController: UITableViewController {
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 1800, 600))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .custom(CGRect.init(x: 0, y: (renderSize.height - height) / 2, width: width, height: height))
+            trackItem.videoConfiguration.contentMode = .custom
+            trackItem.videoConfiguration.frame = CGRect(x: 0, y: (renderSize.height - height) / 2, width: width, height: height)
             return trackItem
         }()
         
@@ -276,8 +286,9 @@ class ViewController: UITableViewController {
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 1800, 600))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.audioConfiguration.volume = 0.3
-            trackItem.configuration.videoConfiguration.baseContentMode = .custom(CGRect.init(x: renderSize.width / 2 + (renderSize.width / 2 - width) / 2, y: (renderSize.height - height) / 2, width: width, height: height))
+            trackItem.audioConfiguration.volume = 0.3
+            trackItem.videoConfiguration.contentMode = .custom
+            trackItem.videoConfiguration.frame = CGRect(x: renderSize.width / 2 + (renderSize.width / 2 - width) / 2, y: (renderSize.height - height) / 2, width: width, height: height)
             return trackItem
         }()
         
@@ -301,7 +312,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -309,7 +320,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -318,7 +329,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "cute", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -326,7 +337,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
@@ -371,7 +382,8 @@ class ViewController: UITableViewController {
                     let index = offset % 4
                     return frameWithIndex(index)
                 }()
-                mainTrackItem.configuration.videoConfiguration.baseContentMode = .custom(frame)
+                mainTrackItem.videoConfiguration.contentMode = .aspectFit
+                mainTrackItem.videoConfiguration.frame = frame
                 
                 let timeRanges = fullTimeRange.substruct(mainTrackItem.timeRange)
                 for timeRange in timeRanges {
@@ -405,7 +417,7 @@ class ViewController: UITableViewController {
             let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetReverseImageResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
-            trackItem.configuration.videoConfiguration.baseContentMode = .aspectFit
+            trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         

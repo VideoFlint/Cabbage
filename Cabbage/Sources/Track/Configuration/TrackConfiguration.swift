@@ -9,26 +9,6 @@
 import AVFoundation
 import CoreImage
 
-public class TrackConfiguration: NSObject, NSCopying {
-    
-    // MARK: - Media
-    public var videoConfiguration: VideoConfiguration = VideoConfiguration.createDefaultConfiguration()
-    public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
-    
-    public required override init() {
-        super.init()
-    }
-    
-    // MARK: - NSCopying
-    
-    public func copy(with zone: NSZone? = nil) -> Any {
-        let configuration = type(of: self).init()
-        configuration.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
-        configuration.audioConfiguration = audioConfiguration.copy() as! AudioConfiguration
-        return configuration
-    }
-}
-
 public struct VideoConfigurationEffectInfo {
     public var time = CMTime.zero
     public var renderSize = CGSize.zero
@@ -48,9 +28,11 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     public enum BaseContentMode {
         case aspectFit
         case aspectFill
-        case custom(CGRect?)
+        case custom
     }
-    public var baseContentMode: BaseContentMode = .custom(nil)
+    public var contentMode: BaseContentMode = .aspectFit
+    /// Default is renderSize
+    public var frame: CGRect?
     public var transform: CGAffineTransform?
     public var opacity: Float = 1.0
     public var configurations: [VideoConfigurationProtocol] = []
@@ -63,10 +45,11 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     
     public func copy(with zone: NSZone? = nil) -> Any {
         let configuration = type(of: self).init()
-        configuration.baseContentMode = baseContentMode
+        configuration.contentMode = contentMode
         configuration.transform = transform
         configuration.opacity = opacity;
         configuration.configurations = configurations.map({ $0.copy(with: zone) as! VideoConfigurationProtocol });
+        configuration.frame = frame;
         return configuration
     }
     
@@ -74,27 +57,23 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     
     public func applyEffect(to sourceImage: CIImage, info: VideoConfigurationEffectInfo) -> CIImage {
         var finalImage = sourceImage
-        var transform = CGAffineTransform.identity
-        switch baseContentMode {
+        let frame = self.frame ?? CGRect(origin: CGPoint.zero, size: info.renderSize)
+        switch contentMode {
         case .aspectFit:
-            let fitTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: CGRect(origin: .zero, size: info.renderSize))
-            transform = transform.concatenating(fitTransform)
+            let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: frame)
+            finalImage = finalImage.transformed(by: transform).cropped(to: frame)
             break
         case .aspectFill:
-            let fillTransform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: CGRect(origin: .zero, size: info.renderSize))
-            transform = transform.concatenating(fillTransform)
+            let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: frame)
+            finalImage = finalImage.transformed(by: transform).cropped(to: frame)
             break
-        case .custom(let frame):
-            if let frame = frame {
-                let scaleTransform = CGAffineTransform(scaleX: frame.size.width / sourceImage.extent.size.width, y: frame.size.height / sourceImage.extent.size.height)
-                transform = transform.concatenating(scaleTransform)
-                let translateTransform = CGAffineTransform.init(translationX: frame.origin.x, y: frame.origin.y)
-                transform = transform.concatenating(translateTransform)
-            }
+        case .custom:
+            var transform = CGAffineTransform(scaleX: frame.size.width / sourceImage.extent.size.width, y: frame.size.height / sourceImage.extent.size.height)
+            let translateTransform = CGAffineTransform.init(translationX: frame.origin.x, y: frame.origin.y)
+            transform = transform.concatenating(translateTransform)
+            finalImage = finalImage.transformed(by: transform)
             break
         }
-        
-        finalImage = finalImage.transformed(by: transform)
         
         if let userTransform = self.transform {
             var transform = CGAffineTransform.identity

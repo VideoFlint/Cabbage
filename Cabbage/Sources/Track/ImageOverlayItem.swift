@@ -17,7 +17,8 @@ open class ImageOverlayItem: NSObject, ImageCompositionProvider, NSCopying {
         identifier = ProcessInfo.processInfo.globallyUniqueString
         self.resource = resource
         let frame = CGRect(origin: CGPoint.zero, size: resource.size)
-        self.videoConfiguration.baseContentMode = .custom(frame)
+        self.videoConfiguration.contentMode = .custom
+        self.videoConfiguration.frame = frame
     }
     
     public var videoConfiguration: VideoConfiguration = .createDefaultConfiguration()
