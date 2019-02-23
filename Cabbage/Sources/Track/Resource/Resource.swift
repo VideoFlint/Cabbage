@@ -18,6 +18,7 @@ public struct ResourceTrackInfo {
 
 public protocol ResourceTrackInfoProvider: class {
     func trackInfo(for type: AVMediaType, at index: Int) -> ResourceTrackInfo
+    func image(at time: CMTime, renderSize: CGSize) -> CIImage?
 }
 
 open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
@@ -105,6 +106,10 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
         return ResourceTrackInfo(track: track,
                                  selectedTimeRange: emptyTimeRange,
                                  scaleToDuration: scaledDuration)
+    }
+    
+    open func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
+        return nil
     }
     
     // MARK: - Helper

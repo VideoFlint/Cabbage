@@ -27,7 +27,7 @@ open class ImageResource: Resource {
     
     open var image: CIImage? = nil
     
-    open func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
+    open override func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
         return image
     }
     

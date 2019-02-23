@@ -84,11 +84,9 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     
     open func applyEffect(to sourceImage: CIImage, at time: CMTime, renderSize: CGSize) -> CIImage {
         var finalImage: CIImage = {
-            if let resource = resource as? ImageResource {
-                let relativeTime = time - self.startTime
-                if let resourceImage = resource.image(at: relativeTime, renderSize: renderSize) {
-                    return resourceImage
-                }
+            let relativeTime = time - self.startTime
+            if let sourceImage = resource.image(at: relativeTime, renderSize: renderSize) {
+                return sourceImage
             }
             return sourceImage
         }()
