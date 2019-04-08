@@ -10,19 +10,19 @@ import CoreMedia
 
 // MARK: Initialization
 public extension CMTime {
-    public init(value: Int64, _ timescale: Int = 1) {
+    init(value: Int64, _ timescale: Int = 1) {
         self = CMTimeMake(value: value, timescale: Int32(timescale))
     }
-    public init(value: Int64, _ timescale: Int32 = 1) {
+    init(value: Int64, _ timescale: Int32 = 1) {
         self = CMTimeMake(value: value, timescale: timescale)
     }
-    public init(seconds: Float64, preferredTimeScale: Int32 = 600) {
+    init(seconds: Float64, preferredTimeScale: Int32 = 600) {
         self = CMTimeMakeWithSeconds(seconds, preferredTimescale: preferredTimeScale)
     }
-    public init(seconds: Float, preferredTimeScale: Int32 = 600) {
+    init(seconds: Float, preferredTimeScale: Int32 = 600) {
         self = CMTime(seconds: Float64(seconds), preferredTimeScale: preferredTimeScale)
     }
-    public func cb_time(preferredTimeScale: Int32 = 600) -> CMTime {
+    func cb_time(preferredTimeScale: Int32 = 600) -> CMTime {
         return CMTime(seconds: seconds, preferredTimescale: preferredTimeScale)
     }
 }

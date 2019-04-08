@@ -10,14 +10,14 @@ import Foundation
 import CoreGraphics
 
 public extension CGRect {
-    public func aspectFit(in rect: CGRect) -> CGRect {
+    func aspectFit(in rect: CGRect) -> CGRect {
         let size = self.size.aspectFit(in: rect.size)
         let x = rect.origin.x + (rect.size.width - size.width) / 2
         let y = rect.origin.y + (rect.size.height - size.height) / 2
         return CGRect(x: x, y: y, width: size.width, height: size.height)
     }
     
-    public func aspectFill(in rect: CGRect) -> CGRect {
+    func aspectFill(in rect: CGRect) -> CGRect {
         let size = self.size.aspectFill(in: rect.size)
         let x = rect.origin.x + (rect.size.width - size.width) / 2
         let y = rect.origin.y + (rect.size.height - size.height) / 2
@@ -26,7 +26,7 @@ public extension CGRect {
 }
 
 public extension CGSize {
-    public func aspectFit(in size: CGSize) -> CGSize {
+    func aspectFit(in size: CGSize) -> CGSize {
         var aspectFitSize = size
         let widthRatio = size.width / width
         let heightRatio = size.height / height
@@ -38,7 +38,7 @@ public extension CGSize {
         return aspectFitSize
     }
     
-    public func aspectFill(in size: CGSize) -> CGSize {
+    func aspectFill(in size: CGSize) -> CGSize {
         var aspectFillSize = size
         let widthRatio = size.width / width
         let heightRatio = size.height / height
@@ -52,27 +52,27 @@ public extension CGSize {
 }
 
 public extension CGAffineTransform {
-    public static func transform(by sourceRect: CGRect, aspectFitInRect fitTargetRect: CGRect) -> CGAffineTransform {
+    static func transform(by sourceRect: CGRect, aspectFitInRect fitTargetRect: CGRect) -> CGAffineTransform {
         let fitRect = sourceRect.aspectFit(in: fitTargetRect)
         let xRatio = fitRect.size.width / sourceRect.size.width
         let yRatio = fitRect.size.height / sourceRect.size.height
         return CGAffineTransform(translationX: fitRect.origin.x - sourceRect.origin.x * xRatio, y: fitRect.origin.y - sourceRect.origin.y * yRatio).scaledBy(x: xRatio, y: yRatio)
     }
     
-    public static func transform(by size: CGSize, aspectFitInSize fitSize: CGSize) -> CGAffineTransform {
+    static func transform(by size: CGSize, aspectFitInSize fitSize: CGSize) -> CGAffineTransform {
         let sourceRect = CGRect(origin: .zero, size: size)
         let fitTargetRect = CGRect(origin: .zero, size: fitSize)
         return transform(by: sourceRect, aspectFitInRect: fitTargetRect)
     }
     
-    public static func transform(by sourceRect: CGRect, aspectFillRect fillTargetRect: CGRect) -> CGAffineTransform {
+    static func transform(by sourceRect: CGRect, aspectFillRect fillTargetRect: CGRect) -> CGAffineTransform {
         let fillRect = sourceRect.aspectFill(in: fillTargetRect)
         let xRatio = fillRect.size.width / sourceRect.size.width
         let yRatio = fillRect.size.height / sourceRect.size.height
         return CGAffineTransform(translationX: fillRect.origin.x - sourceRect.origin.x * xRatio, y: fillRect.origin.y - sourceRect.origin.y * yRatio).scaledBy(x: xRatio, y: yRatio)
     }
     
-    public static func transform(by size: CGSize, aspectFillSize fillSize: CGSize) -> CGAffineTransform {
+    static func transform(by size: CGSize, aspectFillSize fillSize: CGSize) -> CGAffineTransform {
         let sourceRect = CGRect(origin: .zero, size: size)
         let fillTargetRect = CGRect(origin: .zero, size: fillSize)
         return transform(by: sourceRect, aspectFillRect: fillTargetRect)
@@ -80,15 +80,15 @@ public extension CGAffineTransform {
 }
 
 public extension CGAffineTransform {
-    public func rotationRadians() -> CGFloat {
+    func rotationRadians() -> CGFloat {
         return atan2(b, a)
     }
     
-    public func translation() -> CGPoint {
+    func translation() -> CGPoint {
         return CGPoint(x: tx, y: ty)
     }
     
-    public func scaleXY() -> CGPoint {
+    func scaleXY() -> CGPoint {
         let scalex = sqrt(a * a + c * c)
         let scaley = sqrt(d * d + b * b)
         return CGPoint(x: scalex, y: scaley)

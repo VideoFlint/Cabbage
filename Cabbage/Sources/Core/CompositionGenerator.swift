@@ -261,7 +261,7 @@ public class CompositionGenerator {
             info.info.forEach({ (provider) in
                 provider.configure(audioMixParameters: inputParameter)
                 
-                if let index = timeline.audioChannel.index(where: { $0 === provider }) {
+                if let index = timeline.audioChannel.firstIndex(where: { $0 === provider }) {
                     if let transitions = audioTransitionInfo[index] {
                         if let segment = track.segments.first(where: { $0.timeMapping.target == provider.timeRange }) {
                             let targetTimeRange = segment.timeMapping.target

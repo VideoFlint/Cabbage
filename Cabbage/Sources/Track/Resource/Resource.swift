@@ -146,7 +146,7 @@ public class ResourceTask {
 }
 
 public extension Resource {
-    public func setSpeed(_ speed: Float) {
+    func setSpeed(_ speed: Float) {
         scaledDuration = selectedTimeRange.duration * (1 / speed)
     }
 }

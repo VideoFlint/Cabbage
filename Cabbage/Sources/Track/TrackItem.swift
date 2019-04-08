@@ -146,21 +146,21 @@ private extension CIImage {
 
 public extension TrackItem {
     
-    public func makeFullRangeCopy() -> TrackItem {
+    func makeFullRangeCopy() -> TrackItem {
         let item = self.copy() as! TrackItem
         item.resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, duration: item.resource.duration)
         item.startTime = CMTime.zero
         return item
     }
     
-    public func generateFullRangeImageGenerator(size: CGSize = .zero) -> AVAssetImageGenerator? {
+    func generateFullRangeImageGenerator(size: CGSize = .zero) -> AVAssetImageGenerator? {
         let item = makeFullRangeCopy()
         let imageGenerator = AVAssetImageGenerator.create(from: [item], renderSize: size)
         imageGenerator?.updateAspectFitSize(size)
         return imageGenerator
     }
     
-    public func generateFullRangePlayerItem(size: CGSize = .zero) -> AVPlayerItem? {
+    func generateFullRangePlayerItem(size: CGSize = .zero) -> AVPlayerItem? {
         let item = makeFullRangeCopy()
         let timeline = Timeline()
         timeline.videoChannel = [item]

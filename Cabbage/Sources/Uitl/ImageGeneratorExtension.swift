@@ -11,7 +11,7 @@ import UIKit
 
 public extension AVAssetImageGenerator {
     
-    static public func create(from items: [TrackItem], renderSize: CGSize) -> AVAssetImageGenerator? {
+    static func create(from items: [TrackItem], renderSize: CGSize) -> AVAssetImageGenerator? {
         let timeline = Timeline()
         timeline.videoChannel = items
         timeline.renderSize = renderSize;
@@ -21,7 +21,7 @@ public extension AVAssetImageGenerator {
         return imageGenerator
     }
     
-    static public func create(fromAsset asset: AVAsset) -> AVAssetImageGenerator {
+    static func create(fromAsset asset: AVAsset) -> AVAssetImageGenerator {
         let ge = AVAssetImageGenerator(asset: asset)
         ge.requestedTimeToleranceBefore = CMTime.zero
         ge.requestedTimeToleranceAfter = CMTime.zero
@@ -29,7 +29,7 @@ public extension AVAssetImageGenerator {
         return ge
     }
     
-    public func updateAspectFitSize(_ size: CGSize) {
+    func updateAspectFitSize(_ size: CGSize) {
         var maximumSize = size
         if !maximumSize.equalTo(.zero) {
             let tracks = asset.tracks(withMediaType: .video)
@@ -51,7 +51,7 @@ public extension AVAssetImageGenerator {
         self.maximumSize = maximumSize
     }
     
-    public func makeCopy() -> AVAssetImageGenerator {
+    func makeCopy() -> AVAssetImageGenerator {
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = appliesPreferredTrackTransform
         generator.maximumSize = maximumSize

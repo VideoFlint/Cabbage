@@ -15,7 +15,7 @@ public protocol CompositionTimeRangeProvider: class {
 }
 
 public extension CompositionTimeRangeProvider {
-    public var timeRange: CMTimeRange {
+    var timeRange: CMTimeRange {
         get {
             return CMTimeRange.init(start: startTime, duration: duration)
         }
