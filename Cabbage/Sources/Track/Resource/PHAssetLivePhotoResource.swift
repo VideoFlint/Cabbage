@@ -3,7 +3,7 @@
 //  SliderArtDataKit
 //
 //  Created by aby.wang on 2019/4/16.
-//  Copyright © 2019 GPower. All rights reserved.
+//  Copyright © 2019 AlanMoMo. All rights reserved.
 //
 
 import Photos
