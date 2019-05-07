@@ -7,7 +7,6 @@
 //
 
 import Photos
-import VFCabbage
 
 public class PHAssetLivePhotoResource: AVAssetTrackResource {
     public var phasset: PHAsset?
@@ -15,8 +14,8 @@ public class PHAssetLivePhotoResource: AVAssetTrackResource {
     public init(phasset: PHAsset) {
         super.init()
         self.phasset = phasset
-        let duration = CMTimeMake(Int64(phasset.duration * 600), 600)
-        selectedTimeRange = CMTimeRangeMake(kCMTimeZero, duration)
+        let duration = CMTime(seconds: phasset.duration, preferredTimescale: 600)
+        selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
     }
     
     required public init() {
@@ -66,6 +65,7 @@ public class PHAssetLivePhotoResource: AVAssetTrackResource {
             }
         } else {
             // Fallback on earlier versions
+            completion(status, nil)
             return nil
         }
     }

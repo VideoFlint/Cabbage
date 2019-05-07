@@ -38,8 +38,8 @@ public class CrossDissolveTransition: NoneTransition {
     
     override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         if let crossDissolveFilter = CIFilter(name: "CIDissolveTransition") {
-            crossDissolveFilter.setValue(foregroundImage, forKey: "inputImage")
-            crossDissolveFilter.setValue(backgroundImage, forKey: "inputTargetImage")
+            crossDissolveFilter.setValue(backgroundImage, forKey: "inputImage")
+            crossDissolveFilter.setValue(foregroundImage, forKey: "inputTargetImage")
             crossDissolveFilter.setValue(tween, forKey: "inputTime")
             if let outputImage = crossDissolveFilter.outputImage {
                 return outputImage
