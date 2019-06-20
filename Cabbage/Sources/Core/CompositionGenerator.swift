@@ -326,25 +326,34 @@ public class CompositionGenerator {
             var slices = layerInstructionsSlices
             
             var leftTimeRanges: [CMTimeRange] = [layerInstruction.timeRange]
+            var increaseNumber = 0
             layerInstructionsSlices.enumerated().forEach({ (offset, slice) in
                 let intersectionTimeRange = slice.0.intersection(layerInstruction.timeRange)
                 if intersectionTimeRange.duration.seconds > 0 {
-                    slices.remove(at: offset)
+                    slices.remove(at: offset + increaseNumber)
+                    
+                    var currentSlices: [(CMTimeRange, [VideoCompositionLayerInstruction])] = []
                     let sliceTimeRanges = CMTimeRange.sliceTimeRanges(for: layerInstruction.timeRange, timeRange2: slice.0)
                     sliceTimeRanges.forEach({ (timeRange) in
                         if slice.0.containsTimeRange(timeRange) {
                             if layerInstruction.timeRange.containsTimeRange(timeRange)  {
                                 let newSlice = (timeRange, slice.1 + [layerInstruction])
-                                slices.insert(newSlice, at: offset)
+                                currentSlices.append(newSlice)
                                 leftTimeRanges = leftTimeRanges.flatMap({ (leftTimeRange) -> [CMTimeRange] in
                                     return leftTimeRange.substruct(timeRange)
                                 })
                             } else {
                                 let newSlice = (timeRange, slice.1)
-                                slices.insert(newSlice, at: offset)
+                                currentSlices.append(newSlice)
                             }
                         }
                     })
+                    
+                    currentSlices.reversed().forEach({ (slice) in
+                        slices.insert(slice, at: offset + increaseNumber)
+                    })
+                    
+                    increaseNumber += currentSlices.count - 1
                 }
             })
             
