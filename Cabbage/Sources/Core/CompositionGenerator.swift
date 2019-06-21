@@ -255,9 +255,21 @@ public class CompositionGenerator {
         
         var audioParameters = [AVMutableAudioMixInputParameters]()
         
+        func createInputParameter(track: AVCompositionTrack) -> AVMutableAudioMixInputParameters {
+            var inputParameter = audioParameters.first { (parameters) -> Bool in
+                return parameters.trackID == track.trackID
+            }
+            if inputParameter == nil {
+                inputParameter = AVMutableAudioMixInputParameters(track: track)
+                audioParameters.append(inputParameter!)
+            }
+            
+            return inputParameter!
+        }
+        
         mainAudioTrackInfo.forEach { (info) in
             let track = info.track
-            let inputParameter = AVMutableAudioMixInputParameters(track: track)
+            let inputParameter = createInputParameter(track: track)
             info.info.forEach({ (provider) in
                 provider.configure(audioMixParameters: inputParameter)
                 
@@ -275,15 +287,13 @@ public class CompositionGenerator {
                     }
                 }
             })
-            audioParameters.append(inputParameter)
         }
         
         audioTrackInfo.forEach { (info) in
             let track = info.track
             let provider = info.info
-            let inputParameter = AVMutableAudioMixInputParameters(track: track)
+            let inputParameter = createInputParameter(track: track)
             provider.configure(audioMixParameters: inputParameter)
-            audioParameters.append(inputParameter)
         }
         
         if audioParameters.count == 0 {
