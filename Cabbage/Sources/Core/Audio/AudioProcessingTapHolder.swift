@@ -35,7 +35,7 @@ public class AudioProcessingTapHolder: NSObject, NSCopying {
     // MARK: - Handler
     fileprivate var tapInit: MTAudioProcessingTapInitCallback = {
         (tap, clientInfo, tapStorageOut) in
-        Log.info("init \((tap, clientInfo, tapStorageOut))\n")
+        Log.info("init \(tap), \(String(describing: clientInfo)), \(tapStorageOut)\n")
         tapStorageOut.pointee = clientInfo
     }
     
@@ -49,7 +49,7 @@ public class AudioProcessingTapHolder: NSObject, NSCopying {
     
     fileprivate var tapPrepare: MTAudioProcessingTapPrepareCallback = {
         (tap, maxFrames, processingFormat) in
-        Log.info("prepare: \((tap, maxFrames, processingFormat))\n")
+        Log.info("prepare: \(tap) \(maxFrames) \(processingFormat) \n")
     }
     
     fileprivate var tapUnprepare: MTAudioProcessingTapUnprepareCallback = {
@@ -59,7 +59,7 @@ public class AudioProcessingTapHolder: NSObject, NSCopying {
     
     fileprivate var tapProcess: MTAudioProcessingTapProcessCallback = {
         (tap, numberFrames, flags, bufferListInOut, numberFramesOut, flagsOut) in
-        Log.info("callback \((tap, numberFrames, flags, bufferListInOut, numberFramesOut, flagsOut))\n")
+        Log.info("callback \(tap) \(numberFrames) \(flags) \(bufferListInOut) \(numberFramesOut) \(flagsOut)\n")
         var timeRange: CMTimeRange = CMTimeRange.zero
         let status = MTAudioProcessingTapGetSourceAudio(tap, numberFrames, bufferListInOut, flagsOut, &timeRange, numberFramesOut)
         if status != noErr {
