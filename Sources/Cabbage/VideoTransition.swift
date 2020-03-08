@@ -1,0 +1,1 @@
+../../Cabbage/Sources/Core/Model/VideoTransition.swift
