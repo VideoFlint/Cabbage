@@ -253,7 +253,7 @@ class ViewController: UITableViewController {
 //            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
 //            let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
 //            imageCompositionProvider.videoConfiguration.contentMode = .custom(frame)
-//            
+//
 //            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
 //            return imageCompositionGroupProvider
 //        }()

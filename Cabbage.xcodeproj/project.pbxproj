@@ -48,6 +48,7 @@
 		5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */; };
 		5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */; };
 		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
+		D35C9E2C2429CD040011B29C /* BlurVideoConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35C9E2B2429CD040011B29C /* BlurVideoConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -94,6 +95,7 @@
 		5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReaderImageResource.swift; sourceTree = "<group>"; };
 		5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReverseImageResource.swift; sourceTree = "<group>"; };
 		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
+		D35C9E2B2429CD040011B29C /* BlurVideoConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurVideoConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,6 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				5F46459D210C71790013ADC3 /* TrackConfiguration.swift */,
+				D35C9E2B2429CD040011B29C /* BlurVideoConfiguration.swift */,
 				5F5682262198223F00BBF5FE /* KeyframeVideoConfiguration.swift */,
 			);
 			path = Configuration;
@@ -333,6 +336,7 @@
 				5F5682272198223F00BBF5FE /* KeyframeVideoConfiguration.swift in Sources */,
 				5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */,
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
+				D35C9E2C2429CD040011B29C /* BlurVideoConfiguration.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
 				5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */,
 				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
