@@ -32,6 +32,8 @@ class ViewController: UITableViewController {
                 return reversePlayerItem()
             } else if indexPath.row == 7 {
                 return twoVideoPlayerItem()
+            } else if indexPath.row == 8 {
+                return blurPlayerItem()
             }
             return simplePlayerItem()
         }()
@@ -102,10 +104,10 @@ class ViewController: UITableViewController {
                 return configuration
             }()
             imageCompositionProvider.videoConfiguration.configurations.append(keyframeConfiguration)
-
+            
             let transformKeyframeConfiguration: KeyframeVideoConfiguration<TransformKeyframeValue> = {
                 let configuration = KeyframeVideoConfiguration<TransformKeyframeValue>()
-
+                
                 let timeValues: [(Double, (CGFloat, CGFloat, CGPoint))] =
                     [(0.0, (1.0, 0, CGPoint.zero)),
                      (1.0, (1.0, CGFloat.pi, CGPoint(x: 100, y: 80))),
@@ -119,7 +121,7 @@ class ViewController: UITableViewController {
                     let keyframe = KeyframeVideoConfiguration.Keyframe(time: CMTime(seconds: time, preferredTimescale: 600), value: opacityKeyframeValue)
                     configuration.insert(keyframe)
                 })
-
+                
                 return configuration
             }()
             imageCompositionProvider.videoConfiguration.configurations.append(transformKeyframeConfiguration)
@@ -244,19 +246,19 @@ class ViewController: UITableViewController {
         
         try! Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
         
-//        timeline.passingThroughVideoCompositionProvider = {
-//            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
-//            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
-//            let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
-//            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 0, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
-//            let imageCompositionProvider = ImageOverlayItem(resource: resource)
-//            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
-//            let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
-//            imageCompositionProvider.videoConfiguration.contentMode = .custom(frame)
-//
-//            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
-//            return imageCompositionGroupProvider
-//        }()
+        //        timeline.passingThroughVideoCompositionProvider = {
+        //            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
+        //            let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
+        //            let resource = AVAssetReaderImageResource(asset: AVAsset(url: url))
+        //            resource.selectedTimeRange = CMTimeRange.init(start: CMTime(seconds: 0, preferredTimescale: 600), end: CMTime(seconds: 3, preferredTimescale: 600))
+        //            let imageCompositionProvider = ImageOverlayItem(resource: resource)
+        //            imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
+        //            let frame = CGRect.init(x: 100, y: 500, width: 600, height: 400)
+        //            imageCompositionProvider.videoConfiguration.contentMode = .custom(frame)
+        //
+        //            imageCompositionGroupProvider.imageCompositionProviders = [imageCompositionProvider]
+        //            return imageCompositionGroupProvider
+        //        }()
         
         timeline.renderSize = CGSize(width: 1920, height: 1080)
         let compositionGenerator = CompositionGenerator(timeline: timeline)
@@ -430,6 +432,27 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    
+    func blurPlayerItem() -> AVPlayerItem? {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "cute", withExtension: "mp4")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.videoConfiguration.contentMode = .aspectFit
+            let blurConfig = BlurVideoConfiguration()
+            blurConfig.blurMode = .background
+            blurConfig.blurRadius = 50
+            trackItem.videoConfiguration.configurations.append(blurConfig)
+            return trackItem
+        }()
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [bambooTrackItem]
+        timeline.audioChannel = [bambooTrackItem]
+        timeline.renderSize = CGSize(width: 1920, height: 1080)
+        
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        return playerItem
+    }
 }
 
