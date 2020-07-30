@@ -57,6 +57,15 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     
     public func applyEffect(to sourceImage: CIImage, info: VideoConfigurationEffectInfo) -> CIImage {
         var finalImage = sourceImage
+
+        if let userTransform = self.transform {
+            var transform = CGAffineTransform.identity
+            transform = transform.concatenating(CGAffineTransform(translationX: -(finalImage.extent.origin.x + finalImage.extent.width/2), y: -(finalImage.extent.origin.y + finalImage.extent.height/2)))
+            transform = transform.concatenating(userTransform)
+            transform = transform.concatenating(CGAffineTransform(translationX: (finalImage.extent.origin.x + finalImage.extent.width/2), y: (finalImage.extent.origin.y + finalImage.extent.height/2)))
+            finalImage = finalImage.transformed(by: transform)
+        }
+
         let frame = self.frame ?? CGRect(origin: CGPoint.zero, size: info.renderSize)
         switch contentMode {
         case .aspectFit:
@@ -74,15 +83,6 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             finalImage = finalImage.transformed(by: transform)
             break
         }
-        
-        if let userTransform = self.transform {
-            var transform = CGAffineTransform.identity
-            transform = transform.concatenating(CGAffineTransform(translationX: -(finalImage.extent.origin.x + finalImage.extent.width/2), y: -(finalImage.extent.origin.y + finalImage.extent.height/2)))
-            transform = transform.concatenating(userTransform)
-            transform = transform.concatenating(CGAffineTransform(translationX: (finalImage.extent.origin.x + finalImage.extent.width/2), y: (finalImage.extent.origin.y + finalImage.extent.height/2)))
-            finalImage = finalImage.transformed(by: transform)
-        }
-        
         
         finalImage = finalImage.apply(alpha: CGFloat(opacity))
         
