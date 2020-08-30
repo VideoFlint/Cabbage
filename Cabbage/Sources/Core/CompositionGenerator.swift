@@ -157,8 +157,8 @@ public class CompositionGenerator {
                                         return false
                                     }
                                 }
-                                return true
                             }
+                            return true
                         }
                         return false
                     }) {
