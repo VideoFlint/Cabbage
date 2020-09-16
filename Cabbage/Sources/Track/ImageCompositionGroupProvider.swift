@@ -32,4 +32,6 @@ public class ImageCompositionGroupProvider: VideoCompositionProvider {
         return sourceImage
     }
     
+    public init() { }
+    
 }
