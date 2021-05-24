@@ -20,11 +20,13 @@ open class VideoCompositor: NSObject, AVFoundation.AVVideoCompositing  {
     
     public var sourcePixelBufferAttributes: [String : Any]? =
         [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
-         String(kCVPixelBufferOpenGLESCompatibilityKey): true]
+         String(kCVPixelBufferOpenGLESCompatibilityKey): true,
+         String(kCVPixelBufferMetalCompatibilityKey): true]
     
     public var requiredPixelBufferAttributesForRenderContext: [String : Any] =
-        [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
-         String(kCVPixelBufferOpenGLESCompatibilityKey): true]
+        [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_32BGRA,
+         String(kCVPixelBufferOpenGLESCompatibilityKey): true,
+         String(kCVPixelBufferMetalCompatibilityKey): true]
     
     open func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {
         renderContextQueue.sync(execute: { [weak self] in
@@ -72,7 +74,7 @@ open class VideoCompositor: NSObject, AVFoundation.AVVideoCompositing  {
         
         // Background
         let backgroundImage = CIImage(color: instruction.backgroundColor).cropped(to: image.extent)
-        image = backgroundImage.composited(over: image)
+        image = backgroundImage
         
         if let destinationImage = instruction.apply(request: request) {
             image = destinationImage.composited(over: image)
