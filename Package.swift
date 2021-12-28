@@ -22,10 +22,6 @@ let package = Package(
             name: "Cabbage",
             dependencies: [],
             linkerSettings: [
-                .linkedFramework(name: "AVFoundation", 
-            ]
-        ),
-            linkerSettings: [
                 .linkedFramework(
                     "AVFoundation",
                     .when(platforms: [.iOS, .macOS])
@@ -35,5 +31,6 @@ let package = Package(
                     .when(platforms: [.iOS, .macOS])
                 )
             ]
+        )
     ]
 )
