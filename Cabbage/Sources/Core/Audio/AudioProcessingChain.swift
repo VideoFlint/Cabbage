@@ -8,7 +8,7 @@
 
 import AVFoundation
 
-public protocol AudioProcessingNode: class {
+public protocol AudioProcessingNode: AnyObject {
     func process(timeRange: CMTimeRange, bufferListInOut: UnsafeMutablePointer<AudioBufferList>)
 }
 

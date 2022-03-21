@@ -9,7 +9,7 @@
 import CoreImage
 import AVFoundation
 
-public protocol CompositionTimeRangeProvider: class {
+public protocol CompositionTimeRangeProvider: AnyObject {
     var startTime: CMTime { get set }
     var duration: CMTime { get }
 }
@@ -22,12 +22,12 @@ public extension CompositionTimeRangeProvider {
     }
 }
 
-public protocol VideoCompositionTrackProvider: class {
+public protocol VideoCompositionTrackProvider: AnyObject {
     func numberOfVideoTracks() -> Int
     func videoCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack?
 }
 
-public protocol AudioCompositionTrackProvider: class {
+public protocol AudioCompositionTrackProvider: AnyObject {
     func numberOfAudioTracks() -> Int
     func audioCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack?
 }
@@ -36,7 +36,7 @@ public protocol AudioMixProvider {
     func configure(audioMixParameters: AVMutableAudioMixInputParameters)
 }
 
-public protocol VideoCompositionProvider: class {
+public protocol VideoCompositionProvider: AnyObject {
     
     /// Apply effect to sourceImage
     ///

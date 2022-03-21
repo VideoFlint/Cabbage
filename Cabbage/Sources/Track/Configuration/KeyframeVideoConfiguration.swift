@@ -17,7 +17,7 @@ public struct KeyframeValueParam {
     public var info: VideoConfigurationEffectInfo
 }
 
-public protocol KeyframeValue: class, NSCopying {
+public protocol KeyframeValue: NSCopying {
     static func applyEffect(to sourceImage: CIImage, param: KeyframeValueParam) -> CIImage
 }
 

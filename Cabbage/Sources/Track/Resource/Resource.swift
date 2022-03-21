@@ -16,7 +16,7 @@ public struct ResourceTrackInfo {
 }
 
 
-public protocol ResourceTrackInfoProvider: class {
+public protocol ResourceTrackInfoProvider: AnyObject {
     func trackInfo(for type: AVMediaType, at index: Int) -> ResourceTrackInfo
     func image(at time: CMTime, renderSize: CGSize) -> CIImage?
 }

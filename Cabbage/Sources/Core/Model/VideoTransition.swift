@@ -9,7 +9,7 @@
 import CoreImage
 import CoreMedia
 
-public protocol VideoTransition: class {
+public protocol VideoTransition: AnyObject {
     var identifier: String { get }
     var duration: CMTime { get }
     func renderImage(foregroundImage: CIImage,
