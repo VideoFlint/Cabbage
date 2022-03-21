@@ -10,43 +10,106 @@ import UIKit
 import AVFoundation
 import AVKit
 
+class DemoItem {
+    var title: String
+    var action: () -> Void
+    
+    init(title: String, action: @escaping () -> Void) {
+        self.title = title
+        self.action = action
+    }
+}
+
 class ViewController: UITableViewController {
+    
+    var demoItems: [DemoItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DemoCell")
+        demoItems.append(DemoItem.init(title: "Simple Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.simplePlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        
+        demoItems.append(DemoItem.init(title: "HDR Support Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.hdrVideoPlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "Overlay Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.overlayPlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "Transition Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.transitionPlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "Keyframe Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.keyframePlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "Four square Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.fourSquareVideo()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "AssetReader Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.testReaderOutput()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "Reverse video Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.reversePlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+        
+        demoItems.append(DemoItem.init(title: "Two video Demo", action: { [weak self] in
+            guard let strongSelf = self else { return }
+            let playerItem = strongSelf.twoVideoPlayerItem()
+            strongSelf.pushToPreviewWithPlayerItem(playerItem)
+        }))
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.demoItems.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DemoCell", for: indexPath)
+        let demoItem = self.demoItems[indexPath.row]
+        cell.textLabel?.text = demoItem.title
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let playerItem: AVPlayerItem? = {
-            if indexPath.row == 1 {
-                return overlayPlayerItem()
-            } else if indexPath.row == 2 {
-                return transitionPlayerItem()
-            } else if indexPath.row == 3 {
-                return keyframePlayerItem()
-            } else if indexPath.row == 4 {
-                return fourSquareVideo()
-            } else if indexPath.row == 5 {
-                return testReaderOutput()
-            } else if indexPath.row == 6 {
-                return reversePlayerItem()
-            } else if indexPath.row == 7 {
-                return twoVideoPlayerItem()
-            }
-            return simplePlayerItem()
-        }()
-        if let playerItem = playerItem {
-            let controller = AVPlayerViewController()
-            controller.player = AVPlayer.init(playerItem: playerItem)
-            navigationController?.pushViewController(controller, animated: true)
-        }
+        let demoItem = demoItems[indexPath.row]
+        demoItem.action()
     }
     
     // MARK: - Demo
     
-    func simplePlayerItem() -> AVPlayerItem? {
+    func pushToPreviewWithPlayerItem(_ playerItem: AVPlayerItem) {
+        let controller = AVPlayerViewController()
+        controller.player = AVPlayer.init(playerItem: playerItem)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    func simplePlayerItem() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
-            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let url = Bundle.main.url(forResource: "hdr", withExtension: "mov")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
             trackItem.videoConfiguration.contentMode = .aspectFit
@@ -56,14 +119,36 @@ class ViewController: UITableViewController {
         let timeline = Timeline()
         timeline.videoChannel = [bambooTrackItem]
         timeline.audioChannel = [bambooTrackItem]
-        timeline.renderSize = CGSize(width: 1920, height: 1080)
-        
+        timeline.renderSize = CGSize(width: 1080, height: 1920)
         let compositionGenerator = CompositionGenerator(timeline: timeline)
         let playerItem = compositionGenerator.buildPlayerItem()
         return playerItem
     }
     
-    func overlayPlayerItem() -> AVPlayerItem? {
+    func hdrVideoPlayerItem() -> AVPlayerItem {
+        let bambooTrackItem: TrackItem = {
+            let url = Bundle.main.url(forResource: "hdr", withExtension: "mov")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            trackItem.videoConfiguration.contentMode = .aspectFit
+            return trackItem
+        }()
+        
+        let timeline = Timeline()
+        timeline.videoChannel = [bambooTrackItem]
+        timeline.audioChannel = [bambooTrackItem]
+        timeline.renderSize = CGSize(width: 1080, height: 1920)
+        let compositionGenerator = CompositionGenerator(timeline: timeline)
+        let playerItem = compositionGenerator.buildPlayerItem()
+        // Support hdr video you can set pixelFormatType to 10bit type, but it will cost more memory and more rendering time.
+        if let videoComposition = playerItem.videoComposition?.mutableCopy() as? AVMutableVideoComposition {
+            videoComposition.customVideoCompositorClass = HDRVideoCompositor.self
+            playerItem.videoComposition = videoComposition
+        }
+        return playerItem
+    }
+    
+    func overlayPlayerItem() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
@@ -134,7 +219,7 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    func transitionPlayerItem() -> AVPlayerItem? {
+    func transitionPlayerItem() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
@@ -182,7 +267,7 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    func keyframePlayerItem() -> AVPlayerItem? {
+    func keyframePlayerItem() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
@@ -222,7 +307,7 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    func testReaderOutput() -> AVPlayerItem? {
+    func testReaderOutput() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
@@ -265,7 +350,7 @@ class ViewController: UITableViewController {
     }
     
     
-    func twoVideoPlayerItem() -> AVPlayerItem? {
+    func twoVideoPlayerItem() -> AVPlayerItem {
         let renderSize = CGSize(width: 1920, height: 1080)
         let bambooTrackItem: TrackItem = {
             let width = renderSize.width / 2
@@ -307,7 +392,7 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    func fourSquareVideo() -> AVPlayerItem? {
+    func fourSquareVideo() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
@@ -412,7 +497,7 @@ class ViewController: UITableViewController {
         return playerItem
     }
     
-    func reversePlayerItem() -> AVPlayerItem? {
+    func reversePlayerItem() -> AVPlayerItem {
         let seaTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "sea", withExtension: "mp4")!
             let resource = AVAssetReverseImageResource(asset: AVAsset(url: url))
