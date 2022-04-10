@@ -238,7 +238,7 @@ public class CompositionGenerator {
         })
         
         let videoComposition = AVMutableVideoComposition()
-        videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
+        videoComposition.frameDuration = self.timeline.frameDuration
         videoComposition.renderSize = self.timeline.renderSize
         videoComposition.instructions = instructions
         videoComposition.customVideoCompositorClass = VideoCompositor.self

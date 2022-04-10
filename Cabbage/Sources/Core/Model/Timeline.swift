@@ -16,6 +16,8 @@ public class Timeline {
     public var renderSize: CGSize = CGSize(width: 960, height: 540)
     public var backgroundColor: CIColor = CIColor(red: 0, green: 0, blue: 0)
     
+    public var frameDuration: CMTime = CMTime(value: 20, 600)
+    
     // MARK: - Main content, support transition.
     
     /*
