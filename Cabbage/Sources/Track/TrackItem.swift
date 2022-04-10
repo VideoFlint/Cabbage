@@ -62,12 +62,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         let trackInfo = resource.trackInfo(for: .video, at: index)
         let track = trackInfo.track
         
-        let compositionTrack: AVMutableCompositionTrack? = {
-            if let track = composition.track(withTrackID: preferredTrackID) {
-                return track
-            }
-            return composition.addMutableTrack(withMediaType: track.mediaType, preferredTrackID: preferredTrackID)
-        }()
+        let compositionTrack = composition.vf_mutableTrackCompatiableWithTrack(trackInfo.track, timeRange: timeRange)
         
         if let compositionTrack = compositionTrack {
             compositionTrack.preferredTransforms[timeRange.vf_identifier] = track.preferredTransform
@@ -104,12 +99,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     
     open func audioCompositionTrack(for composition: AVMutableComposition, at index: Int, preferredTrackID: Int32) -> AVCompositionTrack? {
         let trackInfo = resource.trackInfo(for: .audio, at: index)
-        let compositionTrack: AVMutableCompositionTrack? = {
-            if let track = composition.track(withTrackID: preferredTrackID) {
-                return track
-            }
-            return composition.addMutableTrack(withMediaType: trackInfo.track.mediaType, preferredTrackID: preferredTrackID)
-        }()
+        let compositionTrack = composition.vf_mutableTrackCompatiableWithTrack(trackInfo.track, timeRange: timeRange)
         if let compositionTrack = compositionTrack {
             do {
                 try compositionTrack.insertTimeRange(trackInfo.selectedTimeRange, of: trackInfo.track, at: timeRange.start)

@@ -102,3 +102,10 @@ extension CMTimeRange: CustomStringConvertible, CustomDebugStringConvertible {
         return "{start:\(self.start), duration:\(self.duration)}"
     }
 }
+
+
+extension CMTimeRange {
+    var vf_identifier: String {
+        return "{\(String(format: "%.3f", start.seconds)), \(String(format: "%.3f", duration.seconds))}"
+    }
+}

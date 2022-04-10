@@ -25,5 +25,5 @@ open class HDRVideoCompositor: VideoCompositor  {
                                                          String(kCVPixelBufferOpenGLESCompatibilityKey): true,
                                                          String(kCVPixelBufferMetalCompatibilityKey): true];
     }
-
+    
 }

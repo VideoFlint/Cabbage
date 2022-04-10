@@ -49,6 +49,8 @@
 		5FC25A8A27E816400024D04E /* HDRVideoCompositor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC25A8927E816400024D04E /* HDRVideoCompositor.swift */; };
 		5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */; };
 		5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */; };
+		5FF8CF9C28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8CF9B28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift */; };
+		5FF8CF9E2802807500454E43 /* AVCompositionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8CF9D2802807500454E43 /* AVCompositionExtension.swift */; };
 		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
 /* End PBXBuildFile section */
 
@@ -97,6 +99,8 @@
 		5FC25A8927E816400024D04E /* HDRVideoCompositor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRVideoCompositor.swift; sourceTree = "<group>"; };
 		5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReaderImageResource.swift; sourceTree = "<group>"; };
 		5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReverseImageResource.swift; sourceTree = "<group>"; };
+		5FF8CF9B28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVMutableAudioMixInputParametersExtension.swift; sourceTree = "<group>"; };
+		5FF8CF9D2802807500454E43 /* AVCompositionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCompositionExtension.swift; sourceTree = "<group>"; };
 		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -235,6 +239,7 @@
 				5F464588210C71790013ADC3 /* VideoCompositionInstruction.swift */,
 				5F464597210C71790013ADC3 /* VideoCompositor.swift */,
 				5FC25A8927E816400024D04E /* HDRVideoCompositor.swift */,
+				5FF8CF9D2802807500454E43 /* AVCompositionExtension.swift */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -245,6 +250,7 @@
 				5F464589210C71790013ADC3 /* AudioProcessingTapHolder.swift */,
 				5F464596210C71790013ADC3 /* AudioMixer.swift */,
 				5F46459A210C71790013ADC3 /* AudioProcessingChain.swift */,
+				5FF8CF9B28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -355,8 +361,10 @@
 				5F4645BB210C71790013ADC3 /* Resource.swift in Sources */,
 				5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */,
 				5F4645B2210C71790013ADC3 /* VideoCompositor.swift in Sources */,
+				5FF8CF9E2802807500454E43 /* AVCompositionExtension.swift in Sources */,
 				5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */,
 				5F27CA0A2270A369008E9CF3 /* PHAssetLivePhotoResource.swift in Sources */,
+				5FF8CF9C28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift in Sources */,
 				5F4645B7210C71790013ADC3 /* ImageResource.swift in Sources */,
 				5F4645A7210C71790013ADC3 /* CompositionGenerator.swift in Sources */,
 				5F4645B1210C71790013ADC3 /* AudioMixer.swift in Sources */,
