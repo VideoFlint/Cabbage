@@ -172,3 +172,13 @@ public extension TrackItem {
     }
     
 }
+
+public extension TrackItem {
+    override var debugDescription: String {
+        return NSString(format: "%@, timeRange: {%.2f, %.2f}",
+                        String(describing: self),
+                        CMTimeGetSeconds(self.timeRange.start),
+                        CMTimeGetSeconds(CMTimeRangeGetEnd(self.timeRange))
+        ) as String
+    }
+}
