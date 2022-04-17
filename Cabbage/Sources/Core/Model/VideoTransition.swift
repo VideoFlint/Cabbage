@@ -6,38 +6,32 @@
 //  Copyright © 2018 Vito. All rights reserved.
 //
 
+import AVFoundation
 import CoreImage
 import CoreMedia
 
-public protocol VideoTransition: AnyObject {
-    var identifier: String { get }
-    var duration: CMTime { get }
+public protocol VideoTransitionEffect: AnyObject {
     func renderImage(foregroundImage: CIImage,
                      backgroundImage: CIImage,
                      forTweenFactor tween: Float64,
                      renderSize: CGSize) -> CIImage
 }
 
-open class NoneTransition: VideoTransition {
-    public var identifier: String {
-        return String(describing: self)
-    }
-    
-    open var duration: CMTime
-    
-    public init(duration: CMTime = CMTime.zero) {
-        self.duration = duration
-    }
-    
-    open func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
+public class PassthroughVideoTransitionEffect: VideoTransitionEffect {
+    public func renderImage(foregroundImage: CIImage,
+                            backgroundImage: CIImage,
+                            forTweenFactor tween: Float64,
+                            renderSize: CGSize) -> CIImage {
         return foregroundImage.composited(over: backgroundImage)
     }
 }
 
-public class CrossDissolveTransition: NoneTransition {
+public class CrossDissolveTransitionEffect: VideoTransitionEffect {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
-        if let crossDissolveFilter = CIFilter(name: "CIDissolveTransition") {
+    private let filter = CIFilter(name: "CIDissolveTransition")
+    
+    public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
+        if let crossDissolveFilter = self.filter {
             crossDissolveFilter.setValue(backgroundImage, forKey: "inputImage")
             crossDissolveFilter.setValue(foregroundImage, forKey: "inputTargetImage")
             crossDissolveFilter.setValue(tween, forKey: "inputTime")
@@ -45,14 +39,17 @@ public class CrossDissolveTransition: NoneTransition {
                 return outputImage
             }
         }
-        return super.renderImage(foregroundImage: foregroundImage, backgroundImage: backgroundImage, forTweenFactor: tween, renderSize: renderSize)
+        return foregroundImage
     }
+    
 }
 
-public class SwipeTransition: NoneTransition {
+public class SwipeTransitionEffect: VideoTransitionEffect {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
-        if let filter = CIFilter(name: "CISwipeTransition") {
+    private let filter = CIFilter(name: "CISwipeTransition")
+    
+    public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
+        if let filter = filter {
             let targetImage = foregroundImage
             filter.setValue(backgroundImage, forKey: "inputImage")
             filter.setValue(targetImage, forKey: "inputTargetImage")
@@ -68,14 +65,15 @@ public class SwipeTransition: NoneTransition {
                 return outputImage
             }
         }
-        return super.renderImage(foregroundImage: foregroundImage, backgroundImage: backgroundImage, forTweenFactor: tween, renderSize: renderSize)
+        return foregroundImage
     }
-    
 }
 
-public class PushTransition: NoneTransition {
+public class PushTransitionEffect: VideoTransitionEffect {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
+    private let filter = CIFilter(name: "CIAffineTransform")!
+    
+    public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         
         let tween = TimingFunctionFactory.quadraticEaseInOut(p: Float(tween))
         let offsetTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(tween), y: 0)
@@ -89,7 +87,6 @@ public class PushTransition: NoneTransition {
     }
     
     private func image(_ image: CIImage, apply transform: CGAffineTransform) -> CIImage {
-        let filter = CIFilter(name: "CIAffineTransform")!
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(transform, forKey: "inputTransform")
         guard let outputImage = filter.outputImage else {
@@ -101,9 +98,10 @@ public class PushTransition: NoneTransition {
     
 }
 
-public class BoundingUpTransition: NoneTransition {
+public class BoundingUpTransitionEffect: VideoTransitionEffect {
+    private let filter = CIFilter(name: "CIAffineTransform")!
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
+    public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         let tween = TimingFunctionFactory.quadraticEaseInOut(p: Float(tween))
         let height = renderSize.height
         let offsetTransform = CGAffineTransform(translationX: 0, y: height * CGFloat(tween))
@@ -121,7 +119,6 @@ public class BoundingUpTransition: NoneTransition {
     }
     
     private func image(_ image: CIImage, apply transform: CGAffineTransform) -> CIImage {
-        let filter = CIFilter(name: "CIAffineTransform")!
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(transform, forKey: "inputTransform")
         guard let outputImage = filter.outputImage else {
@@ -133,9 +130,9 @@ public class BoundingUpTransition: NoneTransition {
     
 }
 
-public class FadeTransition: NoneTransition {
+public class FadeTransitionEffect: VideoTransitionEffect {
     
-    override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
+    public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         let backgroundAlpha: CGFloat = {
             let alpha: CGFloat = CGFloat((0.5 - tween) * 2)
             if alpha > 0 {
@@ -156,6 +153,5 @@ public class FadeTransition: NoneTransition {
         let resultImage = frontImage.composited(over: bgImage)
         return resultImage
     }
-    
     
 }

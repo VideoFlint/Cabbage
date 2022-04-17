@@ -246,10 +246,14 @@ class ViewController: UITableViewController {
         }()
         
         let transitionDuration = CMTime(seconds: 2, preferredTimescale: 600)
-        bambooTrackItem.videoTransition = PushTransition(duration: transitionDuration)
-        bambooTrackItem.audioTransition = FadeInOutAudioTransition(duration: transitionDuration)
+        let transition = Transition(duration: transitionDuration)
+        transition.videoTransitionEffect = PushTransitionEffect()
+        transition.audioTransitionEffect = FadeInOutAudioTransitionEffect()
+        bambooTrackItem.transition = transition
         
-        overlayTrackItem.videoTransition = BoundingUpTransition(duration: transitionDuration)
+        let overlayTransition = Transition(duration: transitionDuration)
+        overlayTransition.videoTransitionEffect = BoundingUpTransitionEffect()
+        overlayTrackItem.transition = overlayTransition
         
         let timeline = Timeline()
         timeline.videoChannel = [bambooTrackItem, overlayTrackItem, seaTrackItem]

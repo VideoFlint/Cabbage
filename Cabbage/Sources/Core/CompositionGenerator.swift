@@ -279,10 +279,16 @@ public class CompositionGenerator {
                         if let segment = track.segments.first(where: { $0.timeMapping.target == provider.timeRange }) {
                             let targetTimeRange = segment.timeMapping.target
                             if let transition = transitions.0 {
-                                transition.applyNextAudioMixInputParameters(inputParameter, timeRange: targetTimeRange)
+                                let param = AudioTransitionEffectParam(audioMixInputParameters: inputParameter,
+                                                                       timeRange: targetTimeRange,
+                                                                       duration: transition.duration)
+                                transition.audioTransitionEffect.applyNextAudioMixInputParametersWithParam(param)
                             }
                             if let transition = transitions.1 {
-                                transition.applyPreviousAudioMixInputParameters(inputParameter, timeRange: targetTimeRange)
+                                let param = AudioTransitionEffectParam(audioMixInputParameters: inputParameter,
+                                                                       timeRange: targetTimeRange,
+                                                                       duration: transition.duration)
+                                transition.audioTransitionEffect.applyPreviousAudioMixInputParametersWithParam(param)
                             }
                         }
                     }

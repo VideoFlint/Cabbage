@@ -17,8 +17,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     public var videoConfiguration: VideoConfiguration = VideoConfiguration.createDefaultConfiguration()
     public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
     
-    public var videoTransition: VideoTransition?
-    public var audioTransition: AudioTransition?
+    public var transition: Transition?
     
     public required init(resource: Resource) {
         identifier = ProcessInfo.processInfo.globallyUniqueString
@@ -31,8 +30,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     open func copy(with zone: NSZone? = nil) -> Any {
         let item = type(of: self).init(resource: resource.copy() as! Resource)
         item.identifier = identifier
-        item.videoTransition = videoTransition
-        item.audioTransition = audioTransition
+        item.transition = transition
         item.startTime = startTime
         item.duration = duration
         item.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
@@ -122,6 +120,18 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         }
     }
     
+    
+}
+
+extension TrackItem {
+    
+    public var audioTransition: AudioTransition? {
+        return self.transition?.audioTransition
+    }
+    
+    public var videoTransition: VideoTransition? {
+        return self.transition?.videoTransition
+    }
     
 }
 

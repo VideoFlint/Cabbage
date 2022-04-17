@@ -7,54 +7,69 @@
 //
 
 import AVFoundation
+import UIKit
 
-public protocol AudioTransition {
-    var identifier: String { get }
-    var duration: CMTime { get }
+public class AudioTransitionEffectParam {
     
-    /// Configure AVMutableAudioMixInputParameters for audio that is about to disappear
-    ///
+    ///  The parameters for inputs to the mix
+    var audioMixInputParameters: AVMutableAudioMixInputParameters
+    /// The source track's time range
+    var timeRange: CMTimeRange
+    /// Transition duration
+    var duration: CMTime
+    
+    /// Create a param for processing to the audio transition effect
     /// - Parameters:
     ///   - audioMixInputParameters: The parameters for inputs to the mix
     ///   - timeRange: The source track's time range
-    func applyPreviousAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange)
+    ///   - duration: Transition duration
+    public init(audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange, duration: CMTime) {
+        self.audioMixInputParameters = audioMixInputParameters
+        self.timeRange = timeRange
+        self.duration = duration
+        
+    }
+}
+
+public protocol AudioTransitionEffect {
+    /// Configure AVMutableAudioMixInputParameters for audio that is about to disappear
+    ///
+    /// - Parameters:
+    ///   - param: parameters for configure
+    func applyPreviousAudioMixInputParametersWithParam(_ param: AudioTransitionEffectParam)
     
     /// Configure AVMutableAudioMixInputParameters for upcoming audio
     ///
     /// - Parameters:
-    ///   - audioMixInputParameters: The parameters for inputs to the mix
-    ///   - timeRange: The source track's time range
-    func applyNextAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange)
+    ///   - param: parameters for configure
+    func applyNextAudioMixInputParametersWithParam(_ param: AudioTransitionEffectParam)
 }
 
-public class FadeInOutAudioTransition: AudioTransition {
-    
-    public var identifier: String {
-        return String(describing: self)
+
+public class PassthroughAudioTransitionEffect: AudioTransitionEffect {
+    public func applyPreviousAudioMixInputParametersWithParam(_ param: AudioTransitionEffectParam) {
     }
     
-    open var duration: CMTime
-    
-    public init(duration: CMTime = CMTime.zero) {
-        self.duration = duration
+    public func applyNextAudioMixInputParametersWithParam(_ param: AudioTransitionEffectParam) {
     }
-    
-    public func applyPreviousAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange) {
-        let effectTimeRange = CMTimeRange.init(start: timeRange.end - duration, end: timeRange.end)
+}
+
+public class FadeInOutAudioTransitionEffect: AudioTransitionEffect {
+    public func applyPreviousAudioMixInputParametersWithParam(_ param: AudioTransitionEffectParam) {
+        let effectTimeRange = CMTimeRange.init(start: param.timeRange.end - param.duration, end: param.timeRange.end)
         let node = VolumeAudioConfiguration.init(timeRange: effectTimeRange, startVolume: 1, endVolume: 0)
         node.timingFunction = { (percent: Double) -> Double in
             return Double(TimingFunctionFactory.quarticEaseOut(p: Float(percent)))
         }
-        audioMixInputParameters.appendAudioProcessNode(node)
+        param.audioMixInputParameters.appendAudioProcessNode(node)
     }
     
-    public func applyNextAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange) {
-        let effectTimeRange = CMTimeRange(start: timeRange.start, end: timeRange.start + duration)
+    public func applyNextAudioMixInputParametersWithParam(_ param: AudioTransitionEffectParam) {
+        let effectTimeRange = CMTimeRange(start: param.timeRange.start, end: param.timeRange.start + param.duration)
         let node = VolumeAudioConfiguration.init(timeRange: effectTimeRange, startVolume: 0, endVolume: 1)
         node.timingFunction = { (percent: Double) -> Double in
             return Double(TimingFunctionFactory.quarticEaseIn(p: Float(percent)))
         }
-        audioMixInputParameters.appendAudioProcessNode(node)
+        param.audioMixInputParameters.appendAudioProcessNode(node)
     }
-    
 }

@@ -51,6 +51,7 @@
 		5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */; };
 		5FF8CF9C28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8CF9B28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift */; };
 		5FF8CF9E2802807500454E43 /* AVCompositionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8CF9D2802807500454E43 /* AVCompositionExtension.swift */; };
+		5FF93034280BA8BC00A7FB6D /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF93033280BA8BC00A7FB6D /* Transition.swift */; };
 		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +102,7 @@
 		5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReverseImageResource.swift; sourceTree = "<group>"; };
 		5FF8CF9B28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVMutableAudioMixInputParametersExtension.swift; sourceTree = "<group>"; };
 		5FF8CF9D2802807500454E43 /* AVCompositionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCompositionExtension.swift; sourceTree = "<group>"; };
+		5FF93033280BA8BC00A7FB6D /* Transition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
 		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -198,6 +200,7 @@
 				5F464593210C71790013ADC3 /* Timeline.swift */,
 				5F464594210C71790013ADC3 /* CompositionProvider.swift */,
 				5F464595210C71790013ADC3 /* AudioTransition.swift */,
+				5FF93033280BA8BC00A7FB6D /* Transition.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -361,6 +364,7 @@
 				5F4645BB210C71790013ADC3 /* Resource.swift in Sources */,
 				5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */,
 				5F4645B2210C71790013ADC3 /* VideoCompositor.swift in Sources */,
+				5FF93034280BA8BC00A7FB6D /* Transition.swift in Sources */,
 				5FF8CF9E2802807500454E43 /* AVCompositionExtension.swift in Sources */,
 				5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */,
 				5F27CA0A2270A369008E9CF3 /* PHAssetLivePhotoResource.swift in Sources */,
