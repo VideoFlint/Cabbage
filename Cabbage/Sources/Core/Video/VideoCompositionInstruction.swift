@@ -9,6 +9,10 @@
 import AVFoundation
 import CoreImage
 
+protocol CompositingRenderObserver: AnyObject {
+    func renderTimeDidChange(_ renderTime: CMTime)
+}
+
 open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionProtocol {
     
     open var timeRange: CMTimeRange = CMTimeRange()
@@ -192,7 +196,7 @@ extension AVVideoComposition {
             if let instruction = instruction as? VideoCompositionInstruction {
                 instruction.layerInstructions.forEach { layerInstruction in
                     if let trackItem = layerInstruction.videoCompositionProvider as? TrackItem {
-                        trackItem.renderContextDidChange(renderTime: time)
+                        trackItem.renderTimeDidChange(time)
                     }
                 }
             }

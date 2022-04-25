@@ -253,6 +253,7 @@
 		5F4645BE210C71B30013ADC3 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				5FF930412816C86200A7FB6D /* Render */,
 				5F464588210C71790013ADC3 /* VideoCompositionInstruction.swift */,
 				5F464597210C71790013ADC3 /* VideoCompositor.swift */,
 				5FC25A8927E816400024D04E /* HDRVideoCompositor.swift */,
@@ -293,6 +294,13 @@
 			isa = PBXGroup;
 			children = (
 				5FF9303A28154D0000A7FB6D /* RenderStage.swift */,
+			);
+			path = Render;
+			sourceTree = "<group>";
+		};
+		5FF930412816C86200A7FB6D /* Render */ = {
+			isa = PBXGroup;
+			children = (
 				5FF9303C2815585000A7FB6D /* RenderContext.swift */,
 			);
 			path = Render;

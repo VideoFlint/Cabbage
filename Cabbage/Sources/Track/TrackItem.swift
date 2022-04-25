@@ -169,8 +169,8 @@ public extension TrackItem {
     }
 }
 
-extension TrackItem: RenderContextRealTimeRenderObserver {
-    func renderContextDidChange(renderTime: CMTime) {
+extension TrackItem: CompositingRenderObserver {
+    func renderTimeDidChange(_ renderTime: CMTime) {
         self.resource.updateRenderTime(renderTime, timelineTimeRange: self.timeRange)
     }
 }
