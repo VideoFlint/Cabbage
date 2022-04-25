@@ -9,7 +9,7 @@
 import AVFoundation
 import CoreImage
 
-open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, TransitionableAudioProvider {
+open class TrackItem: NSObject, TransitionableVideoProvider, TransitionableAudioProvider {
     
     public var identifier: String
     public var resource: Resource
@@ -23,19 +23,6 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         identifier = ProcessInfo.processInfo.globallyUniqueString
         self.resource = resource
         super.init()
-    }
-    
-    // MARK: - NSCopying
-    
-    open func copy(with zone: NSZone? = nil) -> Any {
-        let item = type(of: self).init(resource: resource.copy() as! Resource)
-        item.identifier = identifier
-        item.transition = transition
-        item.startTime = startTime
-        item.duration = duration
-        item.videoConfiguration = videoConfiguration.copy() as! VideoConfiguration
-        item.audioConfiguration = audioConfiguration.copy() as! AudioConfiguration
-        return item
     }
     
     // MARK: - CompositionTimeRangeProvider
@@ -120,7 +107,6 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
         }
     }
     
-    
 }
 
 extension TrackItem {
@@ -180,5 +166,11 @@ public extension TrackItem {
                         CMTimeGetSeconds(self.timeRange.start),
                         CMTimeGetSeconds(CMTimeRangeGetEnd(self.timeRange))
         ) as String
+    }
+}
+
+extension TrackItem: RenderContextRealTimeRenderObserver {
+    func renderContextDidChange(renderTime: CMTime) {
+        self.resource.updateRenderTime(renderTime, timelineTimeRange: self.timeRange)
     }
 }

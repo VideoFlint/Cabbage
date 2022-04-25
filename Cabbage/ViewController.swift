@@ -109,16 +109,23 @@ class ViewController: UITableViewController {
     
     func simplePlayerItem() -> AVPlayerItem {
         let bambooTrackItem: TrackItem = {
-            let url = Bundle.main.url(forResource: "hdr", withExtension: "mov")!
+            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
             trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem
         }()
         
+        let trackItem2: TrackItem = {
+            let url = Bundle.main.url(forResource: "hdr", withExtension: "mov")!
+            let resource = AVAssetTrackResource(asset: AVAsset(url: url))
+            let trackItem = TrackItem(resource: resource)
+            return trackItem
+        }()
+        
         let timeline = Timeline()
-        timeline.videoChannel = [bambooTrackItem]
-        timeline.audioChannel = [bambooTrackItem]
+        timeline.videoChannel = [bambooTrackItem, trackItem2]
+        timeline.audioChannel = [bambooTrackItem, trackItem2]
         timeline.renderSize = CGSize(width: 1080, height: 1920)
         let compositionGenerator = CompositionGenerator(timeline: timeline)
         let playerItem = compositionGenerator.buildPlayerItem()
@@ -259,11 +266,6 @@ class ViewController: UITableViewController {
         timeline.videoChannel = [bambooTrackItem, overlayTrackItem, seaTrackItem]
         timeline.audioChannel = [bambooTrackItem, seaTrackItem]
         
-        do {
-            try Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
-        } catch {
-            assert(false, error.localizedDescription)
-        }
         timeline.renderSize = CGSize(width: 1920, height: 1080)
         
         let compositionGenerator = CompositionGenerator(timeline: timeline)
@@ -331,7 +333,6 @@ class ViewController: UITableViewController {
         let timeline = Timeline()
         timeline.videoChannel = [bambooTrackItem, flyTrackItem]
         
-        try! Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
         
 //        timeline.passingThroughVideoCompositionProvider = {
 //            let imageCompositionGroupProvider = ImageCompositionGroupProvider()
@@ -435,8 +436,6 @@ class ViewController: UITableViewController {
         let timeline = Timeline()
         timeline.videoChannel = trackItems
         timeline.audioChannel = trackItems
-        
-        try! Timeline.reloadVideoStartTime(providers: timeline.videoChannel)
         
         let renderSize = CGSize(width: 1920, height: 1080)
         

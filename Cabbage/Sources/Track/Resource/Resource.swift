@@ -21,10 +21,7 @@ public protocol ResourceTrackInfoProvider: AnyObject {
     func image(at time: CMTime, renderSize: CGSize) -> CIImage?
 }
 
-open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
-
-    required override public init() {
-    }
+open class Resource: NSObject, ResourceTrackInfoProvider, RenderStageDelegate {
     
     /// Max duration of this resource
     open var duration: CMTime = CMTime.zero
@@ -45,13 +42,22 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
         }
     }
     
+    /// Natural frame size of this resource
+    open var size: CGSize = .zero
+    
+    private let renderStage: RenderStage
+    
+    required override public init() {
+        renderStage = RenderStage()
+        super.init()
+        renderStage.delegate = self
+    }
+    
     public func sourceTime(for timelineTime: CMTime) -> CMTime {
         let seconds = selectedTimeRange.start.seconds + timelineTime.seconds * (selectedTimeRange.duration.seconds / scaledDuration.seconds)
         return CMTime(seconds: seconds, preferredTimescale: 600)
     }
     
-    /// Natural frame size of this resource
-    open var size: CGSize = .zero
     
     
     /// Provide tracks for specific media type
@@ -63,38 +69,6 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
             return tracks
         }
         return []
-    }
-    
-    // MARK: - Load content
-    
-    public enum ResourceStatus: Int {
-        case unavaliable
-        case avaliable
-    }
-    
-    /// Resource's status, indicate weather the tracks are avaiable. Default is avaliable
-    public var status: ResourceStatus = .unavaliable
-    public var statusError: Error?
-    
-    /// Load content makes it available to get tracks. When use load resource from PHAsset or internet resource, it's your responsibility to determinate when and where to load the content.
-    ///
-    /// - Parameters:
-    ///   - progressHandler: loading progress
-    ///   - completion: load completion
-    @discardableResult
-    open func prepare(progressHandler:((Double) -> Void)? = nil, completion: @escaping (ResourceStatus, Error?) -> Void) -> ResourceTask? {
-        completion(status, statusError)
-        return nil
-    }
-    
-    // MARK: - NSCopying
-    open func copy(with zone: NSZone? = nil) -> Any {
-        let resource = type(of: self).init()
-        resource.size = size
-        resource.duration = duration
-        resource.selectedTimeRange = selectedTimeRange
-        resource.scaledDuration = scaledDuration
-        return resource
     }
     
     // MARK: - ResourceTrackInfoProvider
@@ -110,6 +84,32 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     
     open func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
         return nil
+    }
+    
+    // MARK: - RenderStageDelegate
+    func leaveRenderTimeRange(_ renderStage: RenderStage) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.5, execute: self.cancelBlcok)
+    }
+    
+    func enterRenderTimeRange(_ renderStage: RenderStage) {
+        self.cancelBlcok.cancel()
+    }
+    
+    // MARK: Cache Manager
+    
+    private lazy var cancelBlcok = DispatchWorkItem { [weak self] in
+        guard let strongSelf = self else {
+            return
+        }
+        strongSelf.cleanCache()
+    }
+    
+    open func cleanCache() {
+        // Implement by subclass if needed
+    }
+    
+    func updateRenderTime(_ renderTime: CMTime, timelineTimeRange: CMTimeRange) {
+        self.renderStage.updateRenderTime(renderTime, timelineTimeRange: timelineTimeRange)
     }
     
     // MARK: - Helper

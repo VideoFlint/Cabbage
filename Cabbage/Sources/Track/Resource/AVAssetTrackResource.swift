@@ -26,55 +26,6 @@ public class AVAssetTrackResource: Resource {
         super.init()
     }
     
-    // MARK: - Load Media before use resource
-    
-    @discardableResult
-    open override func prepare(progressHandler:((Double) -> Void)? = nil, completion: @escaping (ResourceStatus, Error?) -> Void) -> ResourceTask? {
-        if let asset = asset {
-            asset.loadValuesAsynchronously(forKeys: ["tracks", "duration"], completionHandler: { [weak self] in
-                guard let strongSelf = self else { return }
-                
-                func finished() {
-                    if asset.tracks.count > 0 {
-                        if let track = asset.tracks(withMediaType: .video).first {
-                            strongSelf.size = track.naturalSize.applying(track.preferredTransform)
-                        }
-                        strongSelf.status = .avaliable
-                        strongSelf.duration = asset.duration
-                    }
-                    DispatchQueue.main.async {
-                        completion(strongSelf.status, strongSelf.statusError)
-                    }
-                }
-                
-                var error: NSError?
-                let tracksStatus = asset.statusOfValue(forKey: "tracks", error: &error)
-                if tracksStatus != .loaded {
-                    strongSelf.statusError = error;
-                    strongSelf.status = .unavaliable;
-                    Log.error("Failed to load tracks, status: \(tracksStatus), error: \(String(describing: error))")
-                    finished()
-                    return
-                }
-                let durationStatus = asset.statusOfValue(forKey: "duration", error: &error)
-                if durationStatus != .loaded {
-                    strongSelf.statusError = error;
-                    strongSelf.status = .unavaliable;
-                    Log.error("Failed to duration tracks, status: \(tracksStatus), error: \(String(describing: error))")
-                    finished()
-                    return
-                }
-                finished()
-            })
-            return ResourceTask.init(cancel: {
-                asset.cancelLoading()
-            })
-        } else {
-            completion(status, statusError)
-        }
-        return nil
-    }
-    
     // MARK: - Content provider
     
     open override func tracks(for type: AVMediaType) -> [AVAssetTrack] {
@@ -91,15 +42,6 @@ public class AVAssetTrackResource: Resource {
         return ResourceTrackInfo(track: track,
                                  selectedTimeRange: selectedTimeRange,
                                  scaleToDuration: scaledDuration)
-    }
-    
-    // MARK: - NSCopying
-    
-    override public func copy(with zone: NSZone? = nil) -> Any {
-        let resource = super.copy(with: zone) as! AVAssetTrackResource
-        resource.asset = asset
-        
-        return resource
     }
     
 }

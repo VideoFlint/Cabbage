@@ -71,6 +71,13 @@ public class CompositionGenerator {
         
         resetSetupInfo()
         
+        do {
+            try Timeline.reloadVideoStartTime(providers: self.timeline.videoChannel)
+            try Timeline.reloadAudioStartTime(providers: self.timeline.audioChannel)
+        } catch {
+            assert(false, error.localizedDescription)
+        }
+        
         let composition = AVMutableComposition(urlAssetInitializationOptions: [AVURLAssetPreferPreciseDurationAndTimingKey: true])
         var videoChannelTrackIDs: [Int: Int32] = [:]
         func getVideoTrackID(for index: Int) -> Int32 {

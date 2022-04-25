@@ -23,60 +23,6 @@ public class PHAssetLivePhotoResource: AVAssetTrackResource {
         super.init()
     }
     
-    @discardableResult
-    open override func prepare(progressHandler: ((Double) -> Void)? = nil, completion: @escaping (Resource.ResourceStatus, Error?) -> Void) -> ResourceTask? {
-        if self.asset != nil {
-            return super.prepare(progressHandler: progressHandler, completion: completion)
-        }
-        
-        guard let phasset = phasset else {
-            completion(status, nil)
-            return nil
-        }
-        if #available(iOS 9.1, *) {
-            if phasset.mediaSubtypes == .photoLive {
-                let options = PHLivePhotoRequestOptions()
-                options.deliveryMode = .fastFormat
-                options.isNetworkAccessAllowed = true
-                let requestID = self.videoUrl(forLivePhotoAsset: phasset, options: options, completion: { [weak self] (url) in
-                    guard let `self` = self else { return }
-                    guard let url = url else {
-                        DispatchQueue.main.async {
-                            completion(self.status, nil)
-                        }
-                        return
-                    }
-                    let asset = AVAsset.init(url: url)
-                    self.duration = asset.duration
-                    self.asset = asset
-                    if let track = asset.tracks(withMediaType: .video).first {
-                        self.size = track.naturalSize.applying(track.preferredTransform)
-                    }
-                    self.status = .avaliable
-                    DispatchQueue.main.async {
-                        completion(self.status, nil)
-                    }
-                })
-                return ResourceTask.init(cancel: {
-                    PHImageManager.default().cancelImageRequest(requestID)
-                })
-            } else {
-                completion(status, nil)
-                return nil
-            }
-        } else {
-            // Fallback on earlier versions
-            completion(status, nil)
-            return nil
-        }
-    }
-    
-    override open func copy(with zone: NSZone? = nil) -> Any {
-        let resource = super.copy(with: zone) as! PHAssetLivePhotoResource
-        resource.asset = asset
-        resource.phasset = phasset
-        return resource
-    }
 }
 
 extension PHAssetLivePhotoResource {

@@ -46,6 +46,9 @@ open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionP
     }
     
     open func apply(request: AVAsynchronousVideoCompositionRequest) -> CIImage? {
+        request.renderContext.videoComposition.vf_notifyLayerInstructionWithCompositionTime(request.compositionTime)
+        
+        
         let time = request.compositionTime
         let renderSize = request.renderContext.size
         
@@ -183,3 +186,16 @@ private extension CIImage {
     }
 }
 
+extension AVVideoComposition {
+    func vf_notifyLayerInstructionWithCompositionTime(_ time: CMTime) {
+        self.instructions.forEach { instruction in
+            if let instruction = instruction as? VideoCompositionInstruction {
+                instruction.layerInstructions.forEach { layerInstruction in
+                    if let trackItem = layerInstruction.videoCompositionProvider as? TrackItem {
+                        trackItem.renderContextDidChange(renderTime: time)
+                    }
+                }
+            }
+        }
+    }
+}
