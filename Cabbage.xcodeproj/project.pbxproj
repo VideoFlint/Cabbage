@@ -57,6 +57,11 @@
 		5FF9303B28154D0000A7FB6D /* RenderStage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF9303A28154D0000A7FB6D /* RenderStage.swift */; };
 		5FF9303D2815585000A7FB6D /* RenderContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF9303C2815585000A7FB6D /* RenderContext.swift */; };
 		5FF930402816C41D00A7FB6D /* empty_audio.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5FF9303F2816C41D00A7FB6D /* empty_audio.m4a */; };
+		5FF930432816C9E900A7FB6D /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF930422816C9E900A7FB6D /* Image.swift */; };
+		5FF930452816CCF900A7FB6D /* ContextLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF930442816CCF900A7FB6D /* ContextLibrary.swift */; };
+		5FF930472817866800A7FB6D /* ContextPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF930462817866800A7FB6D /* ContextPipeline.swift */; };
+		5FF930492817EED700A7FB6D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF930482817EED700A7FB6D /* Error.swift */; };
+		5FF9304B2818BE9100A7FB6D /* TextureCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF9304A2818BE9100A7FB6D /* TextureCache.swift */; };
 		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +118,11 @@
 		5FF9303A28154D0000A7FB6D /* RenderStage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderStage.swift; sourceTree = "<group>"; };
 		5FF9303C2815585000A7FB6D /* RenderContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderContext.swift; sourceTree = "<group>"; };
 		5FF9303F2816C41D00A7FB6D /* empty_audio.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = empty_audio.m4a; sourceTree = "<group>"; };
+		5FF930422816C9E900A7FB6D /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		5FF930442816CCF900A7FB6D /* ContextLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextLibrary.swift; sourceTree = "<group>"; };
+		5FF930462817866800A7FB6D /* ContextPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextPipeline.swift; sourceTree = "<group>"; };
+		5FF930482817EED700A7FB6D /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		5FF9304A2818BE9100A7FB6D /* TextureCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureCache.swift; sourceTree = "<group>"; };
 		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -202,6 +212,7 @@
 				5F46458F210C71790013ADC3 /* CMTimeExtensition.swift */,
 				5F464590210C71790013ADC3 /* TimeRangeExtension.swift */,
 				5F56822A2198580E00BBF5FE /* CoreImageExtension.swift */,
+				5FF930482817EED700A7FB6D /* Error.swift */,
 			);
 			path = Uitl;
 			sourceTree = "<group>";
@@ -302,6 +313,10 @@
 			isa = PBXGroup;
 			children = (
 				5FF9303C2815585000A7FB6D /* RenderContext.swift */,
+				5FF930422816C9E900A7FB6D /* Image.swift */,
+				5FF930442816CCF900A7FB6D /* ContextLibrary.swift */,
+				5FF930462817866800A7FB6D /* ContextPipeline.swift */,
+				5FF9304A2818BE9100A7FB6D /* TextureCache.swift */,
 			);
 			path = Render;
 			sourceTree = "<group>";
@@ -387,6 +402,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F5682272198223F00BBF5FE /* KeyframeVideoConfiguration.swift in Sources */,
+				5FF930432816C9E900A7FB6D /* Image.swift in Sources */,
 				5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */,
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
@@ -396,6 +412,7 @@
 				5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */,
 				5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */,
 				5F3BEE932163804A00881217 /* ImageOverlayItem.swift in Sources */,
+				5FF930472817866800A7FB6D /* ContextPipeline.swift in Sources */,
 				5F4645AC210C71790013ADC3 /* TimeRangeExtension.swift in Sources */,
 				5F4645B6210C71790013ADC3 /* PHAssetTrackResource.swift in Sources */,
 				5F4645AB210C71790013ADC3 /* CMTimeExtensition.swift in Sources */,
@@ -409,6 +426,7 @@
 				5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */,
 				5F27CA0A2270A369008E9CF3 /* PHAssetLivePhotoResource.swift in Sources */,
 				5FF8CF9C28027DC900454E43 /* AVMutableAudioMixInputParametersExtension.swift in Sources */,
+				5FF9304B2818BE9100A7FB6D /* TextureCache.swift in Sources */,
 				5F4645B7210C71790013ADC3 /* ImageResource.swift in Sources */,
 				5F4645A7210C71790013ADC3 /* CompositionGenerator.swift in Sources */,
 				5F4645B1210C71790013ADC3 /* AudioMixer.swift in Sources */,
@@ -420,10 +438,12 @@
 				5F464577210C713F0013ADC3 /* ViewController.swift in Sources */,
 				5F4645B4210C71790013ADC3 /* AudioProcessingChain.swift in Sources */,
 				5F464575210C713F0013ADC3 /* AppDelegate.swift in Sources */,
+				5FF930492817EED700A7FB6D /* Error.swift in Sources */,
 				5FF93036280C07BE00A7FB6D /* FileImageResource.swift in Sources */,
 				5FC25A8A27E816400024D04E /* HDRVideoCompositor.swift in Sources */,
 				5F4645AA210C71790013ADC3 /* CGMathFunctions.swift in Sources */,
 				5F4645A5210C71790013ADC3 /* VideoCompositionInstruction.swift in Sources */,
+				5FF930452816CCF900A7FB6D /* ContextLibrary.swift in Sources */,
 				5FF9303B28154D0000A7FB6D /* RenderStage.swift in Sources */,
 				5F4645A6210C71790013ADC3 /* AudioProcessingTapHolder.swift in Sources */,
 			);

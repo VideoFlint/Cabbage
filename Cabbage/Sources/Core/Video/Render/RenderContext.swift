@@ -8,11 +8,21 @@
 
 import Foundation
 import CoreMedia
+import CoreImage
 
 class RenderContext {
     
     static let shared = RenderContext()
     
-    private init() {}
+    public private(set) var device: MTLDevice
+    public private(set) var textureCache: TextureCache
+    public private(set) lazy var ciContext = CIContext(mtlDevice: self.device)
+    
+    public init(device: MTLDevice) {
+        self.device = device
+        self.textureCache = TextureCache(device: self.device)
+    }
+    
+    
     
 }

@@ -19,7 +19,7 @@ open class VideoCompositor: NSObject, AVFoundation.AVVideoCompositing  {
     private var renderContext: AVVideoCompositionRenderContext?
     
     public var sourcePixelBufferAttributes: [String : Any]? =
-        [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
+        [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_32BGRA,
          String(kCVPixelBufferOpenGLESCompatibilityKey): true,
          String(kCVPixelBufferMetalCompatibilityKey): true]
     
