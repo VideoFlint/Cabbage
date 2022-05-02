@@ -9,11 +9,6 @@
 import Foundation
 import Metal
 
-public struct PipelineInfo {
-    var pipelineState: MTLRenderPipelineState
-    var reflection: MTLRenderPipelineReflection
-}
-
 public class ContextPipeline {
     public private(set) var device: MTLDevice
     public private(set) var library: ContextLibrary
