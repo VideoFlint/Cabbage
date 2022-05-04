@@ -15,6 +15,8 @@
 		041964F4281FFE0F009001A5 /* PipelineInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041964F3281FFE0F009001A5 /* PipelineInfo.swift */; };
 		041964F728201369009001A5 /* ShaderUniformSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041964F628201369009001A5 /* ShaderUniformSettings.swift */; };
 		041964F9282013AE009001A5 /* RenderMPSImageKernalParam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041964F8282013AE009001A5 /* RenderMPSImageKernalParam.swift */; };
+		041964FB28221961009001A5 /* PixelBufferPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041964FA28221961009001A5 /* PixelBufferPool.swift */; };
+		041964FD282219A5009001A5 /* CacheContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041964FC282219A5009001A5 /* CacheContext.swift */; };
 		5F27CA0A2270A369008E9CF3 /* PHAssetLivePhotoResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F27CA092270A369008E9CF3 /* PHAssetLivePhotoResource.swift */; };
 		5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */; };
 		5F3BEE932163804A00881217 /* ImageOverlayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3BEE922163804A00881217 /* ImageOverlayItem.swift */; };
@@ -82,6 +84,8 @@
 		041964F3281FFE0F009001A5 /* PipelineInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineInfo.swift; sourceTree = "<group>"; };
 		041964F628201369009001A5 /* ShaderUniformSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderUniformSettings.swift; sourceTree = "<group>"; };
 		041964F8282013AE009001A5 /* RenderMPSImageKernalParam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderMPSImageKernalParam.swift; sourceTree = "<group>"; };
+		041964FA28221961009001A5 /* PixelBufferPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBufferPool.swift; sourceTree = "<group>"; };
+		041964FC282219A5009001A5 /* CacheContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheContext.swift; sourceTree = "<group>"; };
 		5F27CA092270A369008E9CF3 /* PHAssetLivePhotoResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetLivePhotoResource.swift; sourceTree = "<group>"; };
 		5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompositionGroupProvider.swift; sourceTree = "<group>"; };
 		5F3BEE922163804A00881217 /* ImageOverlayItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageOverlayItem.swift; sourceTree = "<group>"; };
@@ -345,6 +349,8 @@
 			isa = PBXGroup;
 			children = (
 				5FF930382814E93200A7FB6D /* ObjectReferenceCahce.swift */,
+				041964FA28221961009001A5 /* PixelBufferPool.swift */,
+				041964FC282219A5009001A5 /* CacheContext.swift */,
 			);
 			path = Cache;
 			sourceTree = "<group>";
@@ -453,6 +459,7 @@
 				5FF930432816C9E900A7FB6D /* Image.swift in Sources */,
 				5F56822B2198580E00BBF5FE /* CoreImageExtension.swift in Sources */,
 				5F4645B8210C71790013ADC3 /* TrackItem.swift in Sources */,
+				041964FD282219A5009001A5 /* CacheContext.swift in Sources */,
 				5F4645AE210C71790013ADC3 /* Timeline.swift in Sources */,
 				5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */,
 				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
@@ -471,6 +478,7 @@
 				5F4645B2210C71790013ADC3 /* VideoCompositor.swift in Sources */,
 				041964F4281FFE0F009001A5 /* PipelineInfo.swift in Sources */,
 				5FF93034280BA8BC00A7FB6D /* Transition.swift in Sources */,
+				041964FB28221961009001A5 /* PixelBufferPool.swift in Sources */,
 				5FF8CF9E2802807500454E43 /* AVCompositionExtension.swift in Sources */,
 				5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */,
 				041964F9282013AE009001A5 /* RenderMPSImageKernalParam.swift in Sources */,

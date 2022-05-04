@@ -42,6 +42,14 @@ public class TextureCache {
                                                object: nil)
     }
     
+    public func makeImage(size: CGSize) -> Image? {
+        guard let pixelBuffer = CacheContext.shared.pixelBufferPool.makePixelBuffer(size: size) else {
+            return nil
+        }
+        let image = self.makeRGBTextureFromRGBPixelBuffer(pixelBuffer)
+        return image
+    }
+    
     public func makeRGBTextureFromRGBPixelBuffer(_ pixelBuffer: CVPixelBuffer) -> Image? {
         return self.makeTexture(pixelBuffer: pixelBuffer, planeIndex: 0, pixelFormat: .bgra8Unorm)
     }
