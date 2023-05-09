@@ -38,7 +38,7 @@ open class AVAssetReverseImageResource: ImageResource {
     
     open override func image(at time: CMTime, renderSize: CGSize) -> CIImage? {
         let time = sourceTime(for: time)
-        guard selectedTimeRange.duration > time else {
+        guard selectedTimeRange.end >= time else {
             return nil
         }
         let realTime = max(0, selectedTimeRange.end.seconds - time.seconds) + selectedTimeRange.start.seconds
