@@ -114,8 +114,12 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     
     // MARK: - Helper
     
-    private static let emptyAsset: AVAsset? = {
+    public static var emptyAsset: AVAsset? = {
+        #if SWIFT_PACKAGE
+        let bundle = Bundle.module
+        #else
         let bundle = Bundle(for: ImageResource.self)
+        #endif
         if let videoURL = bundle.url(forResource: "black_empty", withExtension: "mp4") {
             return AVAsset(url: videoURL)
         }
