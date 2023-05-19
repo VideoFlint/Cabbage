@@ -28,8 +28,7 @@ open class AVAssetReverseImageResource: ImageResource {
     public init(asset: AVAsset) {
         super.init()
         self.asset = asset
-        let duration = CMTimeMake(value: Int64(asset.duration.seconds * 600), timescale: 600)
-        selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: duration)
+        selectedTimeRange = CMTimeRangeMake(start: CMTime.zero, duration: asset.duration)
     }
     
     required public init() {
@@ -45,10 +44,16 @@ open class AVAssetReverseImageResource: ImageResource {
         
         let sampleBuffer: CMSampleBuffer? = loadSamplebuffer(for: CMTime(seconds: realTime, preferredTimescale: 600))
         if let sampleBuffer = sampleBuffer, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            return CIImage(cvPixelBuffer: imageBuffer)
+            var ciImage = CIImage(cvPixelBuffer: imageBuffer)
+            // Apply the preferred transform of the video track to the image. This allows support of HDR videos
+            if let preferredTransform = asset?.tracks(withMediaType: .video).first?.preferredTransform, preferredTransform != .identity {
+                ciImage = ciImage.transformed(by: preferredTransform.convertedForCICoordinates())
+            }
+
+            return ciImage
         }
         
-        return image;
+        return image
     }
     
     private func loadSamplebuffer(for time: CMTime) -> CMSampleBuffer? {
@@ -182,16 +187,20 @@ open class AVAssetReverseImageResource: ImageResource {
     private func createAssetReader(for timeRange: CMTimeRange) -> (AVAssetReader?, AVAssetReaderTrackOutput?) {
         guard let asset = asset,
             let reader = try? AVAssetReader.init(asset: asset),
-            let track = asset.tracks(withMediaType: .video).first else {
+            let videoTrack = asset.tracks(withMediaType: .video).first else {
                 return (nil, nil)
         }
-        let size = track.naturalSize.applying(track.preferredTransform)
-        let outputSettings: [String : Any] =
+        let size = videoTrack.naturalSize
+        var outputSettings: [String : Any] =
             [String(kCVPixelBufferWidthKey): size.width,
              String(kCVPixelBufferHeightKey): size.height]
-        let trackOutput = AVAssetReaderTrackOutput(track: track, outputSettings: outputSettings)
+        if asset.isVideoHDR() {
+            outputSettings[kCVPixelBufferPixelFormatTypeKey as String] = kCVPixelFormatType_420YpCbCr10BiPlanarFullRange
+        }
+        let trackOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: outputSettings)
         trackOutput.alwaysCopiesSampleData = false
         trackOutput.supportsRandomAccess = true
+        
         
         guard reader.canAdd(trackOutput) else {
             return (nil, nil)
@@ -243,7 +252,7 @@ open class AVAssetReverseImageResource: ImageResource {
                 defer {
                     if asset.tracks.count > 0 {
                         if let track = asset.tracks(withMediaType: .video).first {
-                            strongSelf.size = track.naturalSize.applying(track.preferredTransform)
+                            strongSelf.size = track.naturalSize.nonNegativeApplying(track.preferredTransform)
                         }
                         strongSelf.status = .avaliable
                         strongSelf.duration = asset.duration
@@ -285,5 +294,37 @@ open class AVAssetReverseImageResource: ImageResource {
         resource.asset = asset
         resource.bufferDuration = bufferDuration;
         return resource
+    }
+}
+
+import CoreMedia
+
+extension AVAsset {
+    func isVideoHDR() -> Bool {
+        guard let track = tracks(withMediaType: .video).first,
+              let formatDescription = (track.formatDescriptions as? [CMFormatDescription])?.first else {
+            return false
+        }
+        let colorPrimaries = formatDescription.extensions[.colorPrimaries]
+        let isHDR = colorPrimaries == .string("ITU_R_2020")
+        return isHDR
+    }
+}
+
+extension CGSize {
+    func nonNegativeApplying(_ transform: CGAffineTransform) -> CGSize {
+        var transformedSelf = applying(transform)
+        return .init(
+            width: abs(transformedSelf.width),
+            height: abs(transformedSelf.height)
+        )
+    }
+}
+
+extension CGAffineTransform {
+    func convertedForCICoordinates() -> Self {
+        var transform = self
+        let radians = transform.rotationRadians()
+        return .init(rotationAngle: -radians)
     }
 }

@@ -129,7 +129,7 @@ open class VideoCompositionInstruction: NSObject, AVVideoCompositionInstructionP
     
     private func generateImage(from pixelBuffer: CVPixelBuffer) -> CIImage {
         var image = CIImage(cvPixelBuffer: pixelBuffer)
-        let attr = CVBufferGetAttachments(pixelBuffer, .shouldPropagate) as? [ String : Any ]
+        let attr = CVBufferCopyAttachments(pixelBuffer, .shouldPropagate) as? [ String : Any ]
         if let attr = attr, !attr.isEmpty {
             if let aspectRatioDict = attr[kCVImageBufferPixelAspectRatioKey as String] as? [ String : Any ], !aspectRatioDict.isEmpty {
                 let width = aspectRatioDict[kCVImageBufferPixelAspectRatioHorizontalSpacingKey as String] as? CGFloat
