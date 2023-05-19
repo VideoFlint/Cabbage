@@ -305,9 +305,13 @@ extension AVAsset {
               let formatDescription = (track.formatDescriptions as? [CMFormatDescription])?.first else {
             return false
         }
-        let colorPrimaries = formatDescription.extensions[.colorPrimaries]
-        let isHDR = colorPrimaries == .string("ITU_R_2020")
-        return isHDR
+        guard let colorPrimaries = CMFormatDescriptionGetExtension(
+            formatDescription,
+            extensionKey: kCMFormatDescriptionExtension_ColorPrimaries
+        ) as? String else {
+            return false
+        }
+        return colorPrimaries == "ITU_R_2020"
     }
 }
 
